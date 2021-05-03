@@ -28,9 +28,8 @@
     </Target>
     <!-- il2cpp newtonsoft -->
 	<ItemGroup>
-		<Reference Include="Newtonsoft.Json, Version=3.7.1.6">
-			<HintPath>$(AmongUs)\BepInEx\unhollowed\Newtonsoft.Json.dll</HintPath>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" >
 			<Aliases>Il2CppNewtonsoft</Aliases>
-		</Reference>
+        </PackageReference>
 	</ItemGroup>
 </Project>
