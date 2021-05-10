@@ -25,6 +25,7 @@ using System.Security.Cryptography;
 using Il2CppNewtonsoft::Newtonsoft.Json.Linq;
 using Il2CppNewtonsoft::Newtonsoft.Json;
 using Twitch;
+using System.Text.RegularExpressions;
 
 namespace TheOtherRoles {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
@@ -123,14 +124,19 @@ namespace TheOtherRoles {
                     JToken assets = data["assets"];
                     if (!assets.HasValues)
                         return false;
+                    Regex rgxTOR = new Regex("^https://.*/download/[^/]*/TheOtherRoles-.*dll$");
+                    Regex rgxRR = new Regex("^https://.*/download/[^/]*/RevealRoles-.*dll$");
                     for (JToken current = assets.First; current != null; current = current.Next) {
                         string browser_download_url = current["browser_download_url"]?.ToString();
                         if (browser_download_url != null && current["content_type"] != null) {
                             if (current["content_type"].ToString().Equals("application/x-msdownload") &&
                                 browser_download_url.EndsWith(".dll")) {
-                                if(browser_download_url.StartsWith("TheOtherRoles")){
+                                TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
+                                if(rgxTOR.IsMatch(browser_download_url)){
+                                    TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
                                     updateurlTOR = browser_download_url;
-                                }else if(browser_download_url.StartsWith("RevealRoles")){
+                                }else if(rgxRR.IsMatch(browser_download_url)){
+                                    TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
                                     updateurlRR = browser_download_url;
                                 }
                                 if(updateurlTOR != null && updateurlRR != null){
@@ -149,7 +155,16 @@ namespace TheOtherRoles {
 
         public static async Task<bool> downloadUpdate() {
             try {
+                // 出力先パスの取得
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                System.UriBuilder uri = new System.UriBuilder(codeBase);
+                string fullnameTOR = System.Uri.UnescapeDataString(uri.Path);
+                string fullnameRR = fullnameTOR.Replace("TheOtherRolese", "RevealRoles");
+
+                // 共通で仕様するhttpclient
                 HttpClient http = new HttpClient();
+
+                // TheOtherRolesのダウンロード処理実行
                 http.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
                 var responseTOR = await http.GetAsync(new System.Uri(updateurlTOR), HttpCompletionOption.ResponseContentRead);
                 if (responseTOR.StatusCode != HttpStatusCode.OK || responseTOR.Content == null) {
@@ -157,35 +172,33 @@ namespace TheOtherRoles {
                     return false;
                 }
 
-                var responseRR = await http.GetAsync(new System.Uri(updateurlRR), HttpCompletionOption.ResponseContentRead);
-                if (responseRR.StatusCode != HttpStatusCode.OK || responseRR.Content == null) {
-                    System.Console.WriteLine("Server returned no data: " + responseRR.StatusCode.ToString());
-                    return false;
-                }
-
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                System.UriBuilder uri = new System.UriBuilder(codeBase);
-                string fullnameTOR = System.Uri.UnescapeDataString(uri.Path);
-                string fullnameRR = fullnameTOR.Replace("TheOtherRolese", "RevealRoles");
-
                 if (File.Exists(fullnameTOR + ".old")) // Clear old file in case it wasnt;
                     File.Delete(fullnameTOR + ".old");
-                if (File.Exists(fullnameRR + ".old")) // Clear old file in case it wasnt;
-                    File.Delete(fullnameRR + ".old");
 
                 File.Move(fullnameTOR, fullnameTOR + ".old"); // rename current executable to old
-                File.Move(fullnameRR, fullnameRR + ".old"); // rename current executable to old
 
                 using (var responseStream = await responseTOR.Content.ReadAsStreamAsync()) {
                     using (var fileStream = File.Create(fullnameTOR)) { // probably want to have proper name here
                         responseStream.CopyTo(fileStream); 
                     }
                 }
+
+                // RevealRolesのダウンロード処理実行
+                var responseRR = await http.GetAsync(new System.Uri(updateurlRR), HttpCompletionOption.ResponseContentRead);
+                if (responseRR.StatusCode != HttpStatusCode.OK || responseRR.Content == null) {
+                    System.Console.WriteLine("Server returned no data: " + responseRR.StatusCode.ToString());
+                    return false;
+                }
+                if (File.Exists(fullnameRR + ".old")) // Clear old file in case it wasnt;
+                    File.Delete(fullnameRR + ".old");
+
+                File.Move(fullnameRR, fullnameRR + ".old"); // rename current executable to old
                 using (var responseStream = await responseRR.Content.ReadAsStreamAsync()) {
                     using (var fileStream = File.Create(fullnameRR)) { // probably want to have proper name here
                         responseStream.CopyTo(fileStream); 
                     }
                 }
+
                 showPopup("The Other Roles\nupdated successfully\nPlease restart the game.");
                 return true;
             } catch (System.Exception ex) {
