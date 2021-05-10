@@ -148,6 +148,7 @@ namespace TheOtherRoles
             public static float cooldown = 30f;
             public static bool canKillNeutrals = false;
             public static bool spyCanDieToSheriff = false;
+            public static bool madmateCanDieToSheriff = false;
 
             public static PlayerControl currentTarget;
 
@@ -157,6 +158,7 @@ namespace TheOtherRoles
                 cooldown = CustomOptionHolder.sheriffCooldown.getFloat();
                 canKillNeutrals = CustomOptionHolder.sheriffCanKillNeutrals.getBool();
                 spyCanDieToSheriff = CustomOptionHolder.spyCanDieToSheriff.getBool();
+                madmateCanDieToSheriff = CustomOptionHolder.madmateCanDieToSheriff.getBool();
             }
         }
 

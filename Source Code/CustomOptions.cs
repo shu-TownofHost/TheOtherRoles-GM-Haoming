@@ -52,6 +52,7 @@ namespace TheOtherRoles {
         public static CustomOption jesterCanCallEmergency;
 
         public static CustomOption madmateSpawnRate;
+        public static CustomOption madmateCanDieToSheriff;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -208,7 +209,8 @@ namespace TheOtherRoles {
             jesterSpawnRate = CustomOption.Create(60, cs(Jester.color, "Jester"), rates, null, true);
             jesterCanCallEmergency = CustomOption.Create(61, "Jester can call emergency meeting", true, jesterSpawnRate);
 
-            madmateSpawnRate = CustomOption.Create(60, cs(Madmate.color, "Madmate"), rates, null, true);
+            madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "Madmate"), rates, null, true);
+            madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 30f, 5f, 60f, 2.5f, arsonistSpawnRate);
