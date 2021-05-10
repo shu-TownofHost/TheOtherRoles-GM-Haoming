@@ -131,12 +131,12 @@ namespace TheOtherRoles {
                         if (browser_download_url != null && current["content_type"] != null) {
                             if (current["content_type"].ToString().Equals("application/x-msdownload") &&
                                 browser_download_url.EndsWith(".dll")) {
-                                TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
+                                // TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
                                 if(rgxTOR.IsMatch(browser_download_url)){
-                                    TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
+                                    // TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
                                     updateurlTOR = browser_download_url;
                                 }else if(rgxRR.IsMatch(browser_download_url)){
-                                    TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
+                                    // TheOtherRolesPlugin.Instance.Log.LogError(browser_download_url);
                                     updateurlRR = browser_download_url;
                                 }
                                 if(updateurlTOR != null && updateurlRR != null){
@@ -159,10 +159,32 @@ namespace TheOtherRoles {
                 string codeBase = Assembly.GetExecutingAssembly().CodeBase;
                 System.UriBuilder uri = new System.UriBuilder(codeBase);
                 string fullnameTOR = System.Uri.UnescapeDataString(uri.Path);
-                string fullnameRR = fullnameTOR.Replace("TheOtherRolese", "RevealRoles");
+                string fullnameRR = new string(fullnameTOR);
+                fullnameRR = fullnameRR.Replace("TheOtherRoles", "RevealRoles");
+                // TheOtherRolesPlugin.Instance.Log.LogError(fullnameTOR);
+                // TheOtherRolesPlugin.Instance.Log.LogError(fullnameRR);
+                
 
                 // 共通で仕様するhttpclient
                 HttpClient http = new HttpClient();
+
+
+                // RevealRolesのダウンロード処理実行
+                var responseRR = await http.GetAsync(new System.Uri(updateurlRR), HttpCompletionOption.ResponseContentRead);
+                if (responseRR.StatusCode != HttpStatusCode.OK || responseRR.Content == null) {
+                    System.Console.WriteLine("Server returned no data: " + responseRR.StatusCode.ToString());
+                    return false;
+                }
+                if (File.Exists(fullnameRR + ".old")) // Clear old file in case it wasnt;
+                    File.Delete(fullnameRR + ".old");
+
+                File.Move(fullnameRR, fullnameRR + ".old"); // rename current executable to old
+                using (var responseStream = await responseRR.Content.ReadAsStreamAsync()) {
+                    using (var fileStream = File.Create(fullnameRR)) { // probably want to have proper name here
+                        responseStream.CopyTo(fileStream); 
+                    }
+                }
+                // TheOtherRolesPlugin.Instance.Log.LogError("RevealRolesの更新成功");
 
                 // TheOtherRolesのダウンロード処理実行
                 http.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
@@ -182,22 +204,7 @@ namespace TheOtherRoles {
                         responseStream.CopyTo(fileStream); 
                     }
                 }
-
-                // RevealRolesのダウンロード処理実行
-                var responseRR = await http.GetAsync(new System.Uri(updateurlRR), HttpCompletionOption.ResponseContentRead);
-                if (responseRR.StatusCode != HttpStatusCode.OK || responseRR.Content == null) {
-                    System.Console.WriteLine("Server returned no data: " + responseRR.StatusCode.ToString());
-                    return false;
-                }
-                if (File.Exists(fullnameRR + ".old")) // Clear old file in case it wasnt;
-                    File.Delete(fullnameRR + ".old");
-
-                File.Move(fullnameRR, fullnameRR + ".old"); // rename current executable to old
-                using (var responseStream = await responseRR.Content.ReadAsStreamAsync()) {
-                    using (var fileStream = File.Create(fullnameRR)) { // probably want to have proper name here
-                        responseStream.CopyTo(fileStream); 
-                    }
-                }
+                // TheOtherRolesPlugin.Instance.Log.LogError("TheOtherRolesの更新成功");
 
                 showPopup("The Other Roles\nupdated successfully\nPlease restart the game.");
                 return true;
