@@ -23,6 +23,12 @@ namespace TheOtherRoles
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
             List<RoleInfo> infos = new List<RoleInfo>();
 
+            if (Madmate.madmate != null && p == Madmate.madmate) {
+                infos.Add(new RoleInfo("Madmate",
+                Madmate.color,
+                "Help Impostors",
+                "Kill all Crewmates"));
+            }
             if (Jester.jester != null && p == Jester.jester) {
                 infos.Add(new RoleInfo("Jester",
                 Jester.color,

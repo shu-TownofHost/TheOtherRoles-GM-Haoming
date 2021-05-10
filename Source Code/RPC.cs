@@ -43,7 +43,8 @@ namespace TheOtherRoles
         Cleaner,
         Warlock,
         SecurityGuard,
-        Arsonist
+        Arsonist,
+        Madmate
     }
 
     enum CustomRPC
@@ -127,6 +128,9 @@ namespace TheOtherRoles
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == playerId) {
                     switch((RoleId)roleId) {
+                    case RoleId.Madmate:
+                        Madmate.madmate = player;
+                        break;
                     case RoleId.Jester:
                         Jester.jester = player;
                         break;
@@ -350,7 +354,7 @@ namespace TheOtherRoles
             Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist) {
+            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate) {
                 oldShifter.Exiled();
                 return;
             }
@@ -365,6 +369,8 @@ namespace TheOtherRoles
             // Shift role
             if (Jester.jester != null && Jester.jester == player) {
                 Jester.jester = oldShifter;
+            }else if (Madmate.madmate != null && Madmate.madmate == player) {
+                Madmate.madmate = oldShifter;
             } else if (Mayor.mayor != null && Mayor.mayor == player) {
                 Mayor.mayor = oldShifter;
             } else if (Engineer.engineer != null && Engineer.engineer == player) {

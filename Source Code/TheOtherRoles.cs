@@ -50,6 +50,16 @@ namespace TheOtherRoles
             Warlock.clearAndReload();
             SecurityGuard.clearAndReload();
             Arsonist.clearAndReload();
+            Madmate.clearAndReload();
+        }
+
+        public static class Madmate {
+            public static PlayerControl madmate;
+            public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);
+
+            public static void clearAndReload() {
+                madmate = null;
+            }
         }
 
         public static class Jester {
