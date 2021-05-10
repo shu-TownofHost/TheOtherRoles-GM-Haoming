@@ -65,7 +65,8 @@ namespace TheOtherRoles {
     public class ModUpdater { 
         public static bool running = false;
         public static bool hasUpdate = false;
-        public static string updateurl = null;
+        public static string updateurlTOR = null;
+        public static string updateurlRR = null;
         private static Task updateTask = null;
         public static GenericPopup InfoPopup;
 
@@ -78,7 +79,7 @@ namespace TheOtherRoles {
 
         public static void ExecuteUpdate() {
             if (updateTask == null) {
-                if (updateurl != null) {
+                if (updateurlTOR != null && updateurlRR != null) {
                     updateTask = downloadUpdate();
                 } else {
                     showPopup("This update has to be done manually");
@@ -101,7 +102,7 @@ namespace TheOtherRoles {
             try {
                 HttpClient http = new HttpClient();
                 http.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
-                var response = await http.GetAsync(new System.Uri("https://api.github.com/repos/Eisbison/TheOtherRoles/releases/latest"), HttpCompletionOption.ResponseContentRead);
+                var response = await http.GetAsync(new System.Uri("https://api.github.com/repos/haoming37/Doc_TheOtherRoles/releases/latest"), HttpCompletionOption.ResponseContentRead);
                 // var response = await http.GetAsync(new System.Uri("https://api.github.com/repos/EoF-1141/TheOtherRoles/releases/latest"), HttpCompletionOption.ResponseContentRead);
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null) {
                     System.Console.WriteLine("Server returned no data: " + response.StatusCode.ToString());
@@ -122,14 +123,19 @@ namespace TheOtherRoles {
                     JToken assets = data["assets"];
                     if (!assets.HasValues)
                         return false;
-
                     for (JToken current = assets.First; current != null; current = current.Next) {
                         string browser_download_url = current["browser_download_url"]?.ToString();
                         if (browser_download_url != null && current["content_type"] != null) {
                             if (current["content_type"].ToString().Equals("application/x-msdownload") &&
                                 browser_download_url.EndsWith(".dll")) {
-                                updateurl = browser_download_url;
-                                return true;
+                                if(browser_download_url.StartsWith("TheOtherRoles")){
+                                    updateurlTOR = browser_download_url;
+                                }else if(browser_download_url.StartsWith("RevealRoles")){
+                                    updateurlRR = browser_download_url;
+                                }
+                                if(updateurlTOR != null && updateurlRR != null){
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -145,21 +151,38 @@ namespace TheOtherRoles {
             try {
                 HttpClient http = new HttpClient();
                 http.DefaultRequestHeaders.Add("User-Agent", "TheOtherRoles Updater");
-                var response = await http.GetAsync(new System.Uri(updateurl), HttpCompletionOption.ResponseContentRead);
-                if (response.StatusCode != HttpStatusCode.OK || response.Content == null) {
-                    System.Console.WriteLine("Server returned no data: " + response.StatusCode.ToString());
+                var responseTOR = await http.GetAsync(new System.Uri(updateurlTOR), HttpCompletionOption.ResponseContentRead);
+                if (responseTOR.StatusCode != HttpStatusCode.OK || responseTOR.Content == null) {
+                    System.Console.WriteLine("Server returned no data: " + responseTOR.StatusCode.ToString());
                     return false;
                 }
+
+                var responseRR = await http.GetAsync(new System.Uri(updateurlRR), HttpCompletionOption.ResponseContentRead);
+                if (responseRR.StatusCode != HttpStatusCode.OK || responseRR.Content == null) {
+                    System.Console.WriteLine("Server returned no data: " + responseRR.StatusCode.ToString());
+                    return false;
+                }
+
                 string codeBase = Assembly.GetExecutingAssembly().CodeBase;
                 System.UriBuilder uri = new System.UriBuilder(codeBase);
-                string fullname = System.Uri.UnescapeDataString(uri.Path);
-                if (File.Exists(fullname + ".old")) // Clear old file in case it wasnt;
-                    File.Delete(fullname + ".old");
+                string fullnameTOR = System.Uri.UnescapeDataString(uri.Path);
+                string fullnameRR = fullnameTOR.Replace("TheOtherRolese", "RevealRoles");
 
-                File.Move(fullname, fullname + ".old"); // rename current executable to old
+                if (File.Exists(fullnameTOR + ".old")) // Clear old file in case it wasnt;
+                    File.Delete(fullnameTOR + ".old");
+                if (File.Exists(fullnameRR + ".old")) // Clear old file in case it wasnt;
+                    File.Delete(fullnameRR + ".old");
 
-                using (var responseStream = await response.Content.ReadAsStreamAsync()) {
-                    using (var fileStream = File.Create(fullname)) { // probably want to have proper name here
+                File.Move(fullnameTOR, fullnameTOR + ".old"); // rename current executable to old
+                File.Move(fullnameRR, fullnameRR + ".old"); // rename current executable to old
+
+                using (var responseStream = await responseTOR.Content.ReadAsStreamAsync()) {
+                    using (var fileStream = File.Create(fullnameTOR)) { // probably want to have proper name here
+                        responseStream.CopyTo(fileStream); 
+                    }
+                }
+                using (var responseStream = await responseRR.Content.ReadAsStreamAsync()) {
+                    using (var fileStream = File.Create(fullnameRR)) { // probably want to have proper name here
                         responseStream.CopyTo(fileStream); 
                     }
                 }
