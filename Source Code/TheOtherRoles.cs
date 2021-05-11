@@ -56,20 +56,30 @@ namespace TheOtherRoles
 
         public static class Misimo {
             public static PlayerControl misimo;
-            public static Color color = new Color(255f / 255f, 165f / 255f, 00f / 255f, 1);
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
             public static float cooldown = 15f;
             public static float duration = 30f;
+            public static bool isCountdown = false;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
-                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoButton.png", 115f);
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoSelfDestructButton.png", 115f);
                 return buttonSprite;
             }
 
             public static void clearAndReload() {
-                cooldown = CustomOptionHolder.misimoCooldown.getFloat()
+                cooldown = CustomOptionHolder.misimoCooldown.getFloat();
                 duration = CustomOptionHolder.misimoDuration.getFloat();
+                isCountdown = false;
                 misimo = null;
+            }
+
+            public static void selfDestruct(){
+                byte targetId = 0;
+                targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SheriffKill, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                RPCProcedure.misimoKill(targetId);
             }
         }
 

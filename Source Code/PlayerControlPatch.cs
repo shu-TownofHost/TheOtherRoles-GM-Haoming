@@ -643,6 +643,13 @@ namespace TheOtherRoles {
                 var multiplier = Child.isGrownUp() ? 0.66f : 2f;
                 Child.child.SetKillTimer(PlayerControl.GameOptions.KillCooldown * multiplier);
             }
+
+            // Misimo専用のキルタイマーをセットする
+            if(__instance == Misimo.misimo){
+                Misimo.isCountdown = true;
+                Misimo.misimo.SetKillTimer(CustomOptionHolder.misimoCooldown.getFloat());
+                HudManagerStartPatch.misimoSelfDestructButton.Timer = CustomOptionHolder.misimoDuration.getFloat();
+            }
         }
     }
 

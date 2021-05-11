@@ -9,6 +9,7 @@ namespace TheOtherRoles
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
     static class HudManagerStartPatch
     {
+        public static CustomButton misimoSelfDestructButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -35,6 +36,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text securityGuardButtonScrewsText;
 
         public static void setCustomButtonCooldowns() {
+            misimoSelfDestructButton.MaxTimer = Misimo.duration;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -197,6 +199,21 @@ namespace TheOtherRoles
                 __instance,
                 KeyCode.Q
             );
+
+            misimoSelfDestructButton = new CustomButton(
+                () => {Misimo.selfDestruct();},
+                () => {/*ボタンが有効になる条件*/ return Misimo.misimo != null && Misimo.isCountdown && Misimo.misimo == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => {/*ボタンが使える条件*/ return false; },
+                () => {/*ミーティング終了時*/ misimoSelfDestructButton.Timer = misimoSelfDestructButton.MaxTimer;},
+                Misimo.getButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0),
+                __instance,
+                KeyCode.Q,
+                true,
+                1.0f, /* Effect Duration */
+                () => {Misimo.selfDestruct();}
+            );
+            misimoSelfDestructButton.isEffectActive = true;
 
             // Time Master Rewind Time
             timeMasterShieldButton = new CustomButton(

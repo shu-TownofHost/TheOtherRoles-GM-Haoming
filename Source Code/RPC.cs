@@ -44,7 +44,8 @@ namespace TheOtherRoles
         Warlock,
         SecurityGuard,
         Arsonist,
-        Madmate
+        Madmate,
+        Misimo
     }
 
     enum CustomRPC
@@ -91,7 +92,8 @@ namespace TheOtherRoles
         WarlockCurseKill,
         PlaceCamera,
         SealVent,
-        ArsonistWin
+        ArsonistWin,
+        MisimoKill
     }
 
     public static class RPCProcedure {
@@ -128,6 +130,9 @@ namespace TheOtherRoles
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == playerId) {
                     switch((RoleId)roleId) {
+                    case RoleId.Misimo:
+                        Misimo.misimo = player;
+                        break;
                     case RoleId.Madmate:
                         Madmate.madmate = player;
                         break;
@@ -277,6 +282,17 @@ namespace TheOtherRoles
             for (int i = 0; i < array.Length; i++) {
                 if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == playerId)
                     UnityEngine.Object.Destroy(array[i].gameObject);
+            }
+        }
+
+        public static void misimoKill(byte targetId) {
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == targetId)
+                {
+                    Misimo.misimo.MurderPlayer(player);
+                    return;
+                }
             }
         }
 
@@ -734,6 +750,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.SheriffKill:
                     RPCProcedure.sheriffKill(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.MisimoKill:
+                    RPCProcedure.misimoKill(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.TimeMasterRewindTime:
                     RPCProcedure.timeMasterRewindTime();
