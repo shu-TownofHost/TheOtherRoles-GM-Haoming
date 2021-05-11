@@ -124,8 +124,8 @@ namespace TheOtherRoles {
                     JToken assets = data["assets"];
                     if (!assets.HasValues)
                         return false;
-                    Regex rgxTOR = new Regex("^https://.*/download/[^/]*/TheOtherRoles-.*dll$");
-                    Regex rgxRR = new Regex("^https://.*/download/[^/]*/RevealRoles-.*dll$");
+                    Regex rgxTOR = new Regex("^https://.*/download/[^/]*/TheOtherRoles.*dll$");
+                    Regex rgxRR = new Regex("^https://.*/download/[^/]*/RevealRoles.*dll$");
                     for (JToken current = assets.First; current != null; current = current.Next) {
                         string browser_download_url = current["browser_download_url"]?.ToString();
                         if (browser_download_url != null && current["content_type"] != null) {
