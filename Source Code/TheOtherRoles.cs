@@ -51,6 +51,26 @@ namespace TheOtherRoles
             SecurityGuard.clearAndReload();
             Arsonist.clearAndReload();
             Madmate.clearAndReload();
+            Misimo.clearAndReload();
+        }
+
+        public static class Misimo {
+            public static PlayerControl misimo;
+            public static Color color = new Color(255f / 255f, 165f / 255f, 00f / 255f, 1);
+            private static Sprite buttonSprite;
+            public static float cooldown = 15f;
+            public static float duration = 30f;
+            public static Sprite getButtonSprite() {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoButton.png", 115f);
+                return buttonSprite;
+            }
+
+            public static void clearAndReload() {
+                cooldown = CustomOptionHolder.misimoCooldown.getFloat()
+                duration = CustomOptionHolder.misimoDuration.getFloat();
+                misimo = null;
+            }
         }
 
         public static class Madmate {

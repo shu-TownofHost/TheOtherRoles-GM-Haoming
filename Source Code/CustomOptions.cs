@@ -53,6 +53,9 @@ namespace TheOtherRoles {
 
         public static CustomOption madmateSpawnRate;
         public static CustomOption madmateCanDieToSheriff;
+        public static CustomOption MisimoSpawnRate;
+        public static CustomOption MisimoCooldown;
+        public static CustomOption MisimoDuration;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -211,6 +214,10 @@ namespace TheOtherRoles {
 
             madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "Madmate"), rates, null, true);
             madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
+
+            misimoSpawnRate = CustomOption.Create(295, cs(Misimo.color, "Misimo"), rates, null, true);
+            misimoCooldown = CustomOption.Create(296, "Misimo Kill Cooldown", 30f, 5f, 60f, 2.5f, misimoSpawnRate);
+            misimoDuration = CustomOption.Create(297, "Misimo Self-Destruct Duration", 3f, 1f, 10f, 1f, misimoSpawnRate);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 30f, 5f, 60f, 2.5f, arsonistSpawnRate);
