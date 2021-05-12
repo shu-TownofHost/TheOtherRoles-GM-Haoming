@@ -42,7 +42,7 @@ namespace TheOtherRoles
         static void Prefix(IntroCutscene._CoBegin_d__11 __instance)
         {
             // Intro solo teams
-            if (PlayerControl.LocalPlayer == Jester.jester || PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Arsonist.arsonist) {
+            if (PlayerControl.LocalPlayer == Jester.jester || PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Arsonist.arsonist || PlayerControl.LocalPlayer == Madmate.madmate) {
                 var soloTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
                 soloTeam.Add(PlayerControl.LocalPlayer);
                 __instance.yourTeam = soloTeam;
