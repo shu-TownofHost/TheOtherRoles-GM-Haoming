@@ -457,6 +457,12 @@ namespace TheOtherRoles
             {
                 // Reset custom button timers where necessary
                 CustomButton.MeetingEndedUpdate();
+
+                // Misimo kill cooldown
+                if (Misimo.misimo != null && PlayerControl.LocalPlayer == Misimo.misimo){
+                    Misimo.misimo.SetKillTimer(CustomOptionHolder.misimoCooldown.getFloat());
+                }
+
                 // Child set adapted cooldown
                 if (Child.child != null && PlayerControl.LocalPlayer == Child.child && Child.child.Data.IsImpostor) {
                     var multiplier = Child.isGrownUp() ? 0.66f : 2f;
