@@ -75,9 +75,8 @@ namespace TheOtherRoles
             }
 
             public static void selfDestruct(){
-                byte targetId = 0;
-                targetId = PlayerControl.LocalPlayer.PlayerId;
-                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SheriffKill, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                byte targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MisimoKill, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
                 AmongUsClient.Instance.FinishRpcImmediately(killWriter);
                 RPCProcedure.misimoKill(targetId);
             }
