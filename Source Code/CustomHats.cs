@@ -371,18 +371,37 @@ namespace TheOtherRoles {
         }
 
         public static async Task<HttpStatusCode> FetchHats() {
+            string json = "";
+            JToken jobj = null;
             HttpClient http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue{ NoCache = true };
-			var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
             try {
-                if (response.StatusCode != HttpStatusCode.OK) return response.StatusCode;
+                var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
+                if (response.StatusCode != HttpStatusCode.OK) throw new System.Exception("HttpStatusCode Is Not OK");
                 if (response.Content == null) {
                     System.Console.WriteLine("Server returned no data: " + response.StatusCode.ToString());
-                    return HttpStatusCode.ExpectationFailed;
+                    throw new System.Exception("Server Returned No Data");
                 }
-                string json = await response.Content.ReadAsStringAsync();
-                JToken jobj = JObject.Parse(json)["hats"];
-                if (!jobj.HasValues) return HttpStatusCode.ExpectationFailed;
+                json = await response.Content.ReadAsStringAsync();
+                jobj = JObject.Parse(json)["hats"];
+                if (!jobj.HasValues) throw new System.Exception("Server Returned No data");
+            } 
+            catch (System.Exception e){
+                System.Console.WriteLine(e);
+                string fp = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\CustomHats.json";
+                if(File.Exists(fp)){
+                    using (var reader = new StreamReader(fp))
+                    {
+                        json = reader.ReadToEnd();
+                        jobj = JObject.Parse(json)["hats"];
+                        if(!jobj.HasValues) return HttpStatusCode.ExpectationFailed;
+                    }
+                }
+                return HttpStatusCode.NoContent;
+            }
+
+            try{
+
 
                 List<CustomHatOnline> hatdatas = new List<CustomHatOnline>();
 
@@ -423,7 +442,6 @@ namespace TheOtherRoles {
                 }
                 
                 foreach(var file in markedfordownload) {
-                    
                     var hatFileResponse = await http.GetAsync($"{REPO}/hats/{file}", HttpCompletionOption.ResponseContentRead);
                     if (hatFileResponse.StatusCode != HttpStatusCode.OK) continue;
                     using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync()) {
