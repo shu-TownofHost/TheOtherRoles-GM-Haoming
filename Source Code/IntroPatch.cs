@@ -11,7 +11,7 @@ namespace TheOtherRoles
     class IntroCutsceneOnDestroyPatch {
         public static void Prefix(IntroCutscene __instance) {
             // Arsonist generate player icons
-            if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer == Arsonist.arsonist && HudManager.Instance != null) {
+            if (PlayerControl.LocalPlayer != null && (PlayerControl.LocalPlayer == Arsonist.arsonist || PlayerControl.LocalPlayer == Ballad.ballad )&& HudManager.Instance != null) {
                 int playerCounter = 0;
                 Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
                 bottomLeft += new Vector3(-0.25f, -0.25f, 0);
@@ -29,6 +29,7 @@ namespace TheOtherRoles
                         poolablePlayer.SetFlipX(true);
                         poolablePlayer.setSemiTransparent(true);
                         Arsonist.dousedIcons[player.PlayerId] = poolablePlayer;
+                        Ballad.sealedIcons[player.PlayerId] = poolablePlayer;
                         playerCounter++;
                     }
                 }

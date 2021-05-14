@@ -66,6 +66,7 @@ namespace TheOtherRoles
             public static int expirationCount;
             public static bool isSet;
             public static float cooldown = 30f;
+            public static Dictionary<byte, PoolablePlayer> sealedIcons = new Dictionary<byte, PoolablePlayer>();
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
                 buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BalladButton.png", 115f);
@@ -78,6 +79,11 @@ namespace TheOtherRoles
                 isSet = false;
                 meetingCount = 0;
                 expirationCount = 0;
+                foreach (PoolablePlayer p in sealedIcons.Values) {
+                    if (p != null && p.gameObject != null) { 
+                        UnityEngine.Object.Destroy(p.gameObject);
+                    }
+                }
             }
         }
         public static class Misimo {
