@@ -52,8 +52,28 @@ namespace TheOtherRoles
             Arsonist.clearAndReload();
             Madmate.clearAndReload();
             Misimo.clearAndReload();
+            Ballad.clearAndReload();
         }
 
+        public static class Ballad {
+            public static PlayerControl ballad;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            private static Sprite buttonSprite;
+
+            public static PlayerControl target;
+            public static PlayerControl currentTarget;
+            public static float cooldown = 30f;
+            public static Sprite getButtonSprite() {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BalladButton.png", 115f);
+                return buttonSprite;
+            }
+
+            public static void clearAndReload() {
+                cooldown = CustomOptionHolder.misimoCooldown.getFloat();
+                target = null;
+            }
+        }
         public static class Misimo {
             public static PlayerControl misimo;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);

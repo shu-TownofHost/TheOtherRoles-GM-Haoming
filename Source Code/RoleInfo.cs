@@ -23,6 +23,12 @@ namespace TheOtherRoles
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
             List<RoleInfo> infos = new List<RoleInfo>();
 
+            if (Ballad.ballad != null && p == Ballad.ballad) {
+                infos.Add(new RoleInfo("Ballad",
+                Ballad.color,
+                "Seal votes to not get voted out",
+                "Seal votes to not get voted out"));
+            }
             if (Misimo.misimo != null && p == Misimo.misimo) {
                 infos.Add(new RoleInfo("Misimo",
                 Misimo.color,

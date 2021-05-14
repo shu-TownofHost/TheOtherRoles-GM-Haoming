@@ -56,7 +56,8 @@ namespace TheOtherRoles {
         public static CustomOption misimoSpawnRate;
         public static CustomOption misimoCooldown;
         public static CustomOption misimoDuration;
-
+        public static CustomOption balladSpawnRate;
+        public static CustomOption balladCooldown;
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
         public static CustomOption arsonistDuration;
@@ -205,6 +206,9 @@ namespace TheOtherRoles {
             misimoSpawnRate = CustomOption.Create(295, cs(Misimo.color, "Misimo"), rates, null, true);
             misimoCooldown = CustomOption.Create(296, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
             misimoDuration = CustomOption.Create(297, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
+
+            balladSpawnRate = CustomOption.Create(295, cs(Ballad.color, "Ballad"), rates, null, true);
+            balladCooldown = CustomOption.Create(296, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);

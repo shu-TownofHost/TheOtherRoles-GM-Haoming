@@ -9,6 +9,7 @@ namespace TheOtherRoles
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
     static class HudManagerStartPatch
     {
+        public static CustomButton balladSetTargetButton;
         public static CustomButton misimoSelfDestructButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
@@ -36,6 +37,7 @@ namespace TheOtherRoles
         public static TMPro.TMP_Text securityGuardButtonScrewsText;
 
         public static void setCustomButtonCooldowns() {
+            balladSetTargetButton.MaxTimer = Ballad.cooldown;
             misimoSelfDestructButton.MaxTimer = Misimo.duration;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
@@ -200,11 +202,31 @@ namespace TheOtherRoles
                 KeyCode.Q
             );
 
+            balladSetTargetButton = new CustomButton(
+                () => {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BalladSetTarget, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Ballad.currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.medicSetShielded(Ballad.currentTarget.PlayerId);
+                },
+                () => {/*ボタンが有効になる条件*/ return Ballad.ballad != null && Ballad.target == null && Ballad.ballad == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => {/*ボタンが使える条件*/ return Ballad.ballad != null && Ballad.currentTarget != null && PlayerControl.LocalPlayer.CanMove;},
+                () => {/*ミーティング終了時*/ balladSetTargetButton.Timer = balladSetTargetButton.MaxTimer;},
+                Ballad.getButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0),
+                __instance,
+                KeyCode.F,
+                true,
+                0.0f, /* Effect Duration */
+                () => {}
+            );
+
             misimoSelfDestructButton = new CustomButton(
                 () => {Misimo.selfDestruct();},
                 () => {/*ボタンが有効になる条件*/ return Misimo.misimo != null && Misimo.isCountdown && Misimo.misimo == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => {/*ボタンが使える条件*/ return false; },
-                () => {/*ミーティング終了時*/ misimoSelfDestructButton.Timer = misimoSelfDestructButton.MaxTimer;},
+                () => {/*ミーティング終了時*/ misimoSelfDestructButton.Timer = misimoSelfDestructButton.MaxTimer;
+                },
                 Misimo.getButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0),
                 __instance,

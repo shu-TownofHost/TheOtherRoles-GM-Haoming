@@ -37,6 +37,8 @@ namespace TheOtherRoles
                             // Mayor count vote twice
                             if (Mayor.mayor != null && playerVoteArea.TargetPlayerId == (sbyte)Mayor.mayor.PlayerId)
                                 array2[num2] += 2;
+                            else if(Ballad.target != null && playerVoteArea.TargetPlayerId == (sbyte)Ballad.target.PlayerId)
+                                array2[num2] += 0;
                             else
                                 array2[num2] += 1;
                         }

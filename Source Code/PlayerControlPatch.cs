@@ -117,6 +117,11 @@ namespace TheOtherRoles {
             }
         }
 
+        static void BalladSetTarget() {
+            if (Ballad.ballad == null || Ballad.ballad != PlayerControl.LocalPlayer) return;
+            Ballad.currentTarget = setTarget();
+            setPlayerOutline(Ballad.currentTarget, Ballad.color);
+        }
         static void medicSetTarget() {
             if (Medic.medic == null || Medic.medic != PlayerControl.LocalPlayer) return;
             Medic.currentTarget = setTarget();
@@ -467,6 +472,8 @@ namespace TheOtherRoles {
                 securityGuardSetTarget();
                 // Arsonist
                 arsonistSetTarget();
+                //Ballad
+                BalladSetTarget();
             } 
         }
     }
