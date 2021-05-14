@@ -62,6 +62,9 @@ namespace TheOtherRoles
 
             public static PlayerControl target;
             public static PlayerControl currentTarget;
+            public static int meetingCount;
+            public static int expirationCount;
+            public static bool isSet;
             public static float cooldown = 30f;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
@@ -72,6 +75,9 @@ namespace TheOtherRoles
             public static void clearAndReload() {
                 cooldown = CustomOptionHolder.misimoCooldown.getFloat();
                 target = null;
+                isSet = false;
+                meetingCount = 0;
+                expirationCount = 0;
             }
         }
         public static class Misimo {

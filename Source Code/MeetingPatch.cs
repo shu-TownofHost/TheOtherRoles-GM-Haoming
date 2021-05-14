@@ -35,10 +35,10 @@ namespace TheOtherRoles
                             byte[] array2 = array;
                             int num2 = num;
                             // Mayor count vote twice
-                            if (Mayor.mayor != null && playerVoteArea.TargetPlayerId == (sbyte)Mayor.mayor.PlayerId)
-                                array2[num2] += 2;
-                            else if(Ballad.target != null && playerVoteArea.TargetPlayerId == (sbyte)Ballad.target.PlayerId)
+                            if(Ballad.target != null && playerVoteArea.TargetPlayerId == (sbyte)Ballad.target.PlayerId)
                                 array2[num2] += 0;
+                            else if (Mayor.mayor != null && playerVoteArea.TargetPlayerId == (sbyte)Mayor.mayor.PlayerId)
+                                array2[num2] += 2;
                             else
                                 array2[num2] += 1;
                         }
@@ -167,6 +167,10 @@ namespace TheOtherRoles
 
                         if (!((self & 128) > 0))
                         {
+                            // Balladに選ばれたプレイヤーの投票を表示しない
+                            if (Ballad.target != null && playerVoteArea2.TargetPlayerId == (sbyte)Ballad.target.PlayerId && !CustomOptionHolder.balladShowSealedVote.getBool())
+                                continue;
+
                             GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById((byte)playerVoteArea2.TargetPlayerId);
                             int votedFor = (int)PlayerVoteArea.GetVotedFor(self);
                             if (votedFor == (int)playerVoteArea.TargetPlayerId)
@@ -358,6 +362,9 @@ namespace TheOtherRoles
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CoStartMeeting))]
         class StartMeetingPatch {
             public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) {
+                // Ballad
+                Ballad.meetingCount += 1;
+
                 // Reset vampire bitten
                 Vampire.bitten = null;
                 // Count meetings

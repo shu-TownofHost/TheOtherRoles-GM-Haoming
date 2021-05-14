@@ -207,11 +207,33 @@ namespace TheOtherRoles
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BalladSetTarget, Hazel.SendOption.Reliable, -1);
                     writer.Write(Ballad.currentTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    RPCProcedure.medicSetShielded(Ballad.currentTarget.PlayerId);
+                    RPCProcedure.balladSetTarget(Ballad.currentTarget.PlayerId);
+                    balladSetTargetButton.Timer = balladSetTargetButton.MaxTimer; 
+                    Ballad.isSet = true;
+                    Ballad.expirationCount = Ballad.meetingCount;
+                    // 1ゲーム1人縛りの場合以外はタスク時に1人のみ無効化できる、設定は一定時間で解除される
+                    if(!CustomOptionHolder.balladSetOnce.getBool()){
+                        System.Console.WriteLine("Start Ballad Timer");
+                        HudManager.Instance.StartCoroutine(Effects.Lerp(CustomOptionHolder.balladTimer.getFloat(), new Action<float>((p) => 
+                        {
+                            if(p==1f && Ballad.expirationCount == Ballad.meetingCount){
+                                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BalladSetTarget, Hazel.SendOption.Reliable, -1);
+                                writer.Write(Ballad.ballad.PlayerId);
+                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                RPCProcedure.balladSetTarget(Ballad.ballad.PlayerId);
+                                System.Console.WriteLine("End Ballad Timer");
+                            }
+                        })));
+                    }
                 },
-                () => {/*ボタンが有効になる条件*/ return Ballad.ballad != null && Ballad.target == null && Ballad.ballad == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => {/*ボタンが有効になる条件*/ return Ballad.ballad != null && Ballad.target == null && Ballad.isSet == false && Ballad.ballad == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => {/*ボタンが使える条件*/ return Ballad.ballad != null && Ballad.currentTarget != null && PlayerControl.LocalPlayer.CanMove;},
-                () => {/*ミーティング終了時*/ balladSetTargetButton.Timer = balladSetTargetButton.MaxTimer;},
+                () => {/*ミーティング終了時*/ 
+                          Ballad.isSet = false;
+                          balladSetTargetButton.Timer = balladSetTargetButton.MaxTimer;
+                          if(!CustomOptionHolder.balladSetOnce.getBool())
+                              Ballad.target = null;
+                      },
                 Ballad.getButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0),
                 __instance,

@@ -302,6 +302,10 @@ namespace TheOtherRoles
         }
 
         public static void balladSetTarget(byte targetId){
+            if (Ballad.ballad.PlayerId == targetId){
+                Ballad.target = null;
+                return;
+            }
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
                 if (player.PlayerId == targetId)
