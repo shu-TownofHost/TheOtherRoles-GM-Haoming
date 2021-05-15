@@ -215,11 +215,11 @@ namespace TheOtherRoles {
             misimoCooldown = CustomOption.Create(296, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
             misimoDuration = CustomOption.Create(297, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
 
-            balladSpawnRate = CustomOption.Create(298, cs(Ballad.color, "Ballad"), rates, null, true);
-            balladCooldown = CustomOption.Create(299, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
-            balladTimer = CustomOption.Create(299, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
-            balladSetOnce = CustomOption.Create(300, "Ballad Can Only Set Target Once", true, balladSpawnRate);
-            balladShowSealedVote = CustomOption.Create(301, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
+            balladSpawnRate = CustomOption.Create(311, cs(Ballad.color, "Ballad"), rates, null, true);
+            balladCooldown = CustomOption.Create(312, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
+            balladTimer = CustomOption.Create(313, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
+            balladSetOnce = CustomOption.Create(314, "Ballad Can Only Set Target Once", true, balladSpawnRate);
+            balladShowSealedVote = CustomOption.Create(315, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);

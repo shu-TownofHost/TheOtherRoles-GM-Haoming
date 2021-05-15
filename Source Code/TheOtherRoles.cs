@@ -85,6 +85,24 @@ namespace TheOtherRoles
                     }
                 }
             }
+            public static void setTarget(){
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BalladSetTarget, Hazel.SendOption.Reliable, -1);
+                writer.Write(Ballad.currentTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.balladSetTarget(Ballad.currentTarget.PlayerId);
+                Ballad.isSet = true;
+                Ballad.expirationCount = Ballad.meetingCount;
+                if(Ballad.target != null)
+                    Ballad.sealedIcons[Ballad.target.PlayerId].setSemiTransparent(false);
+            }
+            public static void unsetTarget(){
+                if(Ballad.target != null)
+                    Ballad.sealedIcons[Ballad.target.PlayerId].setSemiTransparent(true);
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BalladSetTarget, Hazel.SendOption.Reliable, -1);
+                writer.Write(Ballad.ballad.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.balladSetTarget(Ballad.ballad.PlayerId);
+            }
         }
         public static class Misimo {
             public static PlayerControl misimo;
