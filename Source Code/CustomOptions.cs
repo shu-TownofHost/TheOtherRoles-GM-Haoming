@@ -57,6 +57,7 @@ namespace TheOtherRoles {
         public static CustomOption misimoSpawnRate;
         public static CustomOption misimoCooldown;
         public static CustomOption misimoDuration;
+        public static CustomOption misimoInvisibleOn;
         public static CustomOption balladSpawnRate;
         public static CustomOption balladCooldown;
         public static CustomOption balladSetOnce;
@@ -214,6 +215,7 @@ namespace TheOtherRoles {
             misimoSpawnRate = CustomOption.Create(295, cs(Misimo.color, "Misimo"), rates, null, true);
             misimoCooldown = CustomOption.Create(296, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
             misimoDuration = CustomOption.Create(297, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
+            misimoInvisibleOn = CustomOption.Create(298, "Toggle Invisible On/Off", true, misimoSpawnRate);
 
             balladSpawnRate = CustomOption.Create(311, cs(Ballad.color, "Ballad"), rates, null, true);
             balladCooldown = CustomOption.Create(312, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);

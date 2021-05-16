@@ -11,6 +11,7 @@ namespace TheOtherRoles
     {
         public static CustomButton balladSetTargetButton;
         public static CustomButton misimoSelfDestructButton;
+        public static CustomButton misimoInvisibleButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -39,6 +40,7 @@ namespace TheOtherRoles
         public static void setCustomButtonCooldowns() {
             balladSetTargetButton.MaxTimer = Ballad.cooldown;
             misimoSelfDestructButton.MaxTimer = Misimo.duration;
+            misimoInvisibleButton.MaxTimer = Misimo.invisibleCooldown;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -245,12 +247,26 @@ namespace TheOtherRoles
                 Misimo.getButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0),
                 __instance,
-                KeyCode.Q,
+                KeyCode.Z,
                 true,
                 1.0f, /* Effect Duration */
                 () => {Misimo.selfDestruct();}
             );
             misimoSelfDestructButton.isEffectActive = true;
+
+            misimoInvisibleButton = new CustomButton(
+                () => {Misimo.invisible();},
+                () => {/*ボタンが有効になる条件*/ return Misimo.misimo != null && Misimo.misimo == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead && CustomOptionHolder.misimoInvisibleOn.getBool(); },
+                () => {/*ボタンが使える条件*/ return Misimo.misimo != null &&  PlayerControl.LocalPlayer.CanMove;  },
+                () => {/*ミーティング終了時*/ misimoInvisibleButton.Timer = misimoInvisibleButton.MaxTimer; Misimo.visibility = true;},
+                Misimo.getButtonSpriteInvisible(),
+                new Vector3(-2.6f, 0.0f, 0),
+                __instance,
+                KeyCode.F,
+                true,
+                20.0f, /* Effect Duration */
+                () => {Misimo.visible();}
+            );
 
             // Time Master Rewind Time
             timeMasterShieldButton = new CustomButton(

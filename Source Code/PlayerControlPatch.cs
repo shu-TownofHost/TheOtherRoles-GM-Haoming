@@ -431,6 +431,11 @@ namespace TheOtherRoles {
         public static void Postfix(PlayerControl __instance) {
             if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
 
+            // Misimoは消えることができる
+            if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
+                Misimo.misimo.Visible = Misimo.visibility;
+            }
+
             // Child and Morphling shrink
             playerSizeUpdate(__instance);
             

@@ -95,6 +95,8 @@ namespace TheOtherRoles
         SealVent,
         ArsonistWin,
         MisimoKill,
+        MisimoVisible,
+        MisimoInvisible,
         BalladSetTarget
     }
 
@@ -296,6 +298,26 @@ namespace TheOtherRoles
                 if (player.PlayerId == targetId)
                 {
                     Misimo.misimo.MurderPlayer(player);
+                    return;
+                }
+            }
+        }
+        public static void misimoVisible(byte targetId) {
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == targetId)
+                {
+                    Misimo.visibility = true;
+                    return;
+                }
+            }
+        }
+        public static void misimoInvisible(byte targetId) {
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == targetId)
+                {
+                    Misimo.visibility = false;
                     return;
                 }
             }
@@ -773,6 +795,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.MisimoKill:
                     RPCProcedure.misimoKill(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.MisimoVisible:
+                    RPCProcedure.misimoVisible(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.MisimoInvisible:
+                    RPCProcedure.misimoInvisible(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.BalladSetTarget:
                     RPCProcedure.balladSetTarget(reader.ReadByte());

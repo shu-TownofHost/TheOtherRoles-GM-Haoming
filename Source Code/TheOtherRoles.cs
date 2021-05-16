@@ -108,13 +108,21 @@ namespace TheOtherRoles
             public static PlayerControl misimo;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
+            private static Sprite buttonSpriteInvisible;
             public static float cooldown = 15f;
             public static float duration = 30f;
+            public static bool visibility = false;
             public static bool isCountdown = false;
+            public static float invisibleCooldown = 20f;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
                 buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoSelfDestructButton.png", 115f);
                 return buttonSprite;
+            }
+            public static Sprite getButtonSpriteInvisible() {
+                if (buttonSpriteInvisible) return buttonSpriteInvisible;
+                buttonSpriteInvisible = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoInvisibleButton.png", 115f);
+                return buttonSpriteInvisible;
             }
 
             public static void clearAndReload() {
@@ -129,6 +137,16 @@ namespace TheOtherRoles
                 MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MisimoKill, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
                 AmongUsClient.Instance.FinishRpcImmediately(killWriter);
                 RPCProcedure.misimoKill(targetId);
+            }
+            public static void invisible(){
+                byte targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MisimoInvisible, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            public static void visible(){
+                byte targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MisimoVisible, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
 
