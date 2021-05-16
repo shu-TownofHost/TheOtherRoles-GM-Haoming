@@ -111,7 +111,7 @@ namespace TheOtherRoles
             private static Sprite buttonSpriteInvisible;
             public static float cooldown = 15f;
             public static float duration = 30f;
-            public static bool visibility = false;
+            public static bool visibility = true;
             public static bool isCountdown = false;
             public static float invisibleCooldown = 20f;
             public static Sprite getButtonSprite() {
