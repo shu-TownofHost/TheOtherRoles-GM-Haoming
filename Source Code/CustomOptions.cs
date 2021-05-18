@@ -63,6 +63,9 @@ namespace TheOtherRoles {
         public static CustomOption balladSetOnce;
         public static CustomOption balladTimer;
         public static CustomOption balladShowSealedVote;
+        public static CustomOption predatorSpawnRate;
+        public static CustomOption predatorInvisibleCooldown;
+        public static CustomOption predatorInvisibleDuration;
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
         public static CustomOption arsonistDuration;
@@ -222,6 +225,10 @@ namespace TheOtherRoles {
             balladTimer = CustomOption.Create(313, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
             balladSetOnce = CustomOption.Create(314, "Ballad Can Only Set Target Once", true, balladSpawnRate);
             balladShowSealedVote = CustomOption.Create(315, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
+
+            predatorSpawnRate = CustomOption.Create(320, cs(Predator.color, "Predator"), rates, null, true);
+            predatorInvisibleCooldown = CustomOption.Create(321, "Predator Invisible Cooldown", 20f, 5f, 60f, 2.5f, predatorSpawnRate);
+            predatorInvisibleDuration = CustomOption.Create(322, "Predator Invisible Duration", 10f, 1f, 60f, 1f, predatorSpawnRate);
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);

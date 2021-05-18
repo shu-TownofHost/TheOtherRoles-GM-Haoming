@@ -46,7 +46,8 @@ namespace TheOtherRoles
         Arsonist,
         Madmate,
         Misimo,
-        Ballad
+        Ballad,
+        Predator
     }
 
     enum CustomRPC
@@ -97,7 +98,9 @@ namespace TheOtherRoles
         MisimoKill,
         MisimoVisible,
         MisimoInvisible,
-        BalladSetTarget
+        BalladSetTarget,
+        PredatorVisible,
+        PredatorInvisible
     }
 
     public static class RPCProcedure {
@@ -134,6 +137,9 @@ namespace TheOtherRoles
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == playerId) {
                     switch((RoleId)roleId) {
+                    case RoleId.Predator:
+                        Predator.predator = player;
+                        break;
                     case RoleId.Ballad:
                         Ballad.ballad = player;
                         break;
@@ -318,6 +324,26 @@ namespace TheOtherRoles
                 if (player.PlayerId == targetId)
                 {
                     Misimo.visibility = false;
+                    return;
+                }
+            }
+        }
+        public static void predatorVisible(byte targetId) {
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == targetId)
+                {
+                    Predator.visibility = true;
+                    return;
+                }
+            }
+        }
+        public static void predatorInvisible(byte targetId) {
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == targetId)
+                {
+                    Predator.visibility = false;
                     return;
                 }
             }
@@ -621,6 +647,10 @@ namespace TheOtherRoles
             if (player == Trickster.trickster) Trickster.clearAndReload();
             if (player == Cleaner.cleaner) Cleaner.clearAndReload();
             if (player == Warlock.warlock) Warlock.clearAndReload();
+            if (player == Madmate.madmate) Madmate.clearAndReload();
+            if (player == Misimo.misimo) Misimo.clearAndReload();
+            if (player == Ballad.ballad) Ballad.clearAndReload();
+            if (player == Predator.predator) Predator.clearAndReload();
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
@@ -801,6 +831,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.MisimoInvisible:
                     RPCProcedure.misimoInvisible(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.PredatorVisible:
+                    RPCProcedure.predatorVisible(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.PredatorInvisible:
+                    RPCProcedure.predatorInvisible(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.BalladSetTarget:
                     RPCProcedure.balladSetTarget(reader.ReadByte());

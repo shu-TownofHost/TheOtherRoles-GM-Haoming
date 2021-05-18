@@ -72,6 +72,7 @@ namespace TheOtherRoles
             impSettings.Add((byte)RoleId.Warlock, CustomOptionHolder.warlockSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Misimo, CustomOptionHolder.misimoSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Ballad, CustomOptionHolder.balladSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Predator, CustomOptionHolder.predatorSpawnRate.getSelection());
 
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());

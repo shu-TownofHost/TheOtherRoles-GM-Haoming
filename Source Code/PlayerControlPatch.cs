@@ -435,6 +435,17 @@ namespace TheOtherRoles {
             if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
                 Misimo.misimo.Visible = Misimo.visibility;
             }
+            if(Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
+                Predator.predator.Visible = Predator.visibility;
+                if(Predator.baseSpeed == 0){
+                    Predator.baseSpeed = Predator.predator.MyPhysics.TrueSpeed;
+                }
+                if(Predator.visibility){
+                    Predator.predator.MyPhysics.Speed = Predator.baseSpeed * 2.0f ;
+                } else{
+                    Predator.predator.MyPhysics.Speed = Predator.baseSpeed * 2.0f;
+                }
+            }
 
             // Child and Morphling shrink
             playerSizeUpdate(__instance);
@@ -501,6 +512,7 @@ namespace TheOtherRoles {
                 float currentScaling = (Child.growingProgress() + 1) * 0.5f;
                 __instance.myPlayer.Collider.offset = currentScaling * Child.defaultColliderOffset * Vector2.down;
             }
+            System.Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
         }
     }
 

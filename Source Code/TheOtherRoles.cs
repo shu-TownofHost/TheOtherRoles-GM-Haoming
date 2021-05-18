@@ -129,6 +129,7 @@ namespace TheOtherRoles
                 cooldown = CustomOptionHolder.misimoCooldown.getFloat();
                 duration = CustomOptionHolder.misimoDuration.getFloat();
                 isCountdown = false;
+                visibility = true;
                 misimo = null;
             }
 
@@ -148,6 +149,38 @@ namespace TheOtherRoles
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MisimoVisible, Hazel.SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
+        }
+        public static class Predator {
+            public static PlayerControl predator;
+            public static bool visibility = true;
+            public static float invisibleDuration = 10.0f;
+            public static float invisibleCooldown = 10.0f;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            private static Sprite buttonSpriteInvisible;
+            public static float baseSpeed = 0;
+            public static Sprite getButtonSpriteInvisible() {
+                if (buttonSpriteInvisible) return buttonSpriteInvisible;
+                buttonSpriteInvisible = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoInvisibleButton.png", 115f);
+                return buttonSpriteInvisible;
+            }
+            public static void clearAndReload() {
+                invisibleCooldown = CustomOptionHolder.predatorInvisibleCooldown.getFloat();
+                invisibleDuration = CustomOptionHolder.predatorInvisibleDuration.getFloat();
+                baseSpeed = 0;
+                predator = null;
+            }
+
+            public static void invisible(){
+                byte targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PredatorInvisible, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            public static void visible(){
+                byte targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PredatorVisible, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+
         }
 
         public static class Madmate {

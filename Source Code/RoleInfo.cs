@@ -23,6 +23,12 @@ namespace TheOtherRoles
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
             List<RoleInfo> infos = new List<RoleInfo>();
 
+            if (Predator.predator != null && p == Predator.predator) {
+                infos.Add(new RoleInfo("Predator",
+                Predator.color,
+                "hide and kill all crewmates",
+                "hide and kill all crewmates"));
+            }
             if (Ballad.ballad != null && p == Ballad.ballad) {
                 infos.Add(new RoleInfo("Ballad",
                 Ballad.color,

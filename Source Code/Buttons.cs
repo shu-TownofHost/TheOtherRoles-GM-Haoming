@@ -12,6 +12,7 @@ namespace TheOtherRoles
         public static CustomButton balladSetTargetButton;
         public static CustomButton misimoSelfDestructButton;
         public static CustomButton misimoInvisibleButton;
+        public static CustomButton predatorInvisibleButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -41,6 +42,7 @@ namespace TheOtherRoles
             balladSetTargetButton.MaxTimer = Ballad.cooldown;
             misimoSelfDestructButton.MaxTimer = Misimo.duration;
             misimoInvisibleButton.MaxTimer = Misimo.invisibleCooldown;
+            predatorInvisibleButton.MaxTimer = Predator.invisibleCooldown;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -266,6 +268,21 @@ namespace TheOtherRoles
                 true,
                 20.0f, /* Effect Duration */
                 () => {Misimo.visible();}
+            );
+
+            predatorInvisibleButton = new CustomButton(
+                () => {Predator.invisible();},
+                () => {/*ボタンが有効になる条件*/ return Predator.predator != null && Predator.predator == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead;},
+                () => {/*ボタンが使える条件*/ return Predator.predator != null &&  PlayerControl.LocalPlayer.CanMove;  },
+                () => {/*ミーティング終了時*/ predatorInvisibleButton.Timer = predatorInvisibleButton.MaxTimer; Predator.visibility = true;},
+                Predator.getButtonSpriteInvisible(),
+                new Vector3(-1.3f, 1.3f, 0),
+                __instance,
+                KeyCode.F,
+                true,
+                Predator.invisibleDuration, /* Effect Duration */
+                () => {Predator.visible();
+                       predatorInvisibleButton.Timer = predatorInvisibleButton.MaxTimer;}
             );
 
             // Time Master Rewind Time
