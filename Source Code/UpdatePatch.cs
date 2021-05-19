@@ -174,6 +174,38 @@ namespace TheOtherRoles
             Trickster.lightsOutTimer -= Time.deltaTime;
         }
 
+        static void PredatorActions(){
+
+            // 見た目をカモフラージュ状態に
+            if(Predator.predator !=null && !Predator.visibility){
+                Predator.predator.nameText.text = "";
+                Predator.predator.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+                Predator.predator.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+                Predator.predator.HatRenderer.SetHat(0, 0);
+                Helpers.setSkinWithAnim(Predator.predator.MyPhysics, 0);
+                bool spawnPet = false;
+                if (Predator.predator.CurrentPet == null) spawnPet = true;
+                else if (Predator.predator.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+                    UnityEngine.Object.Destroy(Predator.predator.CurrentPet.gameObject);
+                    spawnPet = true;
+                }
+                if (spawnPet) {
+                    Predator.predator.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+                    Predator.predator.CurrentPet.transform.position = Predator.predator.transform.position;
+                    Predator.predator.CurrentPet.Source = Predator.predator;
+                }
+            }
+
+            // 見た目を元に戻す
+            if(Predator.predator !=null && Predator.visibility){
+                Predator.predator.SetName(Predator.predator.Data.PlayerName);
+                Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
+                Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);
+                Predator.predator.SetPet(Predator.predator.Data.PetId);
+                Predator.predator.CurrentPet.Visible = Predator.predator.Visible;
+                Predator.predator.SetColor(Predator.predator.Data.ColorId);
+            }
+        }
         static void camouflageAndMorphActions() {
             float oldCamouflageTimer = Camouflager.camouflageTimer;
             float oldMorphTimer = Morphling.morphTimer;
@@ -325,6 +357,8 @@ namespace TheOtherRoles
             updateImpostorKillButton(__instance);
             // Timer updates
             timerUpdate();
+            // Predator
+            PredatorActions();
             // Camouflager and Morphling
             camouflageAndMorphActions();
             // Child

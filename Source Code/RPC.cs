@@ -344,6 +344,19 @@ namespace TheOtherRoles
                 if (player.PlayerId == targetId)
                 {
                     Predator.visibility = false;
+                    // 現在値を保存
+                    // Predator.name = Predator.predator.name;
+                    // Predator.petId = Predator.predator.Data.PetId;
+                    // Predator.hatId = Predator.predator.Data.HatId;
+                    // Predator.colorId = Predator.predator.Data.ColorId;
+                    // Predator.skinId = Predator.predator.Data.SkinId;
+                    // 見た目を変更
+                    // Predator.predator.SetName("");
+                    // Predator.predator.SetPet(0);
+                    // Predator.predator.SetHat(0, 0);
+                    // Predator.predator.SetSkin(0);
+                    // Predator.predator.SetColor(7);
+
                     return;
                 }
             }

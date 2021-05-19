@@ -13,6 +13,7 @@ namespace TheOtherRoles
         public static CustomButton misimoSelfDestructButton;
         public static CustomButton misimoInvisibleButton;
         public static CustomButton predatorInvisibleButton;
+        public static CustomButton predatorVisibleButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -283,6 +284,19 @@ namespace TheOtherRoles
                 Predator.invisibleDuration, /* Effect Duration */
                 () => {Predator.visible();
                        predatorInvisibleButton.Timer = predatorInvisibleButton.MaxTimer;}
+            );
+            predatorVisibleButton = new CustomButton(
+                () => { Predator.visible();},
+                () => {/*ボタンが有効になる条件*/ return Predator.predator != null && Predator.predator == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead;},
+                () => {/*ボタンが使える条件*/ return Predator.predator != null &&  PlayerControl.LocalPlayer.CanMove && !Predator.visibility;  },
+                () => {/*ミーティング終了時*/  },
+                Predator.getButtonSpriteVisible(),
+                new Vector3(-2.6f, 0.0f, 0),
+                __instance,
+                KeyCode.F,
+                false,
+                0.0f, /* Effect Duration */
+                () => {predatorInvisibleButton.Timer = predatorInvisibleButton.MaxTimer;}
             );
 
             // Time Master Rewind Time

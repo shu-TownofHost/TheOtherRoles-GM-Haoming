@@ -428,25 +428,34 @@ namespace TheOtherRoles {
             if (Arsonist.currentTarget != null) setPlayerOutline(Arsonist.currentTarget, Arsonist.color);
         }
 
-        public static void Postfix(PlayerControl __instance) {
-            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
-
+        public static void Prefix(PlayerControl __instance) {
             // Misimoは消えることができる
             if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
                 Misimo.misimo.Visible = Misimo.visibility;
             }
+
+            // Predatorも消えることができる、さらに高速移動可能
             if(Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
                 Predator.predator.Visible = Predator.visibility;
+            }
+            if(Predator.predator == __instance){
                 if(Predator.baseSpeed == 0){
-                    Predator.baseSpeed = Predator.predator.MyPhysics.TrueSpeed;
+                    Predator.baseSpeed = Predator.predator.MyPhysics.Speed;
+                }
+                if(Predator.baseTrueSpeed == 0){
+                    Predator.baseTrueSpeed = Predator.predator.MyPhysics.TrueSpeed;
                 }
                 if(Predator.visibility){
-                    Predator.predator.MyPhysics.Speed = Predator.baseSpeed * 2.0f ;
+                    Predator.predator.MyPhysics.Speed = Predator.baseSpeed;
+                    Traverse.Create(Predator.predator.MyPhysics).Field("TrueSpeed").SetValue(Predator.baseTrueSpeed);
                 } else{
-                    Predator.predator.MyPhysics.Speed = Predator.baseSpeed * 2.0f;
+                    Predator.predator.MyPhysics.Speed = Predator.baseSpeed * CustomOptionHolder.predatorSpeedMultiplier.getFloat();
+                    Traverse.Create(Predator.predator.MyPhysics).Field("TrueSpeed").SetValue(Predator.baseTrueSpeed * CustomOptionHolder.predatorSpeedMultiplier.getFloat());
                 }
             }
-
+        }
+        public static void Postfix(PlayerControl __instance) {
+            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             // Child and Morphling shrink
             playerSizeUpdate(__instance);
             
@@ -512,7 +521,6 @@ namespace TheOtherRoles {
                 float currentScaling = (Child.growingProgress() + 1) * 0.5f;
                 __instance.myPlayer.Collider.offset = currentScaling * Child.defaultColliderOffset * Vector2.down;
             }
-            System.Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
         }
     }
 
