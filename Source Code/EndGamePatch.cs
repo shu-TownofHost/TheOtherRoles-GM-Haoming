@@ -33,13 +33,10 @@ namespace TheOtherRoles {
     static class AdditionalTempData {
         // Should be implemented using a proper GameOverReason in the future
         public static WinCondition winCondition = WinCondition.Default;
-        public static bool localIsLover = false;
 
 
         public static void clear() {
             winCondition = WinCondition.Default;
-            localIsLover = false;
-
         }
     }
 
@@ -72,7 +69,7 @@ namespace TheOtherRoles {
             bool jesterWin = Jester.jester != null && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
             bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
             bool childLose = Child.child != null && gameOverReason == (GameOverReason)CustomGameOverReason.ChildLose;
-            bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (TempData.DidHumansWin(gameOverReason) && Lovers.existingAndCrewLovers())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
+            bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (TempData.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
             bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
             bool madmateWin = Madmate.madmate != null && (gameOverReason == GameOverReason.ImpostorByVote || gameOverReason == GameOverReason.ImpostorByKill || gameOverReason == GameOverReason.ImpostorBySabotage);
 
@@ -116,9 +113,8 @@ namespace TheOtherRoles {
 
             // Lovers win conditions
             else if (loversWin) {
-                AdditionalTempData.localIsLover = (PlayerControl.LocalPlayer == Lovers.lover1 || PlayerControl.LocalPlayer == Lovers.lover2);
                 // Double win for lovers, crewmates also win
-                if (Lovers.existingAndCrewLovers()) {
+                if (!Lovers.existingWithKiller()) {
                     AdditionalTempData.winCondition = WinCondition.LoversTeamWin;
                     TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                     foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
@@ -182,9 +178,6 @@ namespace TheOtherRoles {
                 textRenderer.color = Arsonist.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin) {
-                if (AdditionalTempData.localIsLover) {
-                    __instance.WinText.text = "Double Victory";
-                } 
                 textRenderer.text = "Lovers And Crewmates Win";
                 textRenderer.color = Lovers.color;
                 __instance.BackgroundBar.material.SetColor("_Color", Lovers.color);

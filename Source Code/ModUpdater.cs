@@ -50,14 +50,12 @@ namespace TheOtherRoles {
 
             TwitchManager man = DestroyableSingleton<TwitchManager>.Instance;
             ModUpdater.InfoPopup = UnityEngine.Object.Instantiate<GenericPopup>(man.TwitchPopup);
+            ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
+            ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
 
             void onClick() {
                 ModUpdater.ExecuteUpdate();
                 button.SetActive(false);
-                ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
-                ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
-                ModUpdater.InfoPopup.Show("Updating The Other Roles\nPlease wait...");
-                __instance.StartCoroutine(Effects.Lerp(0.1f, new System.Action<float>((p) => { ModUpdater.setPopupText("Updating The Other Roles\nPlease wait..."); })));
             }
         }
     }
@@ -78,13 +76,18 @@ namespace TheOtherRoles {
         }
 
         public static void ExecuteUpdate() {
+            string info = "Updating The Other Roles\nPlease wait...";
+            ModUpdater.InfoPopup.Show(info); // Show originally
             if (updateTask == null) {
                 if (updateurlTOR != null && updateurlRR != null) {
                     updateTask = downloadUpdate();
                 } else {
-                    showPopup("This update has to be done manually");
+                    info = "Unable to auto-update\nPlease update manually";
                 }
+            } else {
+                info = "Update might already\nbe in progress";
             }
+            ModUpdater.InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new System.Action<float>((p) => { ModUpdater.setPopupText(info); })));
         }
         
         public static void clearOldVersions() {

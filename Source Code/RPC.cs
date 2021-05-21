@@ -25,8 +25,7 @@ namespace TheOtherRoles
         Medic,
         Shifter,
         Swapper,
-        Lover1,
-        Lover2,
+        Lover,
         Seer,
         Morphling,
         Camouflager,
@@ -47,7 +46,9 @@ namespace TheOtherRoles
         Madmate,
         Misimo,
         Ballad,
-        Predator
+        Predator,
+        Crewmate,
+        Impostor
     }
 
     enum CustomRPC
@@ -78,7 +79,6 @@ namespace TheOtherRoles
         MorphlingMorph,
         CamouflagerCamouflage,
         TrackerUsedTracker,
-        LoverSuicide,
         VampireSetBitten,
         VampireTryKill,
         PlaceGarlic,
@@ -86,7 +86,7 @@ namespace TheOtherRoles
         SidekickKill,
         JackalCreatesSidekick,
         SidekickPromotes,
-        ErasePlayerRole,
+        ErasePlayerRoles,
         SetFutureErased,
         SetFutureShifted,
         PlaceJackInTheBox,
@@ -133,7 +133,7 @@ namespace TheOtherRoles
             }
         }
 
-        public static void setRole(byte roleId, byte playerId) {
+        public static void setRole(byte roleId, byte playerId, byte flag) {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == playerId) {
                     switch((RoleId)roleId) {
@@ -188,11 +188,9 @@ namespace TheOtherRoles
                     case RoleId.Swapper:
                         Swapper.swapper = player;
                         break;
-                    case RoleId.Lover1:
-                        Lovers.lover1 = player;
-                        break;
-                    case RoleId.Lover2:
-                        Lovers.lover2 = player;
+                    case RoleId.Lover:
+                        if (flag == 0) Lovers.lover1 = player;
+                        else Lovers.lover2 = player;
                         break;
                     case RoleId.Seer:
                         Seer.seer = player;
@@ -450,49 +448,50 @@ namespace TheOtherRoles
                 Medic.shielded = player;
             }
 
+            // Shift Lovers Role
+            if (Lovers.lover1 != null && oldShifter == Lovers.lover1) Lovers.lover1 = player;
+            else if (Lovers.lover1 != null && player == Lovers.lover1) Lovers.lover1 = oldShifter;
+
+            if (Lovers.lover2 != null && oldShifter == Lovers.lover2) Lovers.lover2 = player;
+            else if (Lovers.lover2 != null && player == Lovers.lover2) Lovers.lover2 = oldShifter;
+
             // Shift role
-            if (Jester.jester != null && Jester.jester == player) {
+            if (Jester.jester != null && Jester.jester == player)
                 Jester.jester = oldShifter;
-            }else if (Madmate.madmate != null && Madmate.madmate == player) {
+            if (Madmate.madmate != null && Madmate.madmate == player)
                 Madmate.madmate = oldShifter;
-            } else if (Mayor.mayor != null && Mayor.mayor == player) {
+            if (Mayor.mayor != null && Mayor.mayor == player)
                 Mayor.mayor = oldShifter;
-            } else if (Engineer.engineer != null && Engineer.engineer == player) {
+            if (Engineer.engineer != null && Engineer.engineer == player)
                 Engineer.engineer = oldShifter;
-            } else if (Sheriff.sheriff != null && Sheriff.sheriff == player) {
+            if (Sheriff.sheriff != null && Sheriff.sheriff == player)
                 Sheriff.sheriff = oldShifter;
-            } else if (Lighter.lighter != null && Lighter.lighter == player) {
+            if (Lighter.lighter != null && Lighter.lighter == player)
                 Lighter.lighter = oldShifter;
-            } else if (Detective.detective != null && Detective.detective == player) {
+            if (Detective.detective != null && Detective.detective == player)
                 Detective.detective = oldShifter;
-            } else if (TimeMaster.timeMaster != null && TimeMaster.timeMaster == player) {
+            if (TimeMaster.timeMaster != null && TimeMaster.timeMaster == player)
                 TimeMaster.timeMaster = oldShifter;
-            } else if (Medic.medic != null && Medic.medic == player) {
+            if (Medic.medic != null && Medic.medic == player)
                 Medic.medic = oldShifter;
-            } else if (Swapper.swapper != null && Swapper.swapper == player) {
+            if (Swapper.swapper != null && Swapper.swapper == player)
                 Swapper.swapper = oldShifter;
-            } else if (Lovers.lover1 != null && Lovers.lover1 == player) {
-                Lovers.lover1 = oldShifter;
-            } else if (Lovers.lover2 != null && Lovers.lover2 == player) {
-                Lovers.lover2 = oldShifter;
-            } else if (Seer.seer != null && Seer.seer == player) {
+            if (Seer.seer != null && Seer.seer == player)
                 Seer.seer = oldShifter;
-            } else if (Hacker.hacker != null && Hacker.hacker == player) {
+            if (Hacker.hacker != null && Hacker.hacker == player)
                 Hacker.hacker = oldShifter;
-            } else if (Child.child != null && Child.child == player) {
+            if (Child.child != null && Child.child == player)
                 Child.child = oldShifter;
-            } else if (Tracker.tracker != null && Tracker.tracker == player) {
+            if (Tracker.tracker != null && Tracker.tracker == player)
                 Tracker.tracker = oldShifter;
-            } else if (Snitch.snitch != null && Snitch.snitch == player) {
+            if (Snitch.snitch != null && Snitch.snitch == player)
                 Snitch.snitch = oldShifter;
-            } else if (Spy.spy != null && Spy.spy == player) {
+            if (Spy.spy != null && Spy.spy == player)
                 Spy.spy = oldShifter;
-            } else if (SecurityGuard.securityGuard != null && SecurityGuard.securityGuard == player) {
+            if (SecurityGuard.securityGuard != null && SecurityGuard.securityGuard == player)
                 SecurityGuard.securityGuard = oldShifter;
-            } else if (Arsonist.arsonist != null && Arsonist.arsonist == player) {
+            if (Arsonist.arsonist != null && Arsonist.arsonist == player)
                 Arsonist.arsonist = oldShifter;
-            } else { // Crewmate
-            }
             
             // Set cooldowns to max for both players
             if (PlayerControl.LocalPlayer == oldShifter || PlayerControl.LocalPlayer == player)
@@ -518,14 +517,6 @@ namespace TheOtherRoles
             if (Camouflager.camouflager == null) return;
 
             Camouflager.camouflageTimer = Camouflager.duration;
-        }
-
-        public static void loverSuicide(byte remainingLoverId) {
-            if (Lovers.lover1 != null && !Lovers.lover1.Data.IsDead && Lovers.lover1.PlayerId == remainingLoverId) {
-                Lovers.lover1.MurderPlayer(Lovers.lover1);
-            } else if (Lovers.lover2 != null && !Lovers.lover2.Data.IsDead && Lovers.lover2.PlayerId == remainingLoverId) {
-                Lovers.lover2.MurderPlayer(Lovers.lover2);
-            }
         }
 
         public static void vampireSetBitten(byte targetId, byte reset) {
@@ -595,7 +586,7 @@ namespace TheOtherRoles
                         return;
                     }
                     player.RemoveInfected();
-                    if (player != Lovers.lover1 && player != Lovers.lover2) erasePlayerRole(player.PlayerId);
+                    erasePlayerRoles(player.PlayerId, true);
                     
                     Sidekick.sidekick = player;
                     return;
@@ -614,7 +605,7 @@ namespace TheOtherRoles
             return;
         }
         
-        public static void erasePlayerRole(byte playerId) {
+        public static void erasePlayerRoles(byte playerId, bool ignoreLovers = false) {
             PlayerControl player = Helpers.playerById(playerId);
             if (player == null) return;
 
@@ -655,7 +646,7 @@ namespace TheOtherRoles
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
             if (player == Arsonist.arsonist) Arsonist.clearAndReload();
-            if (player == Lovers.lover1 || player == Lovers.lover2) { // The whole Lover couple is being erased
+            if (!ignoreLovers && (player == Lovers.lover1 || player == Lovers.lover2)) { // The whole Lover couple is being erased
                 Lovers.clearAndReload(); 
             }
             if (player == Jackal.jackal) { // Promote Sidekick and hence override the the Jackal or erase Jackal
@@ -775,7 +766,8 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.SetRole:
                     byte roleId = reader.ReadByte();
                     byte playerId = reader.ReadByte();
-                    RPCProcedure.setRole(roleId, playerId);
+                    byte flag = reader.ReadByte();
+                    RPCProcedure.setRole(roleId, playerId, flag);
                     break;
                 case (byte)CustomRPC.SetUncheckedColor:
                     byte c = reader.ReadByte();
@@ -867,9 +859,6 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.CamouflagerCamouflage:
                     RPCProcedure.camouflagerCamouflage();
                     break;
-                case (byte)CustomRPC.LoverSuicide:
-                    RPCProcedure.loverSuicide(reader.ReadByte());
-                    break;
                 case (byte)CustomRPC.VampireSetBitten:
                     byte bittenId = reader.ReadByte();
                     byte reset = reader.ReadByte();
@@ -896,8 +885,8 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.SidekickPromotes:
                     RPCProcedure.sidekickPromotes();
                     break;
-                case (byte)CustomRPC.ErasePlayerRole:
-                    RPCProcedure.erasePlayerRole(reader.ReadByte());
+                case (byte)CustomRPC.ErasePlayerRoles:
+                    RPCProcedure.erasePlayerRoles(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.SetFutureErased:
                     RPCProcedure.setFutureErased(reader.ReadByte());
