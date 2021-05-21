@@ -197,7 +197,7 @@ namespace TheOtherRoles
             }
 
             // 見た目を元に戻す
-            if(Predator.predator !=null && Predator.visibility){
+            if(Predator.predator !=null && (Predator.visibility || (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter && Lighter.lighterTimer >0f))){
                 Predator.predator.SetName(Predator.predator.Data.PlayerName);
                 Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
                 Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);

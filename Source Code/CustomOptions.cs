@@ -67,6 +67,7 @@ namespace TheOtherRoles {
         public static CustomOption predatorInvisibleCooldown;
         public static CustomOption predatorInvisibleDuration;
         public static CustomOption predatorSpeedMultiplier;
+        public static CustomOption predatorHatesGarlics;
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
         public static CustomOption arsonistDuration;
@@ -231,6 +232,7 @@ namespace TheOtherRoles {
             predatorInvisibleCooldown = CustomOption.Create(321, "Predator Invisible Cooldown", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
             predatorInvisibleDuration = CustomOption.Create(322, "Predator Invisible Duration", 10f, 1f, 60f, 1f, predatorSpawnRate);
             predatorSpeedMultiplier = CustomOption.Create(323, "Predator SpeedMultiplier", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
+            predatorHatesGarlics = CustomOption.Create(324, "Predator Hates Garlics", true, predatorSpawnRate);
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);

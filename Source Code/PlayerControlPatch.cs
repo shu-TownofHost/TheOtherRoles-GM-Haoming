@@ -432,12 +432,27 @@ namespace TheOtherRoles {
             // Misimoは消えることができる
             if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
                 Misimo.misimo.Visible = Misimo.visibility;
+            } else if(Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
+                Misimo.misimo.Visible = true;
             }
 
             // Predatorも消えることができる、さらに高速移動可能
+            // Garlicの近くでは透明になれない
+            bool targetNearGarlic = false;
+            if(Predator.predator != null){
+                foreach (Garlic garlic in Garlic.garlics) {
+                    if (Vector2.Distance(garlic.garlic.transform.position, Predator.predator.transform.position) <= 1.91f) {
+                        targetNearGarlic = true;
+                    }
+                }
+            }
+
             if(Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
                 Predator.predator.Visible = Predator.visibility;
+            } else if(Lighter.lighter != null && (PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
+                Predator.predator.Visible = true;
             }
+
             if(Predator.predator == __instance){
                 if(Predator.baseSpeed == 0){
                     Predator.baseSpeed = Predator.predator.MyPhysics.Speed;

@@ -166,6 +166,7 @@ namespace TheOtherRoles
             public static uint skinId = 0;
             public static int colorId = 0;
             public static string name = "";
+            public static bool garlicsActive;
             public static Sprite getButtonSpriteInvisible() {
                 if (buttonSpriteInvisible) return buttonSpriteInvisible;
                 buttonSpriteInvisible = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoInvisibleButton.png", 115f);
@@ -182,8 +183,9 @@ namespace TheOtherRoles
                 baseSpeed = 0;
                 predator = null;
                 visibility = true;
+                Vampire.localPlacedGarlic = false;
+                garlicsActive = CustomOptionHolder.predatorHatesGarlics.getBool();
             }
-
             public static void invisible(){
                 byte targetId = PlayerControl.LocalPlayer.PlayerId;
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PredatorInvisible, Hazel.SendOption.Reliable, -1);
