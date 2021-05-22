@@ -244,7 +244,7 @@ namespace TheOtherRoles {
 
 
             bomberSpawnRate = CustomOption.Create(330, cs(Bomber.color, "Bomber"), rates, null, true);
-            bomberPlantDuration = CustomOption.Create(331, "Bomber Plant Duration", 5f, 0f, 20f, 1.0f, bomberSpawnRate);
+            bomberPlantDuration = CustomOption.Create(331, "Bomber Plant Duration", 5f, 1f, 20f, 1.0f, bomberSpawnRate);
             bomberPlantCooldown = CustomOption.Create(332, "Bomber Plant Cooldown", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
             bomberDefuseAfterMeeting = CustomOption.Create(333, "Bomber Defuse After Meeting", true, bomberSpawnRate);
             

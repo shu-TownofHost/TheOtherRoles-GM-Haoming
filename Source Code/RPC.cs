@@ -110,6 +110,7 @@ namespace TheOtherRoles
         // Main Controls
 
         public static void resetVariables() {
+            BombEffect.clearBombEffects();
             Garlic.clearGarlics();
             JackInTheBox.clearJackInTheBoxes();
             clearAndReloadMapOptions();
@@ -361,6 +362,7 @@ namespace TheOtherRoles
                     }else{
                         player.MurderPlayer(player);
                     }
+                    new BombEffect(player);
                     return;
                 }
             }

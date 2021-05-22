@@ -530,6 +530,7 @@ namespace TheOtherRoles {
                 BalladSetTarget();
                 // Bomber
                 BomberSetTarget();
+                BombEffect.UpdateAll();
             } 
         }
     }

@@ -263,11 +263,20 @@ namespace TheOtherRoles
                 () => { /*ミーティング終了時*/
                     BomberPlantButton.Timer = BomberPlantButton.MaxTimer;
                     BomberPlantButton.isEffectActive = false;
+                    BombEffect.clearBombEffects();
                     if(Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer){
                         if(CustomOptionHolder.bomberDefuseAfterMeeting.getBool()){
                             Bomber.targets = new List<PlayerControl>();
                             foreach (PoolablePlayer p in Bomber.plantedIcons.Values) {
                                 p.setSemiTransparent(true);
+                            }
+                        }
+                        // 死んだプレイヤーのアイコンは非表示にする
+                        foreach(PlayerControl player in PlayerControl.AllPlayerControls){
+                            if(player.Data.IsDead){
+                                if(Bomber.plantedIcons.ContainsKey(player.Data.PlayerId)){
+                                    Bomber.plantedIcons[player.Data.PlayerId].gameObject.SetActive(false);
+                                }
                             }
                         }
                     }
