@@ -447,13 +447,13 @@ namespace TheOtherRoles {
                 }
             }
 
-            if(Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
+            if(Predator.predator != null && Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
                 Predator.predator.Visible = Predator.visibility;
             } else if(Lighter.lighter != null && (PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
                 Predator.predator.Visible = true;
             }
 
-            if(Predator.predator == __instance){
+            if(Predator.predator != null && Predator.predator == __instance){
                 if(Predator.baseSpeed == 0){
                     Predator.baseSpeed = Predator.predator.MyPhysics.Speed;
                 }

@@ -206,7 +206,7 @@ namespace TheOtherRoles
             }
 
             // 見た目を元に戻す
-            if(Predator.predator !=null && (Predator.visibility || (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter && Lighter.lighterTimer >0f))){
+            if(Predator.predator !=null && Predator.visibility ){
                 Predator.predator.SetName(Predator.predator.Data.PlayerName);
                 Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
                 Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);
@@ -214,6 +214,22 @@ namespace TheOtherRoles
                 Predator.predator.CurrentPet.Visible = Predator.predator.Visible;
                 Predator.predator.SetColor(Predator.predator.Data.ColorId);
             }
+        }
+
+        static void lighterActions(){
+            // LightOn中はCamouflageとMorphを看破できる
+            if (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter && Lighter.lighterTimer > 0f){
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p == null) continue;
+                    p.SetName(p.Data.PlayerName);
+                    p.SetHat(p.Data.HatId, p.Data.ColorId);
+                    Helpers.setSkinWithAnim(p.MyPhysics, p.Data.SkinId);
+                    p.SetPet(p.Data.PetId);
+                    p.CurrentPet.Visible = p.Visible;
+                    p.SetColor(p.Data.ColorId);
+                }
+            }
+
         }
         static void camouflageAndMorphActions() {
             float oldCamouflageTimer = Camouflager.camouflageTimer;
@@ -263,7 +279,6 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
                         spawnPet = true;
                     }
-
                     if (spawnPet) {
                         p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
                         p.CurrentPet.transform.position = p.transform.position;
@@ -271,6 +286,7 @@ namespace TheOtherRoles
                     }
                 }
             } 
+
             
             // Everyone but morphling reset
             if (oldCamouflageTimer > 0f && Camouflager.camouflageTimer <= 0f) {
@@ -369,6 +385,8 @@ namespace TheOtherRoles
             PredatorActions();
             // Camouflager and Morphling
             camouflageAndMorphActions();
+            // lighterActions
+            lighterActions();
             // Child
             childUpdate();
             // Snitch
