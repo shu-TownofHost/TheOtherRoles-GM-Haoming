@@ -328,6 +328,8 @@ namespace TheOtherRoles
                 enabled = false;
             else if (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer)
                 enabled = false;
+            else if (Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer)
+                enabled = false;
             enabled &= __instance.UseButton.isActiveAndEnabled;
             
             __instance.KillButton.gameObject.SetActive(enabled);

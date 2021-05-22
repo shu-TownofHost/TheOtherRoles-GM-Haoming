@@ -25,11 +25,18 @@ namespace TheOtherRoles
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
             List<RoleInfo> infos = new List<RoleInfo>();
 
+            if (Bomber.bomber != null && p == Bomber.bomber) {
+                infos.Add(new RoleInfo("Bomber",
+                Bomber.color,
+                "Bomb All Cremmates",
+                "Bomb All Crewmates",
+                RoleId.Predator));
+            }
             if (Predator.predator != null && p == Predator.predator) {
                 infos.Add(new RoleInfo("Predator",
                 Predator.color,
-                "hide and kill all crewmates",
-                "hide and kill all crewmates",
+                "Hide and Kill All Crewmates",
+                "Hide and Kill All Crewmates",
                 RoleId.Predator));
             }
             if (Ballad.ballad != null && p == Ballad.ballad) {
@@ -43,15 +50,15 @@ namespace TheOtherRoles
             if (Misimo.misimo != null && p == Misimo.misimo) {
                 infos.Add(new RoleInfo("Misimo",
                 Misimo.color,
-                "Kill all Crewmates ASAP",
-                "Kill all Crewmates ASAP",
+                "Kill All Crewmates ASAP",
+                "Kill All Crewmates ASAP",
                 RoleId.Misimo));
             }
             if (Madmate.madmate != null && p == Madmate.madmate) {
                 infos.Add(new RoleInfo("Madmate",
                 Madmate.color,
                 "Help Impostors",
-                "Kill all Crewmates",
+                "Help Impostors",
                 RoleId.Madmate));
             }
             // Special roles

@@ -54,8 +54,40 @@ namespace TheOtherRoles
             Misimo.clearAndReload();
             Ballad.clearAndReload();
             Predator.clearAndReload();
+            Bomber.clearAndReload();
         }
 
+        public static class Bomber {
+            public static PlayerControl bomber;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            private static Sprite buttonSprite;
+
+            public static PlayerControl target;
+            public static PlayerControl currentTarget;
+            public static int meetingCount;
+            public static int expirationCount;
+            public static bool isSet;
+            public static float cooldown = 30f;
+            public static Dictionary<byte, PoolablePlayer> sealedIcons = new Dictionary<byte, PoolablePlayer>();
+            public static Sprite getButtonSprite() {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BalladButton.png", 115f);
+                return buttonSprite;
+            }
+
+            public static void clearAndReload() {
+                cooldown = CustomOptionHolder.misimoCooldown.getFloat();
+                target = null;
+                isSet = false;
+                meetingCount = 0;
+                expirationCount = 0;
+                foreach (PoolablePlayer p in sealedIcons.Values) {
+                    if (p != null && p.gameObject != null) { 
+                        UnityEngine.Object.Destroy(p.gameObject);
+                    }
+                }
+            }
+        }
         public static class Ballad {
             public static PlayerControl ballad;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
