@@ -83,8 +83,6 @@ namespace TheOtherRoles
             }
 
             public static void clearAndReload() {
-                plantDuration = CustomOptionHolder.bomberPlantDuration.getFloat();
-                plantCooldown = CustomOptionHolder.bomberPlantCooldown.getFloat();
                 targets = new List<PlayerControl>();
                 isSet = false;
                 plantTarget = null;
@@ -94,6 +92,8 @@ namespace TheOtherRoles
                         UnityEngine.Object.Destroy(p.gameObject);
                     }
                 }
+                plantDuration = CustomOptionHolder.bomberPlantDuration.getFloat();
+                plantCooldown = CustomOptionHolder.bomberPlantCooldown.getFloat();
             }
             public static void setTarget(){
                 if(Bomber.plantTarget != null)
