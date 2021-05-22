@@ -48,6 +48,7 @@ namespace TheOtherRoles
             misimoInvisibleButton.MaxTimer = Misimo.invisibleCooldown;
             predatorInvisibleButton.MaxTimer = Predator.invisibleCooldown;
             BomberPlantButton.MaxTimer = Bomber.plantCooldown;
+            BomberPlantButton.EffectDuration = Bomber.plantDuration;
             BomberDetonateButton.MaxTimer = 0f;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;

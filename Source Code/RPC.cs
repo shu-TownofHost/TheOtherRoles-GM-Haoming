@@ -362,7 +362,9 @@ namespace TheOtherRoles
                     }else{
                         player.MurderPlayer(player);
                     }
-                    new BombEffect(player);
+                    if(CustomOptionHolder.bomberBombEffect.getBool()){
+                        new BombEffect(player);
+                    }
                     return;
                 }
             }
