@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace TheOtherRoles
 {
-    class RoleInfo {
+    public class RoleInfo {
         public Color color;
         public string name;
         public string introDescription;
         public string shortDescription;
         public RoleId roleId;
 
-        RoleInfo(string name, Color color, string introDescription, string shortDescription, RoleId roleId) {
+        public RoleInfo(string name, Color color, string introDescription, string shortDescription, RoleId roleId) {
             this.color = color;
             this.name = name;
             this.introDescription = introDescription;

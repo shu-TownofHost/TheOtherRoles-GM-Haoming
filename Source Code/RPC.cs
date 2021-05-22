@@ -11,7 +11,7 @@ using System;
 
 namespace TheOtherRoles
 {
-    enum RoleId {
+    public enum RoleId {
         Jester,
         Mayor,
         Engineer,
