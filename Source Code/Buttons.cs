@@ -1,6 +1,7 @@
 using HarmonyLib;
 using Hazel;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
@@ -14,6 +15,8 @@ namespace TheOtherRoles
         public static CustomButton misimoInvisibleButton;
         public static CustomButton predatorInvisibleButton;
         public static CustomButton predatorVisibleButton;
+        public static CustomButton BomberPlantButton;
+        public static CustomButton BomberDetonateButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -44,6 +47,8 @@ namespace TheOtherRoles
             misimoSelfDestructButton.MaxTimer = Misimo.duration;
             misimoInvisibleButton.MaxTimer = Misimo.invisibleCooldown;
             predatorInvisibleButton.MaxTimer = Predator.invisibleCooldown;
+            BomberPlantButton.MaxTimer = Bomber.plantCooldown;
+            BomberDetonateButton.MaxTimer = 0f;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -240,6 +245,63 @@ namespace TheOtherRoles
                 0.0f, /* Effect Duration */
                 () => {}
             );
+
+            BomberPlantButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    Bomber.plantTarget = Bomber.currentTarget;
+                },
+                () => { /*ボタン有効になる条件*/return Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { /*ボタンが使える条件*/
+                    if (BomberPlantButton.isEffectActive && Bomber.plantTarget != Bomber.currentTarget) {
+                        Bomber.plantTarget = null;
+                        BomberPlantButton.Timer = 0f;
+                        BomberPlantButton.isEffectActive = false;
+                    }
+
+                    return PlayerControl.LocalPlayer.CanMove && Bomber.currentTarget != null;
+                },
+                () => { /*ミーティング終了時*/
+                    BomberPlantButton.Timer = BomberPlantButton.MaxTimer;
+                    BomberPlantButton.isEffectActive = false;
+                    if(Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer){
+                        if(CustomOptionHolder.bomberDefuseAfterMeeting.getBool()){
+                            Bomber.targets = new List<PlayerControl>();
+                            foreach (PoolablePlayer p in Bomber.plantedIcons.Values) {
+                                p.setSemiTransparent(true);
+                            }
+                        }
+                    }
+                },
+                Bomber.getPlantBombButtonSprite(),
+                new Vector3(-1.3f, 0f, 0f), //　ボタン位置
+                __instance,
+                KeyCode.Q,
+                true, // エフェクト有効
+                Bomber.plantDuration, // エフェクト効果時間
+                () => { // エフェクト終了後に実行
+                    if (Bomber.plantTarget!= null) {
+                        Bomber.setTarget();
+                    }
+                    BomberPlantButton.Timer = Bomber.plantCooldown;
+                }
+            );
+            BomberDetonateButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    Bomber.detonate();
+                },
+                () => { /*ボタン有効になる条件*/return Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { /*ボタンが使える条件*/
+                    return Bomber.targets.Count > 0;
+                },
+                () => { /*ミーティング終了時*/
+                    BomberPlantButton.Timer = BomberPlantButton.MaxTimer;
+                },
+                Bomber.getDetonateButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0f), //　ボタン位置
+                __instance,
+                KeyCode.Q
+            );
+
 
             misimoSelfDestructButton = new CustomButton(
                 () => {Misimo.selfDestruct();},

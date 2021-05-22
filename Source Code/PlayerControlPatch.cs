@@ -117,6 +117,11 @@ namespace TheOtherRoles {
             }
         }
 
+        static void BomberSetTarget() {
+            if (Bomber.bomber == null || Bomber.bomber != PlayerControl.LocalPlayer) return;
+            Bomber.currentTarget = setTarget();
+            setPlayerOutline(Bomber.currentTarget, Bomber.color);
+        }
         static void BalladSetTarget() {
             if (Ballad.ballad == null || Ballad.ballad != PlayerControl.LocalPlayer) return;
             Ballad.currentTarget = setTarget();
@@ -432,7 +437,7 @@ namespace TheOtherRoles {
             // Misimoは消えることができる
             if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
                 Misimo.misimo.Visible = Misimo.visibility;
-            } else if(Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
+            } else if(Misimo.misimo != null && Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
                 Misimo.misimo.Visible = true;
             }
 
@@ -449,7 +454,7 @@ namespace TheOtherRoles {
 
             if(Predator.predator != null && Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
                 Predator.predator.Visible = Predator.visibility;
-            } else if(Lighter.lighter != null && (PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
+            } else if(Predator.predator != null && Lighter.lighter != null && (PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
                 Predator.predator.Visible = true;
             }
 
@@ -523,6 +528,8 @@ namespace TheOtherRoles {
                 arsonistSetTarget();
                 //Ballad
                 BalladSetTarget();
+                // Bomber
+                BomberSetTarget();
             } 
         }
     }

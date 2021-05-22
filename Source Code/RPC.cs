@@ -356,7 +356,11 @@ namespace TheOtherRoles
             {
                 if (player.PlayerId == targetId)
                 {
-                    Bomber.bomber.MurderPlayer(player);
+                    if(player == PlayerControl.LocalPlayer){
+                        Bomber.bomber.MurderPlayer(player);
+                    }else{
+                        player.MurderPlayer(player);
+                    }
                     return;
                 }
             }

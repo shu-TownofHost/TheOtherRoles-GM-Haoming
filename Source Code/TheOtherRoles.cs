@@ -60,31 +60,60 @@ namespace TheOtherRoles
         public static class Bomber {
             public static PlayerControl bomber;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
-            private static Sprite buttonSprite;
-
-            public static PlayerControl target;
+            private static Sprite plantButtonSprite;
+            private static Sprite detonateButtonSprite;
+            public static List<PlayerControl> targets;
             public static PlayerControl currentTarget;
-            public static int meetingCount;
-            public static int expirationCount;
+            public static PlayerControl plantTarget;
+            public static float plantDuration;
+            public static float plantCooldown;
+
             public static bool isSet;
             public static float cooldown = 30f;
-            public static Dictionary<byte, PoolablePlayer> sealedIcons = new Dictionary<byte, PoolablePlayer>();
-            public static Sprite getButtonSprite() {
-                if (buttonSprite) return buttonSprite;
-                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.BalladButton.png", 115f);
-                return buttonSprite;
+            public static Dictionary<byte, PoolablePlayer> plantedIcons = new Dictionary<byte, PoolablePlayer>();
+            public static Sprite getDetonateButtonSprite() {
+                if (detonateButtonSprite) return detonateButtonSprite;
+                detonateButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.DetonateButton.png", 115f);
+                return detonateButtonSprite;
+            }
+            public static Sprite getPlantBombButtonSprite() {
+                if (plantButtonSprite) return plantButtonSprite;
+                plantButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.PlantBombButton.png", 115f);
+                return plantButtonSprite;
             }
 
             public static void clearAndReload() {
-                cooldown = CustomOptionHolder.misimoCooldown.getFloat();
-                target = null;
+                plantDuration = CustomOptionHolder.bomberPlantDuration.getFloat();
+                plantCooldown = CustomOptionHolder.bomberPlantCooldown.getFloat();
+                targets = new List<PlayerControl>();
                 isSet = false;
-                meetingCount = 0;
-                expirationCount = 0;
-                foreach (PoolablePlayer p in sealedIcons.Values) {
+                plantTarget = null;
+                currentTarget = null;
+                foreach (PoolablePlayer p in plantedIcons.Values) {
                     if (p != null && p.gameObject != null) { 
                         UnityEngine.Object.Destroy(p.gameObject);
                     }
+                }
+            }
+            public static void setTarget(){
+                if(Bomber.plantTarget != null)
+                    Bomber.plantedIcons[Bomber.plantTarget.PlayerId].setSemiTransparent(false);
+                    Bomber.targets.Add(Bomber.plantTarget);
+                Bomber.plantTarget = null;
+            }
+
+            public static void detonate(){
+                foreach(PlayerControl p in targets){
+                    if(!p.Data.IsDead){
+                        MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BomberKill, Hazel.SendOption.Reliable, -1);
+                        killWriter.Write(p.Data.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                        RPCProcedure.bomberKill(p.Data.PlayerId);
+                    }
+                }
+                targets = new List<PlayerControl>();
+                foreach (PoolablePlayer p in plantedIcons.Values) {
+                    p.setSemiTransparent(true);
                 }
             }
         }
@@ -93,6 +122,7 @@ namespace TheOtherRoles
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
 
+
             public static PlayerControl target;
             public static PlayerControl currentTarget;
             public static int meetingCount;
@@ -107,7 +137,6 @@ namespace TheOtherRoles
             }
 
             public static void clearAndReload() {
-                cooldown = CustomOptionHolder.misimoCooldown.getFloat();
                 target = null;
                 isSet = false;
                 meetingCount = 0;

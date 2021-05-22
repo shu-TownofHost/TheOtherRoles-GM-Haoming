@@ -71,6 +71,9 @@ namespace TheOtherRoles {
         public static CustomOption predatorSpeedMultiplier;
         public static CustomOption predatorHatesGarlics;
         public static CustomOption bomberSpawnRate;
+        public static CustomOption bomberPlantDuration;
+        public static CustomOption bomberPlantCooldown;
+        public static CustomOption bomberDefuseAfterMeeting;
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
         public static CustomOption arsonistDuration;
@@ -241,6 +244,9 @@ namespace TheOtherRoles {
 
 
             bomberSpawnRate = CustomOption.Create(330, cs(Bomber.color, "Bomber"), rates, null, true);
+            bomberPlantDuration = CustomOption.Create(331, "Bomber Plant Duration", 5f, 0f, 20f, 1.0f, bomberSpawnRate);
+            bomberPlantCooldown = CustomOption.Create(332, "Bomber Plant Cooldown", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
+            bomberDefuseAfterMeeting = CustomOption.Create(333, "Bomber Defuse After Meeting", true, bomberSpawnRate);
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);
