@@ -76,6 +76,7 @@ namespace TheOtherRoles {
         public static CustomOption bomberPlantCooldown;
         public static CustomOption bomberDefuseAfterMeeting;
         public static CustomOption bomberBombEffect;
+        public static CustomOption bomberPlantSingleTarget;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -251,6 +252,7 @@ namespace TheOtherRoles {
             bomberPlantCooldown = CustomOption.Create(332, "Bomber Plant Cooldown", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
             bomberDefuseAfterMeeting = CustomOption.Create(333, "Bomber Defuse After Meeting", true, bomberSpawnRate);
             bomberBombEffect = CustomOption.Create(334, "Bomber Bomb Effect", true, bomberSpawnRate);
+            bomberPlantSingleTarget = CustomOption.Create(335,"Bomber Plant Single Target", true, bomberSpawnRate);
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);

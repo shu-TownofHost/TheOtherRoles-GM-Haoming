@@ -259,7 +259,7 @@ namespace TheOtherRoles
                         BomberPlantButton.isEffectActive = false;
                     }
 
-                    return PlayerControl.LocalPlayer.CanMove && Bomber.currentTarget != null;
+                    return PlayerControl.LocalPlayer.CanMove && Bomber.currentTarget != null && (!CustomOptionHolder.bomberPlantSingleTarget.getBool()|| Bomber.targets.Count == 0);
                 },
                 () => { /*ミーティング終了時*/
                     BomberPlantButton.Timer = BomberPlantButton.MaxTimer;
