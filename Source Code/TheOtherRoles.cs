@@ -112,9 +112,14 @@ namespace TheOtherRoles
                     }
                 }
                 targets = new List<PlayerControl>();
-                foreach (PoolablePlayer p in plantedIcons.Values) {
-                    p.setSemiTransparent(true);
+                try{
+                    foreach (PoolablePlayer p in plantedIcons.Values) {
+                        p.setSemiTransparent(true);
+                    }
+                }catch(Exception e){
+                    System.Console.WriteLine(e);
                 }
+
             }
         }
         public static class Ballad {
