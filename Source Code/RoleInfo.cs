@@ -25,12 +25,19 @@ namespace TheOtherRoles
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
             List<RoleInfo> infos = new List<RoleInfo>();
 
+            if (Trapper.trapper != null && p == Trapper.trapper) {
+                infos.Add(new RoleInfo("Trapper",
+                Trapper.color,
+                "Kill All Crewmates",
+                "Kill ALl Crewmates",
+                RoleId.Trapper));
+            }
             if (Bomber.bomber != null && p == Bomber.bomber) {
                 infos.Add(new RoleInfo("Bomber",
                 Bomber.color,
-                "Bomb All Cremmates",
                 "Bomb All Crewmates",
-                RoleId.Predator));
+                "Bomb All Crewmates",
+                RoleId.Bomber));
             }
             if (Predator.predator != null && p == Predator.predator) {
                 infos.Add(new RoleInfo("Predator",

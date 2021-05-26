@@ -55,6 +55,44 @@ namespace TheOtherRoles
             Ballad.clearAndReload();
             Predator.clearAndReload();
             Bomber.clearAndReload();
+            Trapper.clearAndReload();
+        }
+        public static class Trapper {
+            public static PlayerControl trapper;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            private static Sprite trapButtonSprite;
+            private static Sprite unsetButtonSprite;
+            public static float cooldown = 30f;
+            public static Vector3 trap;
+            public static Vector3 zero = new Vector3(0, 0, 0);
+            public static Sprite getTrapButtonSprite() {
+                if (trapButtonSprite) return trapButtonSprite;
+                trapButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapperTrapButton.png", 115f);
+                return trapButtonSprite;
+            }
+            public static Sprite getUnsetButtonSprite() {
+                if (unsetButtonSprite) return unsetButtonSprite;
+                unsetButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapperUnsetButton.png", 115f);
+                return unsetButtonSprite;
+            }
+            public static void setTrap(){
+                trap = PlayerControl.LocalPlayer.transform.position;
+                new TrapEffect(PlayerControl.LocalPlayer);
+            }
+            public static void unsetTrap(){
+                if(trap != Trapper.zero){
+                    if(TrapEffect.trapeffects.Count > 0){
+                        TrapEffect.trapeffects[TrapEffect.trapeffects.Count-1].trapeffect.SetActive(false);
+                        TrapEffect.trapeffects.RemoveAt(TrapEffect.trapeffects.Count-1);
+                    }
+                    trap = new Vector3(0, 0, 0);
+                }
+            }
+
+            public static void clearAndReload() {
+                trap = new Vector3(0, 0, 0);
+                cooldown = CustomOptionHolder.trapperCooldown.getFloat();
+            }
         }
 
         public static class Bomber {
@@ -69,6 +107,7 @@ namespace TheOtherRoles
             public static float plantCooldown;
 
             public static bool isSet;
+            public static bool isAOE;
             public static float cooldown = 30f;
             public static Dictionary<byte, PoolablePlayer> plantedIcons = new Dictionary<byte, PoolablePlayer>();
             public static Sprite getDetonateButtonSprite() {
@@ -94,6 +133,7 @@ namespace TheOtherRoles
                 }
                 plantDuration = CustomOptionHolder.bomberPlantDuration.getFloat();
                 plantCooldown = CustomOptionHolder.bomberPlantCooldown.getFloat();
+                isAOE = CustomOptionHolder.bomberAOE.getBool();
             }
             public static void setTarget(){
                 if(Bomber.plantTarget != null)
@@ -103,14 +143,25 @@ namespace TheOtherRoles
             }
 
             public static void detonate(){
-                foreach(PlayerControl p in targets){
-                    if(!p.Data.IsDead){
+                foreach(PlayerControl target in targets){
+                    if(!target.Data.IsDead){
                         MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BomberKill, Hazel.SendOption.Reliable, -1);
-                        killWriter.Write(p.Data.PlayerId);
+                        killWriter.Write(target.Data.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(killWriter);
-                        RPCProcedure.bomberKill(p.Data.PlayerId);
+                        RPCProcedure.bomberKill(target.Data.PlayerId);
+                        if(isAOE){
+                            foreach(PlayerControl player in PlayerControl.AllPlayerControls){
+                                if(Vector2.Distance(target.transform.position, player.transform.position) <= 1f && !player.Data.IsDead && player != target){
+                                    killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.BomberKill, Hazel.SendOption.Reliable, -1);
+                                    killWriter.Write(player.Data.PlayerId);
+                                    AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                                    RPCProcedure.bomberKill(player.Data.PlayerId);
+                                }
+                            }
+                        }
                     }
                 }
+
                 targets = new List<PlayerControl>();
                 try{
                     foreach (PoolablePlayer p in plantedIcons.Values) {

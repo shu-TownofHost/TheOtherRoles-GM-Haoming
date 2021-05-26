@@ -330,6 +330,8 @@ namespace TheOtherRoles
                 enabled = false;
             else if (Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer)
                 enabled = false;
+            else if (Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer)
+                enabled = false;
             enabled &= __instance.UseButton.isActiveAndEnabled;
             
             __instance.KillButton.gameObject.SetActive(enabled);

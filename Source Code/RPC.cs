@@ -48,6 +48,7 @@ namespace TheOtherRoles
         Ballad,
         Predator,
         Bomber,
+        Trapper,
         Crewmate,
         Impostor
     }
@@ -102,7 +103,8 @@ namespace TheOtherRoles
         BalladSetTarget,
         PredatorVisible,
         PredatorInvisible,
-        BomberKill
+        BomberKill,
+        TrapperKill
     }
 
     public static class RPCProcedure {
@@ -111,6 +113,7 @@ namespace TheOtherRoles
 
         public static void resetVariables() {
             BombEffect.clearBombEffects();
+            TrapEffect.clearTrapEffects();
             Garlic.clearGarlics();
             JackInTheBox.clearJackInTheBoxes();
             clearAndReloadMapOptions();
@@ -140,6 +143,9 @@ namespace TheOtherRoles
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == playerId) {
                     switch((RoleId)roleId) {
+                    case RoleId.Trapper:
+                        Trapper.trapper = player;
+                        break;
                     case RoleId.Bomber:
                         Bomber.bomber = player;
                         break;
@@ -365,6 +371,22 @@ namespace TheOtherRoles
                     if(CustomOptionHolder.bomberBombEffect.getBool()){
                         new BombEffect(player);
                     }
+                    return;
+                }
+            }
+
+        }
+        public static void trapperKill(byte targetId){
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == targetId)
+                {
+                    if(player == PlayerControl.LocalPlayer){
+                        Trapper.trapper.MurderPlayer(player);
+                    }else{
+                        player.MurderPlayer(player);
+                    }
+                    new TrapEffect(player);
                     return;
                 }
             }
@@ -857,6 +879,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.BomberKill:
                     RPCProcedure.bomberKill(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.TrapperKill:
+                    RPCProcedure.trapperKill(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.BalladSetTarget:
                     RPCProcedure.balladSetTarget(reader.ReadByte());

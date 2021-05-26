@@ -122,6 +122,22 @@ namespace TheOtherRoles {
             Bomber.currentTarget = setTarget();
             setPlayerOutline(Bomber.currentTarget, Bomber.color);
         }
+
+        static void trapperSetTarget(){
+            if(Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer && Trapper.trap != Trapper.zero){
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p.Data.IsDead || p == Trapper.trapper) continue;
+                    float distance = Vector2.Distance(p.transform.position, Trapper.trap);
+                    if(distance < 0.3f){
+                        MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
+                        killWriter.Write(p.Data.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                        RPCProcedure.trapperKill(p.Data.PlayerId);
+                        Trapper.unsetTrap();
+                    }
+                }
+            }
+        }
         static void BalladSetTarget() {
             if (Ballad.ballad == null || Ballad.ballad != PlayerControl.LocalPlayer) return;
             Ballad.currentTarget = setTarget();
@@ -531,6 +547,9 @@ namespace TheOtherRoles {
                 // Bomber
                 BomberSetTarget();
                 BombEffect.UpdateAll();
+                // Trapper
+                trapperSetTarget();
+                TrapEffect.UpdateAll();
             } 
         }
     }

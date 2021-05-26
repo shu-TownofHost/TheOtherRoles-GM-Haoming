@@ -15,8 +15,10 @@ namespace TheOtherRoles
         public static CustomButton misimoInvisibleButton;
         public static CustomButton predatorInvisibleButton;
         public static CustomButton predatorVisibleButton;
-        public static CustomButton BomberPlantButton;
-        public static CustomButton BomberDetonateButton;
+        public static CustomButton bomberPlantButton;
+        public static CustomButton bomberDetonateButton;
+        public static CustomButton trapperSetTrapButton;
+        public static CustomButton trapperUnsetTrapButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -47,9 +49,10 @@ namespace TheOtherRoles
             misimoSelfDestructButton.MaxTimer = Misimo.duration;
             misimoInvisibleButton.MaxTimer = Misimo.invisibleCooldown;
             predatorInvisibleButton.MaxTimer = Predator.invisibleCooldown;
-            BomberPlantButton.MaxTimer = Bomber.plantCooldown;
-            BomberPlantButton.EffectDuration = Bomber.plantDuration;
-            BomberDetonateButton.MaxTimer = 0f;
+            bomberPlantButton.MaxTimer = Bomber.plantCooldown;
+            bomberPlantButton.EffectDuration = Bomber.plantDuration;
+            bomberDetonateButton.MaxTimer = 0f;
+            trapperSetTrapButton.MaxTimer = Trapper.cooldown;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -247,23 +250,23 @@ namespace TheOtherRoles
                 () => {}
             );
 
-            BomberPlantButton = new CustomButton(
+            bomberPlantButton = new CustomButton(
                 () => { // ボタンが押された時に実行
                     Bomber.plantTarget = Bomber.currentTarget;
                 },
                 () => { /*ボタン有効になる条件*/return Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { /*ボタンが使える条件*/
-                    if (BomberPlantButton.isEffectActive && Bomber.plantTarget != Bomber.currentTarget) {
+                    if (bomberPlantButton.isEffectActive && Bomber.plantTarget != Bomber.currentTarget) {
                         Bomber.plantTarget = null;
-                        BomberPlantButton.Timer = 0f;
-                        BomberPlantButton.isEffectActive = false;
+                        bomberPlantButton.Timer = 0f;
+                        bomberPlantButton.isEffectActive = false;
                     }
 
                     return PlayerControl.LocalPlayer.CanMove && Bomber.currentTarget != null && (!CustomOptionHolder.bomberPlantSingleTarget.getBool()|| Bomber.targets.Count == 0);
                 },
                 () => { /*ミーティング終了時*/
-                    BomberPlantButton.Timer = BomberPlantButton.MaxTimer;
-                    BomberPlantButton.isEffectActive = false;
+                    bomberPlantButton.Timer = bomberPlantButton.MaxTimer;
+                    bomberPlantButton.isEffectActive = false;
                     BombEffect.clearBombEffects();
                     if(Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer){
                         if(CustomOptionHolder.bomberDefuseAfterMeeting.getBool()){
@@ -292,10 +295,10 @@ namespace TheOtherRoles
                     if (Bomber.plantTarget!= null) {
                         Bomber.setTarget();
                     }
-                    BomberPlantButton.Timer = Bomber.plantCooldown;
+                    bomberPlantButton.Timer = Bomber.plantCooldown;
                 }
             );
-            BomberDetonateButton = new CustomButton(
+            bomberDetonateButton = new CustomButton(
                 () => { // ボタンが押された時に実行
                     Bomber.detonate();
                 },
@@ -304,9 +307,46 @@ namespace TheOtherRoles
                     return Bomber.targets.Count > 0;
                 },
                 () => { /*ミーティング終了時*/
-                    BomberPlantButton.Timer = BomberPlantButton.MaxTimer;
+                    bomberPlantButton.Timer = bomberPlantButton.MaxTimer;
                 },
                 Bomber.getDetonateButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0f), //　ボタン位置
+                __instance,
+                KeyCode.Q
+            );
+
+            trapperSetTrapButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    Trapper.setTrap();
+                    trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
+                },
+                () => { /*ボタン有効になる条件*/return Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { /*ボタンが使える条件*/
+                    return Trapper.trap == Trapper.zero;
+                },
+                () => { /*ミーティング終了時*/
+                    trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
+                    TrapEffect.clearTrapEffects();
+                },
+                Trapper.getTrapButtonSprite(),
+                new Vector3(-1.3f, 0f, 0f), //　ボタン位置
+                __instance,
+                KeyCode.Q
+            );
+
+            trapperUnsetTrapButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    Trapper.unsetTrap();
+                    trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
+                },
+                () => { /*ボタン有効になる条件*/return Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { /*ボタンが使える条件*/
+                    return Trapper.trap != Trapper.zero;
+                },
+                () => { /*ミーティング終了時*/
+                    // trapperUnsetTrapButton.Timer = trapperUnsetTrapButton.MaxTimer;
+                },
+                Trapper.getUnsetButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0f), //　ボタン位置
                 __instance,
                 KeyCode.Q
