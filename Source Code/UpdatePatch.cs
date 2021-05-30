@@ -330,7 +330,7 @@ namespace TheOtherRoles
                 enabled = false;
             else if (Bomber.bomber != null && Bomber.bomber == PlayerControl.LocalPlayer)
                 enabled = false;
-            else if (Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer)
+            else if (Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer && CustomOptionHolder.trapperUnmoveable.getBool() != true)
                 enabled = false;
             enabled &= __instance.UseButton.isActiveAndEnabled;
             

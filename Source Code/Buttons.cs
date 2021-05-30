@@ -19,6 +19,7 @@ namespace TheOtherRoles
         public static CustomButton bomberDetonateButton;
         public static CustomButton trapperSetTrapButton;
         public static CustomButton trapperUnsetTrapButton;
+        public static CustomButton mifuneButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -53,6 +54,7 @@ namespace TheOtherRoles
             bomberPlantButton.EffectDuration = Bomber.plantDuration;
             bomberDetonateButton.MaxTimer = 0f;
             trapperSetTrapButton.MaxTimer = Trapper.cooldown;
+            mifuneButton.MaxTimer = Mifune.cooldown;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -315,6 +317,29 @@ namespace TheOtherRoles
                 KeyCode.Q
             );
 
+            mifuneButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    Mifune.senrigan();
+                },
+                () => { /*ボタン有効になる条件*/return Mifune.mifune != null && Mifune.mifune == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
+                () => { /*ボタンが使える条件*/
+                    return true;
+                },
+                () => { /*ミーティング終了時*/
+                    mifuneButton.Timer = mifuneButton.MaxTimer;
+                    if(Mifune.toggle){
+                        Mifune.senrigan();
+                    }
+                },
+                Trapper.getTrapButtonSprite(),
+                new Vector3(-2.6f, 0f, 0f),
+                __instance,
+                KeyCode.Q,
+                true,
+                3f,
+                () => { Mifune.senrigan(); mifuneButton.Timer = mifuneButton.MaxTimer;}
+            );
+
             trapperSetTrapButton = new CustomButton(
                 () => { // ボタンが押された時に実行
                     Trapper.setTrap();
@@ -329,7 +354,7 @@ namespace TheOtherRoles
                     TrapEffect.clearTrapEffects();
                 },
                 Trapper.getTrapButtonSprite(),
-                new Vector3(-1.3f, 0f, 0f), //　ボタン位置
+                Trapper.getButtonPos(),
                 __instance,
                 KeyCode.Q
             );

@@ -49,6 +49,7 @@ namespace TheOtherRoles
         Predator,
         Bomber,
         Trapper,
+        Mifune,
         Crewmate,
         Impostor
     }
@@ -143,6 +144,9 @@ namespace TheOtherRoles
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                 if (player.PlayerId == playerId) {
                     switch((RoleId)roleId) {
+                    case RoleId.Mifune:
+                        Mifune.mifune = player;
+                        break;
                     case RoleId.Trapper:
                         Trapper.trapper = player;
                         break;
@@ -377,19 +381,39 @@ namespace TheOtherRoles
 
         }
         public static void trapperKill(byte targetId){
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == targetId)
+            if(CustomOptionHolder.trapperUnmoveable.getBool()){
+                HudManager.Instance.StartCoroutine(Effects.Lerp(CustomOptionHolder.balladTimer.getFloat(), new Action<float>((p) => 
                 {
-                    if(player == PlayerControl.LocalPlayer){
-                        Trapper.trapper.MurderPlayer(player);
+                    if(p==1f){
+                        foreach(PlayerControl player in PlayerControl.AllPlayerControls){
+                            if(player.PlayerId == targetId)
+                                player.moveable = true;
+                        }
                     }else{
-                        player.MurderPlayer(player);
+                        foreach(PlayerControl player in PlayerControl.AllPlayerControls){
+                            if(player.PlayerId == targetId)
+                                player.moveable = false;
+                        }
+
                     }
-                    new TrapEffect(player);
-                    return;
+                })));
+            }else{
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.PlayerId == targetId)
+                    {
+                        if(player == PlayerControl.LocalPlayer){
+                            Trapper.trapper.MurderPlayer(player);
+                        }else{
+                            player.MurderPlayer(player);
+                        }
+                        new TrapEffect(player);
+                        return;
+                    }
+
                 }
             }
+            
 
         }
 
@@ -689,6 +713,8 @@ namespace TheOtherRoles
             if (player == Ballad.ballad) Ballad.clearAndReload();
             if (player == Predator.predator) Predator.clearAndReload();
             if (player == Bomber.bomber) Bomber.clearAndReload();
+            if (player == Trapper.trapper) Trapper.clearAndReload();
+            if (player == Mifune.mifune) Mifune.clearAndReload();
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();

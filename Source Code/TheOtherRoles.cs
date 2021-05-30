@@ -56,6 +56,41 @@ namespace TheOtherRoles
             Predator.clearAndReload();
             Bomber.clearAndReload();
             Trapper.clearAndReload();
+            Mifune.clearAndReload();
+        }
+        public static class Mifune {
+            public static PlayerControl mifune;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            private static Sprite buttonSprite;
+            public static float cooldown = 30f;
+            public static bool toggle = false;
+            public static Sprite getButtonSprite() {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MifuneButton.png", 115f);
+                return buttonSprite;
+            }
+            
+            public static void senrigan(){
+                if(toggle){
+                    toggle = !toggle;
+                    Camera.main.orthographicSize /= 4f;
+                    HudManager.Instance.ShadowQuad.gameObject.SetActive(true);
+                    HudManager.Instance.KillButton.gameObject.SetActive(true);
+                    HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    HudManager.Instance.ReportButton.gameObject.SetActive(true);
+                }else{
+                    toggle = !toggle;
+                    Camera.main.orthographicSize *= 4f;
+                    HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                    HudManager.Instance.KillButton.gameObject.SetActive(true);
+                    HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    HudManager.Instance.ReportButton.gameObject.SetActive(true);
+                }
+            }
+
+            public static void clearAndReload() {
+                cooldown = CustomOptionHolder.mifuneCooldown.getFloat();
+            }
         }
         public static class Trapper {
             public static PlayerControl trapper;
@@ -87,6 +122,11 @@ namespace TheOtherRoles
                     }
                     trap = new Vector3(0, 0, 0);
                 }
+            }
+            public static Vector3 getButtonPos(){
+                if(CustomOptionHolder.trapperUnmoveable.getBool())
+                    return new Vector3(-2.6f, 0f, 0f);
+                return new Vector3(-2.6f, 0f, 0f);
             }
 
             public static void clearAndReload() {

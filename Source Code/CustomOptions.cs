@@ -81,6 +81,11 @@ namespace TheOtherRoles {
 
         public static CustomOption trapperSpawnRate;
         public static CustomOption trapperCooldown;
+        public static CustomOption trapperUnmoveable;
+        public static CustomOption trapperTrapDuration;
+
+        public static CustomOption mifuneSpawnRate;
+        public static CustomOption mifuneCooldown;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -263,6 +268,12 @@ namespace TheOtherRoles {
 
             trapperSpawnRate = CustomOption.Create(340, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(341, "Trapper Cooldown", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
+            trapperUnmoveable = CustomOption.Create(342, "Trapper Trap Unmoveable", false, trapperSpawnRate);
+            trapperTrapDuration = CustomOption.Create(343, "Trapper Trap Duration", 15f, 0f, 60f, 2.5f, trapperUnmoveable);
+
+            mifuneSpawnRate = CustomOption.Create(350, cs(Mifune.color, "Mifune"), rates, null, true);
+            mifuneCooldown = CustomOption.Create(351, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
+
             
             childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
             childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);
@@ -676,13 +687,15 @@ namespace TheOtherRoles {
             var hudString = sb.ToString();
 
             int defaultSettingsLines = 19;
-            int roleSettingsLines = defaultSettingsLines + 32;
+            int roleSettingsLines = defaultSettingsLines + 38;
             int detailedSettingsP1 = roleSettingsLines + 34;
             int detailedSettingsP2 = detailedSettingsP1 + 35;
+            int detailedSettingsP3 = detailedSettingsP2 + 35;
             int end1 = hudString.TakeWhile(c => (defaultSettingsLines -= (c == '\n' ? 1 : 0)) > 0).Count();
             int end2 = hudString.TakeWhile(c => (roleSettingsLines -= (c == '\n' ? 1 : 0)) > 0).Count();
             int end3 = hudString.TakeWhile(c => (detailedSettingsP1 -= (c == '\n' ? 1 : 0)) > 0).Count();
             int end4 = hudString.TakeWhile(c => (detailedSettingsP2 -= (c == '\n' ? 1 : 0)) > 0).Count();
+            int end5 = hudString.TakeWhile(c => (detailedSettingsP3 -= (c == '\n' ? 1 : 0)) > 0).Count();
             int counter = TheOtherRolesPlugin.optionsPage;
             if (counter == 0) {
                 hudString = hudString.Substring(0, end1) + "\n";   
@@ -695,10 +708,10 @@ namespace TheOtherRoles {
                 gap = 5;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index, "\n");
-                gap = 15;
+                gap = 19;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 22;
+                gap = 26;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             } else if (counter == 2) {
@@ -706,10 +719,12 @@ namespace TheOtherRoles {
             } else if (counter == 3) {
                 hudString = hudString.Substring(end3 + 1, end4 - end3);
             } else if (counter == 4) {
-                hudString = hudString.Substring(end4 + 1);
+                hudString = hudString.Substring(end4 + 1, end5 - end4);
+            } else if (counter == 5){
+                hudString = hudString.Substring(end5 + 1);
             }
 
-            hudString += $"\n Press tab for more... ({counter+1}/5)";
+            hudString += $"\n Press tab for more... ({counter+1}/6)";
             __result = hudString;
         }
     }
@@ -720,7 +735,7 @@ namespace TheOtherRoles {
         public static void Postfix(KeyboardJoystick __instance)
         {
             if(Input.GetKeyDown(KeyCode.Tab)) {
-                TheOtherRolesPlugin.optionsPage = (TheOtherRolesPlugin.optionsPage + 1) % 5;
+                TheOtherRolesPlugin.optionsPage = (TheOtherRolesPlugin.optionsPage + 1) % 6;
             }
         }
     }
