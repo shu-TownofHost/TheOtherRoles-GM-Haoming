@@ -63,6 +63,7 @@ namespace TheOtherRoles
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
             public static float cooldown = 30f;
+            public static float duration = 1f;
             public static bool toggle = false;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
@@ -82,14 +83,15 @@ namespace TheOtherRoles
                     toggle = !toggle;
                     Camera.main.orthographicSize *= 4f;
                     HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
-                    HudManager.Instance.KillButton.gameObject.SetActive(true);
-                    HudManager.Instance.UseButton.gameObject.SetActive(true);
-                    HudManager.Instance.ReportButton.gameObject.SetActive(true);
+                    HudManager.Instance.KillButton.gameObject.SetActive(false);
+                    HudManager.Instance.UseButton.gameObject.SetActive(false);
+                    HudManager.Instance.ReportButton.gameObject.SetActive(false);
                 }
             }
 
             public static void clearAndReload() {
                 cooldown = CustomOptionHolder.mifuneCooldown.getFloat();
+                duration = CustomOptionHolder.mifuneDuration.getFloat();
             }
         }
         public static class Trapper {

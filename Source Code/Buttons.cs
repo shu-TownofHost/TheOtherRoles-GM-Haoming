@@ -55,6 +55,7 @@ namespace TheOtherRoles
             bomberDetonateButton.MaxTimer = 0f;
             trapperSetTrapButton.MaxTimer = Trapper.cooldown;
             mifuneButton.MaxTimer = Mifune.cooldown;
+            mifuneButton.EffectDuration = Mifune.duration;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -327,17 +328,19 @@ namespace TheOtherRoles
                 },
                 () => { /*ミーティング終了時*/
                     mifuneButton.Timer = mifuneButton.MaxTimer;
+                },
+                Mifune.getButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0f),
+                __instance,
+                KeyCode.F,
+                true,
+                Mifune.duration,
+                () => { 
                     if(Mifune.toggle){
                         Mifune.senrigan();
                     }
-                },
-                Trapper.getTrapButtonSprite(),
-                new Vector3(-2.6f, 0f, 0f),
-                __instance,
-                KeyCode.Q,
-                true,
-                3f,
-                () => { Mifune.senrigan(); mifuneButton.Timer = mifuneButton.MaxTimer;}
+                    mifuneButton.Timer = mifuneButton.MaxTimer;
+                }
             );
 
             trapperSetTrapButton = new CustomButton(
