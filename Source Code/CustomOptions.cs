@@ -42,13 +42,17 @@ namespace TheOtherRoles {
         public static CustomOption eraserCooldown;
         public static CustomOption eraserCanEraseAnyone;
 
-        public static CustomOption childSpawnRate;
-        public static CustomOption childGrowingUpDuration;
+        public static CustomOption miniSpawnRate;
+        public static CustomOption miniGrowingUpDuration;
 
         public static CustomOption loversSpawnRate;
         public static CustomOption loversImpLoverRate;
         public static CustomOption loversBothDie;
         public static CustomOption loversCanHaveAnotherRole;
+
+        public static CustomOption guesserSpawnRate;
+        public static CustomOption guesserIsImpGuesserRate;
+        public static CustomOption guesserNumberOfShots;
 
         public static CustomOption jesterSpawnRate;
         public static CustomOption jesterCanCallEmergency;
@@ -246,11 +250,11 @@ namespace TheOtherRoles {
             misimoDuration = CustomOption.Create(297, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
             misimoInvisibleOn = CustomOption.Create(298, "Toggle Invisible On/Off", true, misimoSpawnRate);
 
-            balladSpawnRate = CustomOption.Create(311, cs(Ballad.color, "Ballad"), rates, null, true);
-            balladCooldown = CustomOption.Create(312, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
-            balladTimer = CustomOption.Create(313, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
-            balladSetOnce = CustomOption.Create(314, "Ballad Can Only Set Target Once", true, balladSpawnRate);
-            balladShowSealedVote = CustomOption.Create(315, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
+            balladSpawnRate = CustomOption.Create(360, cs(Ballad.color, "Ballad"), rates, null, true);
+            balladCooldown = CustomOption.Create(361, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
+            balladTimer = CustomOption.Create(362, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
+            balladSetOnce = CustomOption.Create(363, "Ballad Can Only Set Target Once", true, balladSpawnRate);
+            balladShowSealedVote = CustomOption.Create(364, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
 
             predatorSpawnRate = CustomOption.Create(320, cs(Predator.color, "Predator"), rates, null, true);
             predatorInvisibleCooldown = CustomOption.Create(321, "Predator Invisible Cooldown", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
@@ -277,13 +281,17 @@ namespace TheOtherRoles {
             mifuneDuration = CustomOption.Create(352, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
 
             
-            childSpawnRate = CustomOption.Create(180, cs(Child.color, "Child"), rates, null, true);
-            childGrowingUpDuration = CustomOption.Create(181, "Child Growing Up Duration", 400f, 100f, 1500f, 100f, childSpawnRate);
+            miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
+            miniGrowingUpDuration = CustomOption.Create(181, "Mini Growing Up Duration", 400f, 100f, 1500f, 100f, miniSpawnRate);
 
             loversSpawnRate = CustomOption.Create(50, cs(Lovers.color, "Lovers"), rates, null, true);
             loversImpLoverRate = CustomOption.Create(51, "Chance That One Lover Is Impostor", rates, loversSpawnRate);
             loversBothDie = CustomOption.Create(52, "Both Lovers Die", true, loversSpawnRate);
             loversCanHaveAnotherRole = CustomOption.Create(53, "Lovers Can Have Another Role", true, loversSpawnRate);
+
+            guesserSpawnRate = CustomOption.Create(310, cs(Guesser.color, "Guesser"), rates, null, true);
+            guesserIsImpGuesserRate = CustomOption.Create(311, "Chance That The Guesser Is An Impostor", rates, guesserSpawnRate);
+            guesserNumberOfShots = CustomOption.Create(312, "Guesser Number Of Shots", 2f, 1f, 15f, 1f, guesserSpawnRate);
 
             jesterSpawnRate = CustomOption.Create(60, cs(Jester.color, "Jester"), rates, null, true);
             jesterCanCallEmergency = CustomOption.Create(61, "Jester can call emergency meeting", true, jesterSpawnRate);
@@ -689,7 +697,7 @@ namespace TheOtherRoles {
             var hudString = sb.ToString();
 
             int defaultSettingsLines = 19;
-            int roleSettingsLines = defaultSettingsLines + 38;
+            int roleSettingsLines = defaultSettingsLines + 39;
             int detailedSettingsP1 = roleSettingsLines + 34;
             int detailedSettingsP2 = detailedSettingsP1 + 35;
             int detailedSettingsP3 = detailedSettingsP2 + 35;
@@ -710,10 +718,10 @@ namespace TheOtherRoles {
                 gap = 5;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index, "\n");
-                gap = 19;
+                gap = 20;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 26;
+                gap = 27;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             } else if (counter == 2) {
