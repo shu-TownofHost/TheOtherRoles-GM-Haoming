@@ -20,6 +20,7 @@ namespace TheOtherRoles
         public static CustomButton trapperSetTrapButton;
         public static CustomButton trapperUnsetTrapButton;
         public static CustomButton mifuneButton;
+        public static CustomButton soulPlayerButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -56,6 +57,7 @@ namespace TheOtherRoles
             trapperSetTrapButton.MaxTimer = Trapper.cooldown;
             mifuneButton.MaxTimer = Mifune.cooldown;
             mifuneButton.EffectDuration = Mifune.duration;
+            soulPlayerButton.MaxTimer = 0f;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
             sheriffKillButton.MaxTimer = Sheriff.cooldown;
@@ -318,9 +320,28 @@ namespace TheOtherRoles
                 KeyCode.Q
             );
 
+            soulPlayerButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    SoulPlayer.senrigan();
+                },
+                () => { /*ボタン有効になる条件*/return PlayerControl.LocalPlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsImpostor; },
+                () => { /*ボタンが使える条件*/
+                    return true;
+                },
+                () => { /*ミーティング終了時*/
+                    soulPlayerButton.Timer = soulPlayerButton.MaxTimer ;
+                },
+                Mifune.getButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0f),
+                __instance,
+                KeyCode.F
+            );
+
             mifuneButton = new CustomButton(
                 () => { // ボタンが押された時に実行
-                    Mifune.senrigan();
+                    if(!Mifune.toggle){
+                        Mifune.senrigan();
+                    }
                 },
                 () => { /*ボタン有効になる条件*/return Mifune.mifune != null && Mifune.mifune == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { /*ボタンが使える条件*/

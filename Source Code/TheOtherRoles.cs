@@ -58,7 +58,32 @@ namespace TheOtherRoles
             Bomber.clearAndReload();
             Trapper.clearAndReload();
             Mifune.clearAndReload();
+            SoulPlayer.clearAndReload();
         }
+        public static class SoulPlayer {
+            public static bool toggle = false;
+            public static void senrigan(){
+                if(toggle){
+                    toggle = !toggle;
+                    Camera.main.orthographicSize /= 6f;
+                    HudManager.Instance.ShadowQuad.gameObject.SetActive(true);
+                    HudManager.Instance.KillButton.gameObject.SetActive(true);
+                    HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    HudManager.Instance.ReportButton.gameObject.SetActive(true);
+                }else{
+                    toggle = !toggle;
+                    Camera.main.orthographicSize *= 6f;
+                    HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                    HudManager.Instance.KillButton.gameObject.SetActive(false);
+                    HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    HudManager.Instance.ReportButton.gameObject.SetActive(false);
+                }
+            }
+            public static void clearAndReload() {
+                toggle = false;
+            }
+        }
+
         public static class Mifune {
             public static PlayerControl mifune;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
@@ -84,15 +109,16 @@ namespace TheOtherRoles
                     toggle = !toggle;
                     Camera.main.orthographicSize *= 4f;
                     HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
-                    HudManager.Instance.KillButton.gameObject.SetActive(false);
-                    HudManager.Instance.UseButton.gameObject.SetActive(false);
-                    HudManager.Instance.ReportButton.gameObject.SetActive(false);
+                    HudManager.Instance.KillButton.gameObject.SetActive(true);
+                    HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    HudManager.Instance.ReportButton.gameObject.SetActive(true);
                 }
             }
 
             public static void clearAndReload() {
                 cooldown = CustomOptionHolder.mifuneCooldown.getFloat();
                 duration = CustomOptionHolder.mifuneDuration.getFloat();
+                toggle = false;
             }
         }
         public static class Trapper {
