@@ -23,6 +23,7 @@ namespace TheOtherRoles {
         public static CustomOption impostorRolesCountMax;
 
         public static CustomOption mafiaSpawnRate;
+        public static CustomOption janitorClean;
         public static CustomOption janitorCooldown;
 
         public static CustomOption morphlingSpawnRate;
@@ -214,7 +215,8 @@ namespace TheOtherRoles {
             impostorRolesCountMax = CustomOption.Create(305, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Impostor Roles"), 0f, 0f, 3f, 1f);
 
             mafiaSpawnRate = CustomOption.Create(10, cs(Janitor.color, "Mafia"), rates, null, true);
-            janitorCooldown = CustomOption.Create(11, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate);
+            janitorClean = CustomOption.Create(12, "Janitor Clean On/Off", false, mafiaSpawnRate);
+            janitorCooldown = CustomOption.Create(11, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, janitorClean);
 
             morphlingSpawnRate = CustomOption.Create(20, cs(Morphling.color, "Morphling"), rates, null, true);
             morphlingCooldown = CustomOption.Create(21, "Morphling Cooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);

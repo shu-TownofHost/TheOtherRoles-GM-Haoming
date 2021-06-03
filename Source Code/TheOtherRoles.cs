@@ -460,6 +460,7 @@ namespace TheOtherRoles
 
         public static class Janitor {
             public static PlayerControl janitor;
+            public static bool clean = false;
             public static Color color = Palette.ImpostorRed;
 
             public static float cooldown = 30f;
@@ -474,6 +475,7 @@ namespace TheOtherRoles
             public static void clearAndReload() {
                 janitor = null;
                 cooldown = CustomOptionHolder.janitorCooldown.getFloat();
+                clean = CustomOptionHolder.janitorClean.getBool();
             }
         }
 
