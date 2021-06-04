@@ -455,12 +455,6 @@ namespace TheOtherRoles
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CoStartMeeting))]
         class StartMeetingPatch {
             public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) {
-                // Mifune
-                if(Mifune.mifune != null && PlayerControl.LocalPlayer == Mifune.mifune){
-                    if(Mifune.toggle){
-                        Mifune.senrigan();
-                    }
-                }
                 // Ballad
                 Ballad.meetingCount += 1;
 
