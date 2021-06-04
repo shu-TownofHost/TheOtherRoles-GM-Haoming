@@ -58,6 +58,13 @@ namespace TheOtherRoles
         public static RoleInfo impostor = new RoleInfo("Impostor", Palette.ImpostorRed, Helpers.cs(Palette.ImpostorRed, "Sabotage and kill everyone"), "Sabotage and kill everyone", RoleId.Impostor);
         public static RoleInfo crewmate = new RoleInfo("Crewmate", Color.white, "Find the Impostors", "Find the Impostors", RoleId.Crewmate);
         public static RoleInfo lover = new RoleInfo("Lover", Lovers.color, $"You are in love", $"You are in love", RoleId.Lover);
+        public static RoleInfo misimo = new RoleInfo("Misimo", Misimo.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Misimo);
+        public static RoleInfo ballad = new RoleInfo("Ballad", Ballad.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Ballad);
+        public static RoleInfo predator= new RoleInfo("Predator", Ballad.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Predator);
+        public static RoleInfo bomber = new RoleInfo("Bomber", Bomber.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Bomber);
+        public static RoleInfo trapper = new RoleInfo("Trapper", Trapper.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Trapper);
+        public static RoleInfo mifune = new RoleInfo("Mifune", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Mifune);
+        public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
             impostor,
@@ -71,6 +78,13 @@ namespace TheOtherRoles
             trickster,
             cleaner,
             warlock,
+            misimo,
+            ballad,
+            predator,
+            bomber,
+            trapper,
+            mifune,
+            madmate,
             niceMini,
             evilMini,
             goodGuesser,
@@ -102,57 +116,14 @@ namespace TheOtherRoles
             List<RoleInfo> infos = new List<RoleInfo>();
             if (p == null) return infos;
 
-            if (Mifune.mifune != null && p == Mifune.mifune) {
-                infos.Add(new RoleInfo("Mifune",
-                Mifune.color,
-                "Kill All Crewmates",
-                "Kill All Crewmates",
-                RoleId.Mifune));
-            }
-            if (Trapper.trapper != null && p == Trapper.trapper) {
-                infos.Add(new RoleInfo("Trapper",
-                Trapper.color,
-                "Kill All Crewmates",
-                "Kill All Crewmates",
-                RoleId.Trapper));
-            }
-            if (Bomber.bomber != null && p == Bomber.bomber) {
-                infos.Add(new RoleInfo("Bomber",
-                Bomber.color,
-                "Bomb All Crewmates",
-                "Bomb All Crewmates",
-                RoleId.Bomber));
-            }
-            if (Predator.predator != null && p == Predator.predator) {
-                infos.Add(new RoleInfo("Predator",
-                Predator.color,
-                "Hide and Kill All Crewmates",
-                "Hide and Kill All Crewmates",
-                RoleId.Predator));
-            }
-            if (Ballad.ballad != null && p == Ballad.ballad) {
-                infos.Add(new RoleInfo("Ballad",
-                Ballad.color,
-                "Seal votes to not get voted out",
-                "Seal votes to not get voted out",
-                RoleId.Ballad));
-
-            }
-            if (Misimo.misimo != null && p == Misimo.misimo) {
-                infos.Add(new RoleInfo("Misimo",
-                Misimo.color,
-                "Kill All Crewmates ASAP",
-                "Kill All Crewmates ASAP",
-                RoleId.Misimo));
-            }
-            if (Madmate.madmate != null && p == Madmate.madmate) {
-                infos.Add(new RoleInfo("Madmate",
-                Madmate.color,
-                "Help Impostors",
-                "Help Impostors",
-                RoleId.Madmate));
-            }
             // Special roles
+            if (p == Misimo.misimo) infos.Add(misimo);
+            if (p == Ballad.ballad) infos.Add(ballad);
+            if (p == Predator.predator) infos.Add(predator);
+            if (p == Bomber.bomber) infos.Add(bomber);
+            if (p == Trapper.trapper) infos.Add(trapper);
+            if (p == Mifune.mifune) infos.Add(mifune);
+            if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Jester.jester) infos.Add(jester);
             if (p == Mayor.mayor) infos.Add(mayor);
             if (p == Engineer.engineer) infos.Add(engineer);

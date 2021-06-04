@@ -66,17 +66,17 @@ namespace TheOtherRoles
                 if(toggle){
                     toggle = !toggle;
                     Camera.main.orthographicSize /= 6f;
-                    HudManager.Instance.ShadowQuad.gameObject.SetActive(true);
-                    HudManager.Instance.KillButton.gameObject.SetActive(true);
-                    HudManager.Instance.UseButton.gameObject.SetActive(true);
-                    HudManager.Instance.ReportButton.gameObject.SetActive(true);
+                    // HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                    // HudManager.Instance.KillButton.gameObject.SetActive(true);
+                    // HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    // HudManager.Instance.ReportButton.gameObject.SetActive(true);
                 }else{
                     toggle = !toggle;
                     Camera.main.orthographicSize *= 6f;
-                    HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
-                    HudManager.Instance.KillButton.gameObject.SetActive(false);
-                    HudManager.Instance.UseButton.gameObject.SetActive(true);
-                    HudManager.Instance.ReportButton.gameObject.SetActive(false);
+                    // HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                    // HudManager.Instance.KillButton.gameObject.SetActive(false);
+                    // HudManager.Instance.UseButton.gameObject.SetActive(true);
+                    // HudManager.Instance.ReportButton.gameObject.SetActive(false);
                 }
             }
             public static void clearAndReload() {
