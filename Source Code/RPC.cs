@@ -393,17 +393,31 @@ namespace TheOtherRoles
         }
         public static void trapperKill(byte targetId){
             if(CustomOptionHolder.trapperUnmoveable.getBool()){
-                HudManager.Instance.StartCoroutine(Effects.Lerp(CustomOptionHolder.balladTimer.getFloat(), new Action<float>((p) => 
+                Trapper.meetingFlag = false;
+                HudManager.Instance.StartCoroutine(Effects.Lerp(CustomOptionHolder.trapperTrapDuration.getFloat(), new Action<float>((p) => 
                 {
-                    if(p==1f){
+                    if(Trapper.baseTrueSpeed == 0.0){
+                        Trapper.baseTrueSpeed = Trapper.trapper.MyPhysics.TrueSpeed;
+                    }
+                    if(p==1f || Trapper.meetingFlag){
                         foreach(PlayerControl player in PlayerControl.AllPlayerControls){
-                            if(player.PlayerId == targetId)
+                            if(player.PlayerId == targetId){
+                                Trapper.basePos = Trapper.zero;
                                 player.moveable = true;
+                                Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(Trapper.baseTrueSpeed);
+                            }
                         }
                     }else{
                         foreach(PlayerControl player in PlayerControl.AllPlayerControls){
-                            if(player.PlayerId == targetId)
+                            if(player.PlayerId == targetId){
+                                if(Trapper.basePos == Trapper.zero){
+                                    Trapper.basePos = player.transform.position;
+                                }
+                                player.transform.position = Trapper.basePos;
+                                player.MyPhysics.ResetMoveState();
                                 player.moveable = false;
+                                Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(0.0f);
+                            }
                         }
 
                     }

@@ -104,10 +104,11 @@ namespace TheOtherRoles {
                             } else if (diff < 0) {
                                 message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a newer version of The Other Roles (v{playerVersions[client.Id].version.ToString()})\n</color>";
                                 blockStart = true;
-                            } else if (!PV.GuidMatches()) { // version presumably matches, check if Guid matches
-                                message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of TOR v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
-                                blockStart = true;
                             }
+                            // } else if (!PV.GuidMatches()) { // version presumably matches, check if Guid matches
+                            //    message += $"<color=#FF0000FF>{client.Character.Data.PlayerName} has a modified version of TOR v{playerVersions[client.Id].version.ToString()} <size=30%>({PV.guid.ToString()})</size>\n</color>";
+                            //    blockStart = true;
+                            //}
                         }
                     }
                     if (blockStart) {

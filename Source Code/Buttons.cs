@@ -371,7 +371,7 @@ namespace TheOtherRoles
                 },
                 () => { /*ボタン有効になる条件*/return Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead; },
                 () => { /*ボタンが使える条件*/
-                    return Trapper.trap == Trapper.zero;
+                    return Trapper.trap == Trapper.zero && Trapper.basePos == Trapper.zero;
                 },
                 () => { /*ミーティング終了時*/
                     trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;

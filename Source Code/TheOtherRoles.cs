@@ -129,6 +129,9 @@ namespace TheOtherRoles
             public static float cooldown = 30f;
             public static Vector3 trap;
             public static Vector3 zero = new Vector3(0, 0, 0);
+            public static float baseTrueSpeed = 0.0f;
+            public static bool meetingFlag = false;
+            public static Vector3 basePos = new Vector3(0, 0, 0);
             public static Sprite getTrapButtonSprite() {
                 if (trapButtonSprite) return trapButtonSprite;
                 trapButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapperTrapButton.png", 115f);
@@ -161,6 +164,9 @@ namespace TheOtherRoles
             public static void clearAndReload() {
                 trap = new Vector3(0, 0, 0);
                 cooldown = CustomOptionHolder.trapperCooldown.getFloat();
+                baseTrueSpeed = 0.0f;
+                basePos = new Vector3(0, 0, 0);
+                meetingFlag = false;
             }
         }
 

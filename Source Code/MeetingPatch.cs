@@ -457,7 +457,6 @@ namespace TheOtherRoles
             public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) {
                 // Ballad
                 Ballad.meetingCount += 1;
-
                 // Reset vampire bitten
                 Vampire.bitten = null;
                 // Count meetings
@@ -474,6 +473,23 @@ namespace TheOtherRoles
                 if (target == null && blockSkippingInEmergencyMeetings)
                     __instance.SkipVoteButton.gameObject.SetActive(false);
             }
+        }
+
+        // Trapperの解除処理
+        [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.CallMeeting))]
+        class EmergencyMinigameCallMeetingPatch {
+            static void Prefix(EmergencyMinigame __instance){
+                Trapper.meetingFlag = true;
+                System.Console.WriteLine("EmergencyMinigameCallMeetingPatch");
+            }
+        }
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
+        class PlayerControlReportDeadBodyPatch{
+            static void Prefix(PlayerControl __instance){
+                Trapper.meetingFlag = true;
+                System.Console.WriteLine("PlayerControlReportDeadBodyPatch");
+            }
+
         }
     }
 }
