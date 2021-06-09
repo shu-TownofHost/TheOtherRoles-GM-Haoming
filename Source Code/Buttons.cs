@@ -380,7 +380,7 @@ namespace TheOtherRoles
                 Trapper.getTrapButtonSprite(),
                 Trapper.getButtonPos(),
                 __instance,
-                KeyCode.Q
+                KeyCode.F
             );
 
             trapperUnsetTrapButton = new CustomButton(
@@ -398,7 +398,7 @@ namespace TheOtherRoles
                 Trapper.getUnsetButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0f), //　ボタン位置
                 __instance,
-                KeyCode.Q
+                KeyCode.G
             );
 
 
