@@ -29,7 +29,8 @@ namespace TheOtherRoles
 
                     if (playerVoteArea.VotedFor != 252 && playerVoteArea.VotedFor != 255 && playerVoteArea.VotedFor != 254) {
                         PlayerControl player = Helpers.playerById((byte)playerVoteArea.TargetPlayerId);
-                        if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected || player.Data.PlayerId == Ballad.target.PlayerId) continue;
+                        if (player == null || player.Data == null || player.Data.IsDead || player.Data.Disconnected ) continue;
+                        if(Ballad.target != null && player.Data.PlayerId == Ballad.target.PlayerId) continue;
 
                         int currentVotes;
                         int additionalVotes = (Mayor.mayor != null && Mayor.mayor.PlayerId == playerVoteArea.TargetPlayerId) ? 2 : 1; // Mayor vote
