@@ -375,6 +375,7 @@ namespace TheOtherRoles
                 },
                 () => { /*ミーティング終了時*/
                     trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
+                    Trapper.unsetTrap();
                     TrapEffect.clearTrapEffects();
                 },
                 Trapper.getTrapButtonSprite(),
