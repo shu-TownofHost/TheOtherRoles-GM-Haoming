@@ -109,7 +109,15 @@ namespace TheOtherRoles {
         public static CustomOption jackalCanCreateSidekickFromImpostor;
         public static CustomOption jackalAndSidekickHaveImpostorVision;
 
+        public static CustomOption bountyHunterSpawnRate;
+        public static CustomOption bountyHunterBountyDuration;
+        public static CustomOption bountyHunterReducedCooldown;
+        public static CustomOption bountyHunterPunishmentTime;
+        public static CustomOption bountyHunterShowArrow;
+        public static CustomOption bountyHunterArrowUpdateIntervall;
+
         public static CustomOption shifterSpawnRate;
+        public static CustomOption shifterShiftsModifiers;
 
         public static CustomOption mayorSpawnRate;
 
@@ -246,17 +254,28 @@ namespace TheOtherRoles {
             warlockSpawnRate = CustomOption.Create(270, cs(Cleaner.color, "Warlock"), rates, null, true);
             warlockCooldown = CustomOption.Create(271, "Warlock Cooldown", 30f, 10f, 60f, 2.5f, warlockSpawnRate);
             warlockRootTime = CustomOption.Create(272, "Warlock Root Time", 5f, 0f, 15f, 1f, warlockSpawnRate);
+            bountyHunterSpawnRate = CustomOption.Create(320, cs(BountyHunter.color, "Bounty Hunter"), rates, null, true);
+
+
+            bountyHunterBountyDuration = CustomOption.Create(321, "Duration After Which Bounty Changes",  60f, 10f, 180f, 10f, bountyHunterSpawnRate);
+            bountyHunterReducedCooldown = CustomOption.Create(322, "Cooldown After Killing Bounty", 2.5f, 0f, 30f, 2.5f, bountyHunterSpawnRate);
+            bountyHunterPunishmentTime = CustomOption.Create(323, "Additional Cooldown After Killing Others", 20f, 0f, 60f, 2.5f, bountyHunterSpawnRate);
+            bountyHunterShowArrow = CustomOption.Create(324, "Show Arrow Pointing Towards The Bounty", true, bountyHunterSpawnRate);
+            bountyHunterArrowUpdateIntervall = CustomOption.Create(325, "Arrow Update Intervall", 15f, 2.5f, 60f, 2.5f, bountyHunterShowArrow);
+
 
             misimoSpawnRate = CustomOption.Create(295, cs(Misimo.color, "Misimo"), rates, null, true);
             misimoCooldown = CustomOption.Create(296, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
             misimoDuration = CustomOption.Create(297, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
             misimoInvisibleOn = CustomOption.Create(298, "Toggle Invisible On/Off", true, misimoSpawnRate);
 
+
             balladSpawnRate = CustomOption.Create(360, cs(Ballad.color, "Ballad"), rates, null, true);
             balladCooldown = CustomOption.Create(361, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
             balladTimer = CustomOption.Create(362, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
             balladSetOnce = CustomOption.Create(363, "Ballad Can Only Set Target Once", true, balladSpawnRate);
             balladShowSealedVote = CustomOption.Create(364, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
+
 
             predatorSpawnRate = CustomOption.Create(320, cs(Predator.color, "Predator"), rates, null, true);
             predatorInvisibleCooldown = CustomOption.Create(321, "Predator Invisible Cooldown", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
@@ -273,16 +292,18 @@ namespace TheOtherRoles {
             bomberPlantSingleTarget = CustomOption.Create(335,"Bomber Plant Single Target", true, bomberSpawnRate);
             bomberAOE = CustomOption.Create(336,"Bomber AOE", true, bomberSpawnRate);
 
+
             trapperSpawnRate = CustomOption.Create(340, cs(Trapper.color, "Trapper"), rates, null, true);
             trapperCooldown = CustomOption.Create(341, "Trapper Cooldown", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
             trapperUnmoveable = CustomOption.Create(342, "Trapper Trap Unmoveable", false, trapperSpawnRate);
             trapperTrapDuration = CustomOption.Create(343, "Trapper Trap Duration", 15f, 0f, 60f, 2.5f, trapperUnmoveable);
 
+
             mifuneSpawnRate = CustomOption.Create(350, cs(Mifune.color, "Mifune"), rates, null, true);
             mifuneCooldown = CustomOption.Create(351, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
             mifuneDuration = CustomOption.Create(352, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
 
-            
+
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
             miniGrowingUpDuration = CustomOption.Create(181, "Mini Growing Up Duration", 400f, 100f, 1500f, 100f, miniSpawnRate);
 
@@ -319,6 +340,7 @@ namespace TheOtherRoles {
             jackalAndSidekickHaveImpostorVision = CustomOption.Create(430, "Jackal And Sidekick Have Impostor Vision", false, jackalSpawnRate);
 
             shifterSpawnRate = CustomOption.Create(70, cs(Shifter.color, "Shifter"), rates, null, true);
+            shifterShiftsModifiers = CustomOption.Create(71, "Shifter Shifts Modifiers", false, shifterSpawnRate);
 
             mayorSpawnRate = CustomOption.Create(80, cs(Mayor.color, "Mayor"), rates, null, true);
 
@@ -391,6 +413,8 @@ namespace TheOtherRoles {
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});
+            blockedRolePairings.Add((byte)RoleId.Spy, new [] { (byte)RoleId.Mini});
+            blockedRolePairings.Add((byte)RoleId.Mini, new [] { (byte)RoleId.Spy});
             
         }
     }
@@ -720,10 +744,10 @@ namespace TheOtherRoles {
                 gap = 5;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index, "\n");
-                gap = 20;
+                gap = 21;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 27;
+                gap = 29;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             } else if (counter == 2) {
