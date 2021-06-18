@@ -48,7 +48,12 @@ namespace TheOtherRoles
                     if (playerVoteArea.TargetPlayerId == Swapper.playerId2) swapped2 = playerVoteArea;
                 }
 
-                if (swapped1 != null && swapped2 != null && dictionary.ContainsKey(swapped1.TargetPlayerId) && dictionary.ContainsKey(swapped2.TargetPlayerId)) {
+                if (swapped1 != null && swapped2 != null) {
+                    if(!dictionary.ContainsKey(swapped1.TargetPlayerId))
+                        dictionary[swapped1.TargetPlayerId] = 0;
+                    if(!dictionary.ContainsKey(swapped2.TargetPlayerId))
+                        dictionary[swapped2.TargetPlayerId] = 0;
+
                     int tmp = dictionary[swapped1.TargetPlayerId];
                     dictionary[swapped1.TargetPlayerId] = dictionary[swapped2.TargetPlayerId];
                     dictionary[swapped2.TargetPlayerId] = tmp;
@@ -218,7 +223,6 @@ namespace TheOtherRoles
                         writer.Write((byte)firstPlayer.TargetPlayerId);
                         writer.Write((byte)secondPlayer.TargetPlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-
                         RPCProcedure.swapperSwap((byte)firstPlayer.TargetPlayerId, (byte)secondPlayer.TargetPlayerId);
                     }
                 }
