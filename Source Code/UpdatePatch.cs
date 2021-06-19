@@ -188,7 +188,7 @@ namespace TheOtherRoles
         static void PredatorActions(){
 
             // 見た目をカモフラージュ状態に
-            if(Predator.predator !=null && !Predator.visibility){
+            if(Predator.predator !=null && !Predator.visibility && !Predator.predator.Data.IsDead){
                 Predator.predator.nameText.text = "";
                 Predator.predator.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
                 Predator.predator.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
@@ -208,13 +208,44 @@ namespace TheOtherRoles
             }
 
             // 見た目を元に戻す
-            if(Predator.predator !=null && Predator.visibility ){
+            if(Predator.predator !=null && Predator.visibility && !Predator.predator.Data.IsDead){
                 Predator.predator.SetName(Predator.predator.Data.PlayerName);
                 Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
                 Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);
                 Predator.predator.SetPet(Predator.predator.Data.PetId);
                 Predator.predator.CurrentPet.Visible = Predator.predator.Visible;
                 Predator.predator.SetColor(Predator.predator.Data.ColorId);
+            }
+        }
+        static void MisimoActions(){
+            // 見た目をカモフラージュ状態に
+            if(Misimo.misimo !=null && !Misimo.visibility && !Misimo.misimo.Data.IsDead){
+                Misimo.misimo.nameText.text = "";
+                Misimo.misimo.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+                Misimo.misimo.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+                Misimo.misimo.HatRenderer.SetHat(0, 0);
+                Helpers.setSkinWithAnim(Misimo.misimo.MyPhysics, 0);
+                bool spawnPet = false;
+                if (Misimo.misimo.CurrentPet == null) spawnPet = true;
+                else if (Misimo.misimo.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+                    UnityEngine.Object.Destroy(Misimo.misimo.CurrentPet.gameObject);
+                    spawnPet = true;
+                }
+                if (spawnPet) {
+                    Misimo.misimo.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+                    Misimo.misimo.CurrentPet.transform.position = Misimo.misimo.transform.position;
+                    Misimo.misimo.CurrentPet.Source = Misimo.misimo;
+                }
+            }
+
+            // 見た目を元に戻す
+            if(Misimo.misimo !=null && Misimo.visibility && !Misimo.misimo.Data.IsDead){
+                Misimo.misimo.SetName(Misimo.misimo.Data.PlayerName);
+                Misimo.misimo.SetHat(Misimo.misimo.Data.HatId, (int)Misimo.misimo.Data.ColorId);
+                Helpers.setSkinWithAnim(Misimo.misimo.MyPhysics, Misimo.misimo.Data.SkinId);
+                Misimo.misimo.SetPet(Misimo.misimo.Data.PetId);
+                Misimo.misimo.CurrentPet.Visible = Misimo.misimo.Visible;
+                Misimo.misimo.SetColor(Misimo.misimo.Data.ColorId);
             }
         }
 
@@ -358,6 +389,8 @@ namespace TheOtherRoles
             timerUpdate();
             // Predator
             PredatorActions();
+            // Misimo
+            MisimoActions();
             // Camouflager and Morphling
             camouflageAndMorphActions();
             // lighterActions
