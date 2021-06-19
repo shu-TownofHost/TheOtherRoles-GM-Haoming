@@ -532,6 +532,45 @@ namespace TheOtherRoles {
                 }
             }
         }
+        static void impostorArrorwUpdate(){
+             ImpostorPlayer.updateTimer -= Time.fixedDeltaTime;
+
+            if(PlayerControl.LocalPlayer.Data.IsImpostor && ImpostorPlayer.updateTimer <= 0.0f){
+                foreach(Arrow arrow in ImpostorPlayer.arrows){
+                    arrow.arrow.SetActive(false);
+                    UnityEngine.Object.Destroy(arrow.arrow);
+                }
+                ImpostorPlayer.arrows = new List<Arrow>();
+                // 二人以上で固まっているユーザーを取得
+                List<PlayerControl> players = new List<PlayerControl>();
+                foreach(PlayerControl p1 in PlayerControl.AllPlayerControls){
+                    if(p1 == PlayerControl.LocalPlayer || p1.Data.IsDead) continue;
+                    if(players.Contains(p1)) continue;
+                    foreach(PlayerControl p2 in PlayerControl.AllPlayerControls){
+                        if(p1 == p2 || p2 == PlayerControl.LocalPlayer || p2.Data.IsDead) continue;
+                        float dist = Vector2.Distance(p1.transform.position, p2.transform.position);
+                        System.Console.WriteLine(dist);
+                        if(dist < 5f){
+                            if(!players.Contains(p1)) players.Add(p1);
+                            if(!players.Contains(p2)) players.Add(p2);
+                        }
+                    }
+                }
+                foreach(PlayerControl p in players){
+                    System.Console.WriteLine($"position: {p.transform.position}");
+                    Arrow arrow;
+                    if(p.Data.IsImpostor){
+                        arrow = new Arrow(Color.yellow);
+                    }else{
+                        arrow = new Arrow(Color.white);
+                    }
+                    arrow.arrow.SetActive(true);
+                    arrow.Update(p.transform.position);
+                    ImpostorPlayer.arrows.Add(arrow);
+                }
+                ImpostorPlayer.updateTimer = 1.0f;
+            }
+        }
 
         static void bountyHunterUpdate() {
             if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
@@ -648,6 +687,9 @@ namespace TheOtherRoles {
                 // Trapper
                 trapperSetTarget();
                 TrapEffect.UpdateAll();
+                // Impostor
+                impostorArrorwUpdate();
+
                 // Snitch
                 snitchUpdate();
                 // BountyHunter

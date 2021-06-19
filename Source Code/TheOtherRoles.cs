@@ -60,6 +60,15 @@ namespace TheOtherRoles
             Trapper.clearAndReload();
             Mifune.clearAndReload();
             SoulPlayer.clearAndReload();
+            ImpostorPlayer.clearAndReload();
+        }
+        public static class ImpostorPlayer{
+            public static List<Arrow> arrows = new List<Arrow>();
+            public static float updateTimer = 1.0f;
+            public static void clearAndReload(){
+                arrows = new List<Arrow>();
+                updateTimer = 1.0f;
+            }
         }
         public static class SoulPlayer {
             public static bool toggle = false;
