@@ -451,12 +451,14 @@ namespace TheOtherRoles {
 
         public static void Prefix(PlayerControl __instance) {
             // Misimoは消えることができる
-            if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
-                Misimo.misimo.Visible = Misimo.visibility;
-            } else if(Misimo.misimo != null && !Misimo.misimo.Data.IsDead && Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
-                Misimo.misimo.Visible = true;
-            } else if(Misimo.misimo != null && PlayerControl.LocalPlayer.Data.IsDead){
-                Misimo.misimo.Visible = true;
+            if(Misimo.misimo != null && !Misimo.misimo.inVent){
+                if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){
+                    Misimo.misimo.Visible = Misimo.visibility;
+                } else if(Misimo.misimo != null && !Misimo.misimo.Data.IsDead && Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
+                    Misimo.misimo.Visible = true;
+                } else if(Misimo.misimo != null && PlayerControl.LocalPlayer.Data.IsDead){
+                    Misimo.misimo.Visible = true;
+                }
             }
 
             // Predatorも消えることができる、さらに高速移動可能
@@ -470,12 +472,14 @@ namespace TheOtherRoles {
                 }
             }
 
-            if(Predator.predator != null && Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
-                Predator.predator.Visible = Predator.visibility;
-            } else if(Predator.predator != null && !Predator.predator.Data.IsDead && (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
-                Predator.predator.Visible = true;
-            } else if(Predator.predator != null && PlayerControl.LocalPlayer.Data.IsDead){
-                Predator.predator.Visible = true;
+            if(Predator.predator != null && !Predator.predator.inVent){
+                if(Predator.predator != null && Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
+                    Predator.predator.Visible = Predator.visibility;
+                } else if(Predator.predator != null && !Predator.predator.Data.IsDead && (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
+                    Predator.predator.Visible = true;
+                } else if(Predator.predator != null && PlayerControl.LocalPlayer.Data.IsDead){
+                    Predator.predator.Visible = true;
+                }
             }
 
             if(Predator.predator != null && Predator.predator == __instance){
@@ -532,9 +536,15 @@ namespace TheOtherRoles {
                 }
             }
         }
-        static void impostorArrorwUpdate(){
+
+        static void impostorArrowUpdate(){
             // 設定でOFFの場合は表示しない
             if(!CustomOptionHolder.ImpostorArrow.getBool()) return;
+            // Impostor以外の場合は表示しない
+            if(!PlayerControl.LocalPlayer.Data.IsImpostor) return;
+
+            //System.Console.WriteLine($"{PlayerControl.LocalPlayer.transform.position.x},{PlayerControl.LocalPlayer.transform.position.y}");
+            //System.Console.WriteLine($"{PlayerControl.LocalPlayer.inVent}");
 
             // 前フレームからの経過時間をマイナスする
             ImpostorPlayer.updateTimer -= Time.fixedDeltaTime;
@@ -571,7 +581,7 @@ namespace TheOtherRoles {
                     if(p.Data.IsImpostor){
                         arrow = new Arrow(Color.yellow);
                     }else{
-                        arrow = new Arrow(Color.white);
+                        arrow = new Arrow(Color.green);
                     }
                     arrow.arrow.SetActive(true);
                     arrow.Update(p.transform.position);
@@ -634,6 +644,17 @@ namespace TheOtherRoles {
                     BountyHunter.arrowUpdateTimer = BountyHunter.arrowUpdateIntervall;
                 }
                 BountyHunter.arrow.Update();
+            }
+        }
+        static void polusAdditionalVentsUpdate(){
+            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                if(!p.Data.IsDead && p.Data.IsImpostor){
+                    if(p.inVent){
+                        p.Visible = false;
+                    }else{
+                        p.Visible = true;
+                    }
+                }
             }
         }
 
@@ -700,7 +721,7 @@ namespace TheOtherRoles {
                 trapperSetTarget();
                 TrapEffect.UpdateAll();
                 // Impostor
-                impostorArrorwUpdate();
+                impostorArrowUpdate();
 
                 // Snitch
                 snitchUpdate();
