@@ -1,5 +1,6 @@
 using HarmonyLib;
 using static TheOtherRoles.TheOtherRoles;
+using Hazel;
 using UnityEngine;
 
 namespace TheOtherRoles {
@@ -73,7 +74,23 @@ namespace TheOtherRoles {
             PlayerControl.GameOptions.NumShortTasks = originalNumShortTasksOption;
             PlayerControl.GameOptions.NumLongTasks = originalNumLongTasksOption;
         }
-            
-    }
 
+        // Polusの湧き位置をランダムにする
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.SpawnPlayer))]
+        public static void Postfix4(ShipStatus __instance, PlayerControl player, int numPlayers, bool initialSpawn){
+            if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusRandomSpawn.getBool()){
+                if(AmongUsClient.Instance.AmHost){
+                    System.Random rand = new System.Random();
+                    int randVal = rand.Next(0,6);
+                    System.Console.WriteLine("spawnPlayer");
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RandomSpawn, Hazel.SendOption.Reliable, -1);
+                    writer.Write((byte)player.Data.PlayerId);
+                    writer.Write((byte)randVal);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.randomSpawn((byte)player.Data.PlayerId, (byte)randVal);
+                }
+            }
+        }
+    }
 }

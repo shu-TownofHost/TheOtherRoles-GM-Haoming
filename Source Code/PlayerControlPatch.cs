@@ -533,14 +533,24 @@ namespace TheOtherRoles {
             }
         }
         static void impostorArrorwUpdate(){
-             ImpostorPlayer.updateTimer -= Time.fixedDeltaTime;
+            // 設定でOFFの場合は表示しない
+            if(!CustomOptionHolder.ImpostorArrow.getBool()) return;
 
+            // 前フレームからの経過時間をマイナスする
+            ImpostorPlayer.updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
             if(PlayerControl.LocalPlayer.Data.IsImpostor && ImpostorPlayer.updateTimer <= 0.0f){
+
+                // 前回のArrowをすべて破棄する
                 foreach(Arrow arrow in ImpostorPlayer.arrows){
                     arrow.arrow.SetActive(false);
                     UnityEngine.Object.Destroy(arrow.arrow);
                 }
+
+                // Arrorw一覧
                 ImpostorPlayer.arrows = new List<Arrow>();
+
                 // 二人以上で固まっているユーザーを取得
                 List<PlayerControl> players = new List<PlayerControl>();
                 foreach(PlayerControl p1 in PlayerControl.AllPlayerControls){
@@ -549,15 +559,14 @@ namespace TheOtherRoles {
                     foreach(PlayerControl p2 in PlayerControl.AllPlayerControls){
                         if(p1 == p2 || p2 == PlayerControl.LocalPlayer || p2.Data.IsDead) continue;
                         float dist = Vector2.Distance(p1.transform.position, p2.transform.position);
-                        System.Console.WriteLine(dist);
                         if(dist < 5f){
                             if(!players.Contains(p1)) players.Add(p1);
                             if(!players.Contains(p2)) players.Add(p2);
                         }
                     }
                 }
+                // ユーザーの位置を示すArrorwを描画
                 foreach(PlayerControl p in players){
-                    System.Console.WriteLine($"position: {p.transform.position}");
                     Arrow arrow;
                     if(p.Data.IsImpostor){
                         arrow = new Arrow(Color.yellow);
@@ -568,6 +577,8 @@ namespace TheOtherRoles {
                     arrow.Update(p.transform.position);
                     ImpostorPlayer.arrows.Add(arrow);
                 }
+
+                // タイマーに時間をセット
                 ImpostorPlayer.updateTimer = 1.0f;
             }
         }
@@ -633,6 +644,7 @@ namespace TheOtherRoles {
             playerSizeUpdate(__instance);
             
             if (PlayerControl.LocalPlayer == __instance) {
+                // System.Console.WriteLine($"{PlayerControl.LocalPlayer.transform.position.x}, {PlayerControl.LocalPlayer.transform.position.y}");
                 // Update player outlines
                 setBasePlayerOutlines();
 
