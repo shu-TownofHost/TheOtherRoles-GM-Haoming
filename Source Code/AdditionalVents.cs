@@ -20,8 +20,9 @@ namespace TheOtherRoles {
 		vent.Left = null;
 		vent.Right = null;
 		vent.Center = null;
-		// vent.EnterVentAnim = null;
-		// vent.ExitVentAnim = null;
+		Vent tmp = ShipStatus.Instance.AllVents[0];
+		vent.EnterVentAnim = tmp.EnterVentAnim;
+		vent.ExitVentAnim = tmp.ExitVentAnim;
 		vent.Offset = new Vector3(0f, 0.25f, 0f);
 		vent.Id = ShipStatus.Instance.AllVents.Select(x => x.Id).Max() + 1; // Make sure we have a unique id
 		var allVentsList = ShipStatus.Instance.AllVents.ToList();
@@ -31,8 +32,10 @@ namespace TheOtherRoles {
 		vent.name = "AdditionalVent_" + vent.Id;
 		AllVents.Add(this);
 	    }
-	    public static void CleanAndReload(){
+	    public static void ClearAndReload(){
+                    System.Console.WriteLine("additionalVentsClearAndReload");
 		    flag = false;
+		    AllVents = new List<AdditionalVents>();
 	    }
     }
 }

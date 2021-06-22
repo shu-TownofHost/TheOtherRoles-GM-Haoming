@@ -593,11 +593,12 @@ namespace TheOtherRoles {
             }
         }
         static void additionalVentsUpdate(){
-            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
             if (AdditionalVents.flag) return;
             AdditionalVents.flag = true;
-            HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => { // Delayed acti
+            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
+            HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => { // Delayed action
                 if(p == 1f){
+                    if(AdditionalVents.AllVents.Count()>0) return;
                     System.Console.WriteLine("additionalVentsUpdate");
                     // Polusにベントを追加する
                     if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.additionalVents.getBool()){
