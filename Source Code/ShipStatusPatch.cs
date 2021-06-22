@@ -92,7 +92,7 @@ namespace TheOtherRoles {
                 }
                 PolusAdditionalVents vents1 = new PolusAdditionalVents(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
                 PolusAdditionalVents vents2 = new PolusAdditionalVents(new Vector3(16.64f, -2.46f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // InitialSpawn
-                PolusAdditionalVents vents3 = new PolusAdditionalVents(new Vector3(26.67f, -17.34f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
+                PolusAdditionalVents vents3 = new PolusAdditionalVents(new Vector3(26.67f, -17.54f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
                 //vents1.vent.Right = vents2.vent; // Specimen - InitialSpawn
                 vents1.vent.Left = vents3.vent; // Specimen - Vital
                 //vents2.vent.Right = vents1.vent; // InitialSpawn - Specimen
