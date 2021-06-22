@@ -543,7 +543,7 @@ namespace TheOtherRoles {
             // Impostor以外の場合は表示しない
             if(!PlayerControl.LocalPlayer.Data.IsImpostor) return;
 
-            //System.Console.WriteLine($"{PlayerControl.LocalPlayer.transform.position.x},{PlayerControl.LocalPlayer.transform.position.y}");
+            System.Console.WriteLine($"{PlayerControl.LocalPlayer.transform.position.x},{PlayerControl.LocalPlayer.transform.position.y}");
             //System.Console.WriteLine($"{PlayerControl.LocalPlayer.inVent}");
 
             // 前フレームからの経過時間をマイナスする
@@ -591,6 +591,35 @@ namespace TheOtherRoles {
                 // タイマーに時間をセット
                 ImpostorPlayer.updateTimer = 1.0f;
             }
+        }
+        static void additionalVentsUpdate(){
+            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
+            if (AdditionalVents.flag) return;
+            AdditionalVents.flag = true;
+            HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => { // Delayed acti
+                if(p == 1f){
+                    System.Console.WriteLine("additionalVentsUpdate");
+                    // Polusにベントを追加する
+                    if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.additionalVents.getBool()){
+                        AdditionalVents vents1 = new AdditionalVents(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
+                        AdditionalVents vents2 = new AdditionalVents(new Vector3(16.64f, -2.46f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // InitialSpawn
+                        AdditionalVents vents3 = new AdditionalVents(new Vector3(26.67f, -17.54f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
+                        //vents1.vent.Right = vents2.vent; // Specimen - InitialSpawn
+                        vents1.vent.Left = vents3.vent; // Specimen - Vital
+                        //vents2.vent.Right = vents1.vent; // InitialSpawn - Specimen
+                        vents2.vent.Center = vents3.vent; // InitialSpawn - Vital
+                        vents3.vent.Right = vents1.vent; // Vital - Specimen
+                        vents3.vent.Left = vents2.vent; // Vital - InitialSpawn
+                    }
+                    // AirShipにベントを追加する
+                    if(PlayerControl.GameOptions.MapId == 4 && CustomOptionHolder.additionalVents.getBool()){
+                        AdditionalVents vents1 = new AdditionalVents(new Vector3(17.086f, 15.24f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // MeetingRoom
+                        AdditionalVents vents2 = new AdditionalVents(new Vector3(19.137f, -11.32f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Electrical
+                        vents1.vent.Right = vents2.vent;
+                        vents2.vent.Left = vents1.vent;
+                    }
+                }
+            })));
         }
 
         static void bountyHunterUpdate() {
@@ -644,17 +673,6 @@ namespace TheOtherRoles {
                     BountyHunter.arrowUpdateTimer = BountyHunter.arrowUpdateIntervall;
                 }
                 BountyHunter.arrow.Update();
-            }
-        }
-        static void polusAdditionalVentsUpdate(){
-            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-                if(!p.Data.IsDead && p.Data.IsImpostor){
-                    if(p.inVent){
-                        p.Visible = false;
-                    }else{
-                        p.Visible = true;
-                    }
-                }
             }
         }
 
@@ -727,6 +745,9 @@ namespace TheOtherRoles {
                 snitchUpdate();
                 // BountyHunter
                 bountyHunterUpdate();
+
+                // additional vents update
+                additionalVentsUpdate();
             } 
         }
     }

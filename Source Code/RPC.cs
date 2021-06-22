@@ -115,6 +115,7 @@ namespace TheOtherRoles
         // Main Controls
 
         public static void resetVariables() {
+            AdditionalVents.flag = false;
             BombEffect.clearBombEffects();
             TrapEffect.clearTrapEffects();
             Garlic.clearGarlics();

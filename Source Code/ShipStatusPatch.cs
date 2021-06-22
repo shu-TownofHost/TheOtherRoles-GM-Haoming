@@ -2,6 +2,7 @@ using HarmonyLib;
 using static TheOtherRoles.TheOtherRoles;
 using Hazel;
 using UnityEngine;
+using System;
 
 namespace TheOtherRoles {
 
@@ -75,10 +76,10 @@ namespace TheOtherRoles {
             PlayerControl.GameOptions.NumLongTasks = originalNumLongTasksOption;
         }
 
-        // Polusの湧き位置をランダムにする
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.SpawnPlayer))]
         public static void Postfix4(ShipStatus __instance, PlayerControl player, int numPlayers, bool initialSpawn){
+            // Polusの湧き位置をランダムにする
             if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusRandomSpawn.getBool()){
                 if(AmongUsClient.Instance.AmHost){
                     System.Random rand = new System.Random();
@@ -90,16 +91,23 @@ namespace TheOtherRoles {
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     RPCProcedure.randomSpawn((byte)player.Data.PlayerId, (byte)randVal);
                 }
-                PolusAdditionalVents vents1 = new PolusAdditionalVents(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
-                PolusAdditionalVents vents2 = new PolusAdditionalVents(new Vector3(16.64f, -2.46f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // InitialSpawn
-                PolusAdditionalVents vents3 = new PolusAdditionalVents(new Vector3(26.67f, -17.54f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
-                //vents1.vent.Right = vents2.vent; // Specimen - InitialSpawn
-                vents1.vent.Left = vents3.vent; // Specimen - Vital
-                //vents2.vent.Right = vents1.vent; // InitialSpawn - Specimen
-                vents2.vent.Center = vents3.vent; // InitialSpawn - Vital
-                vents3.vent.Right = vents1.vent; // Vital - Specimen
-                vents3.vent.Left = vents2.vent; // Vital - InitialSpawn
             }
+
+            // ------
+            // PlayerControlPatchに移動
+            // ------
+            // Polusにベントを追加する
+            //if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.additionalVents.getBool()){
+            //    AdditionalVents vents1 = new AdditionalVents(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
+            //    AdditionalVents vents2 = new AdditionalVents(new Vector3(16.64f, -2.46f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // InitialSpawn
+            //    AdditionalVents vents3 = new AdditionalVents(new Vector3(26.67f, -17.54f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
+            //    //vents1.vent.Right = vents2.vent; // Specimen - InitialSpawn
+            //    vents1.vent.Left = vents3.vent; // Specimen - Vital
+            //    //vents2.vent.Right = vents1.vent; // InitialSpawn - Specimen
+            //    vents2.vent.Center = vents3.vent; // InitialSpawn - Vital
+            //    vents3.vent.Right = vents1.vent; // Vital - Specimen
+            //    vents3.vent.Left = vents2.vent; // Vital - InitialSpawn
+            //}
         }
     }
 }
