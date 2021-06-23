@@ -439,26 +439,29 @@ namespace TheOtherRoles {
 
             HttpClient http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue{ NoCache = true };
-			var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
             try {
 
                 // ローカルにjsonファイルがあったら読み込む
                 string localJson = "";
                 JToken localJobj = null;
                 string fp = Path.GetDirectoryName(Application.dataPath) + @"\TheOtherHats\CustomHats.json";
+                
                 if(File.Exists(fp)){
+                    TheOtherRolesPlugin.Instance.Log.LogInfo("Start Loading CustomHats.json");
                     using (var reader = new StreamReader(fp))
                     {
                         localJson = reader.ReadToEnd();
                         localJobj = JObject.Parse(localJson)["hats"];
                         // if(!localJobj.HasValues) return HttpStatusCode.ExpectationFailed;
                     }
+                    TheOtherRolesPlugin.Instance.Log.LogInfo("End Loading CustomHats.json");
                 }
 
                 string json = null;
                 JToken jobj = null;
 
                 if(localJobj == null || !localJobj.HasValues){
+                    var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
                     if (response.StatusCode != HttpStatusCode.OK) return response.StatusCode;
                     if (response.Content == null) {
                         TheOtherRolesPlugin.Instance.Log.LogInfo("Server returned no data: " + response.StatusCode.ToString());
@@ -521,6 +524,8 @@ namespace TheOtherRoles {
                 }
                 
                 foreach(var file in markedfordownload) {
+                    if(localJobj != null) break;
+                    TheOtherRolesPlugin.Instance.Log.LogInfo($"Download {file}");
                     
                     var hatFileResponse = await http.GetAsync($"{REPO}/hats/{file}", HttpCompletionOption.ResponseContentRead);
                     if (hatFileResponse.StatusCode != HttpStatusCode.OK) continue;
