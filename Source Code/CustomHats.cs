@@ -25,6 +25,7 @@ namespace TheOtherRoles {
     [HarmonyPatch]
     public class CustomHats { 
         private static bool LOADED = false;
+        private static bool RUNNING = false;
         public static Material hatShader;
 
         public static Dictionary<string, HatExtension> CustomHatRegistry = new Dictionary<string, HatExtension>();
@@ -197,6 +198,9 @@ namespace TheOtherRoles {
         private static class HatManagerPatch {
             static bool Prefix(HatManager __instance) {
                 try {
+                    if (RUNNING) 
+                        return true;
+                    RUNNING = true; // prevent simultanious execution
                     if (!LOADED) {
                         Assembly assembly = Assembly.GetExecutingAssembly();
                         string hatres = $"{assembly.GetName().Name}.Resources.CustomHats";
@@ -208,18 +212,21 @@ namespace TheOtherRoles {
                         foreach (CustomHat ch in customhats)
                             __instance.AllHats.Add(CreateHatBehaviour(ch));
 
-                        while (CustomHatLoader.hatdetails.Count > 0) {
-                            __instance.AllHats.Add(CreateHatBehaviour(CustomHatLoader.hatdetails[0]));
-                            CustomHatLoader.hatdetails.RemoveAt(0);
-                        }
-
                         LOADED = true;
+                    }
+                    // Allow loading of hats at later times
+                    while (CustomHatLoader.hatdetails.Count > 0) {
+                        __instance.AllHats.Add(CreateHatBehaviour(CustomHatLoader.hatdetails[0]));
+                        CustomHatLoader.hatdetails.RemoveAt(0);
                     }
                     return true;
                 } catch (System.Exception e) {
                     TheOtherRolesPlugin.Instance.Log.LogInfo("Unable to add Custom Hats\n" + e);
                     return false;
                 }
+            }
+            static void Postfix(HatManager __instance) {
+                RUNNING = false;
             }
         }
 
@@ -440,7 +447,7 @@ namespace TheOtherRoles {
             HttpClient http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue{ NoCache = true };
 			var response = await http.GetAsync(new System.Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
-            try {
+            try { // Shouldn't this attempt to load online file first, and use local as fallback?
 
                 // ローカルにjsonファイルがあったら読み込む
                 string localJson = "";
