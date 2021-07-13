@@ -113,16 +113,18 @@ namespace TheOtherRoles
             if (__instance.currentTarget != null && Trickster.trickster != null && Trickster.trickster == PlayerControl.LocalPlayer) {
                 Vent possibleVent =  __instance.currentTarget.TryCast<Vent>();
                 if (possibleVent != null && possibleVent.gameObject != null && possibleVent.gameObject.name.StartsWith("JackInTheBoxVent_")) {
-                    __instance.UseButton.sprite = Trickster.getTricksterVentButtonSprite();
+                    __instance.currentButtonShown.graphic.sprite = Trickster.getTricksterVentButtonSprite();
+                    __instance.currentButtonShown.text.enabled = false;
                 }
             }
 
             // Jester sabotage
             if (Jester.canSabotage && Jester.jester != null && Jester.jester == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.CanMove) {
                 if (!Jester.jester.Data.IsDead && __instance.currentTarget == null) { // no target, so sabotage
-                    __instance.UseButton.sprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.SabotageButton);
-                    CooldownHelpers.SetCooldownNormalizedUvs(__instance.UseButton);
-                    __instance.UseButton.color = UseButtonManager.EnabledColor;
+                    __instance.currentButtonShown.graphic.sprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.SabotageButton);
+                    __instance.currentButtonShown.text.enabled = false;
+                    CooldownHelpers.SetCooldownNormalizedUvs(__instance.currentButtonShown.graphic);
+                    __instance.currentButtonShown.graphic.color = UseButtonManager.EnabledColor;
                 }
             }
 
@@ -130,8 +132,9 @@ namespace TheOtherRoles
             bool blockSabotageJanitor = (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer);
             bool blockSabotageMafioso = (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead);
             if (__instance.currentTarget == null && (blockSabotageJanitor || blockSabotageMafioso)) {
-                __instance.UseButton.sprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.UseButton);
-                __instance.UseButton.color = new Color(1f, 1f, 1f, 0.3f);
+                __instance.currentButtonShown.graphic.sprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.UseButton);
+                __instance.currentButtonShown.graphic.color = new Color(1f, 1f, 1f, 0.3f);
+                __instance.currentButtonShown.text.enabled = false;
             }
 
         }
