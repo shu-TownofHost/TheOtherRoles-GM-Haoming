@@ -268,44 +268,44 @@ namespace TheOtherRoles {
             bountyHunterArrowUpdateIntervall = CustomOption.Create(325, "Arrow Update Intervall", 15f, 2.5f, 60f, 2.5f, bountyHunterShowArrow);
 
 
-            misimoSpawnRate = CustomOption.Create(410, cs(Misimo.color, "Misimo"), rates, null, true);
-            misimoCooldown = CustomOption.Create(411, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
-            misimoDuration = CustomOption.Create(412, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
-            misimoInvisibleOn = CustomOption.Create(413, "Toggle Invisible On/Off", true, misimoSpawnRate);
+            misimoSpawnRate = CustomOption.Create(810, cs(Misimo.color, "Misimo"), rates, null, true);
+            misimoCooldown = CustomOption.Create(811, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
+            misimoDuration = CustomOption.Create(812, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
+            misimoInvisibleOn = CustomOption.Create(813, "Toggle Invisible On/Off", true, misimoSpawnRate);
 
 
-            balladSpawnRate = CustomOption.Create(460, cs(Ballad.color, "Ballad"), rates, null, true);
-            balladCooldown = CustomOption.Create(461, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
-            balladTimer = CustomOption.Create(462, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
-            balladSetOnce = CustomOption.Create(463, "Ballad Can Only Set Target Once", true, balladSpawnRate);
-            balladShowSealedVote = CustomOption.Create(464, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
+            balladSpawnRate = CustomOption.Create(860, cs(Ballad.color, "Ballad"), rates, null, true);
+            balladCooldown = CustomOption.Create(861, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
+            balladTimer = CustomOption.Create(862, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
+            balladSetOnce = CustomOption.Create(863, "Ballad Can Only Set Target Once", true, balladSpawnRate);
+            balladShowSealedVote = CustomOption.Create(864, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
 
 
-            predatorSpawnRate = CustomOption.Create(420, cs(Predator.color, "Predator"), rates, null, true);
-            predatorInvisibleCooldown = CustomOption.Create(421, "Predator Invisible Cooldown", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
-            predatorInvisibleDuration = CustomOption.Create(422, "Predator Invisible Duration", 10f, 1f, 60f, 1f, predatorSpawnRate);
-            predatorSpeedMultiplier = CustomOption.Create(423, "Predator SpeedMultiplier", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
-            predatorHatesGarlics = CustomOption.Create(424, "Predator Hates Garlics", true, predatorSpawnRate);
+            predatorSpawnRate = CustomOption.Create(820, cs(Predator.color, "Predator"), rates, null, true);
+            predatorInvisibleCooldown = CustomOption.Create(821, "Predator Invisible Cooldown", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
+            predatorInvisibleDuration = CustomOption.Create(822, "Predator Invisible Duration", 10f, 1f, 60f, 1f, predatorSpawnRate);
+            predatorSpeedMultiplier = CustomOption.Create(823, "Predator SpeedMultiplier", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
+            predatorHatesGarlics = CustomOption.Create(824, "Predator Hates Garlics", true, predatorSpawnRate);
 
 
-            bomberSpawnRate = CustomOption.Create(430, cs(Bomber.color, "Bomber"), rates, null, true);
-            bomberPlantDuration = CustomOption.Create(431, "Bomber Plant Duration", 5f, 1f, 20f, 1.0f, bomberSpawnRate);
-            bomberPlantCooldown = CustomOption.Create(432, "Bomber Plant Cooldown", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
-            bomberDefuseAfterMeeting = CustomOption.Create(433, "Bomber Defuse After Meeting", true, bomberSpawnRate);
-            bomberBombEffect = CustomOption.Create(434, "Bomber Bomb Effect", true, bomberSpawnRate);
-            bomberPlantSingleTarget = CustomOption.Create(435,"Bomber Plant Single Target", true, bomberSpawnRate);
-            bomberAOE = CustomOption.Create(436,"Bomber AOE", true, bomberSpawnRate);
+            bomberSpawnRate = CustomOption.Create(830, cs(Bomber.color, "Bomber"), rates, null, true);
+            bomberPlantDuration = CustomOption.Create(831, "Bomber Plant Duration", 5f, 1f, 20f, 1.0f, bomberSpawnRate);
+            bomberPlantCooldown = CustomOption.Create(832, "Bomber Plant Cooldown", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
+            bomberDefuseAfterMeeting = CustomOption.Create(833, "Bomber Defuse After Meeting", true, bomberSpawnRate);
+            bomberBombEffect = CustomOption.Create(834, "Bomber Bomb Effect", true, bomberSpawnRate);
+            bomberPlantSingleTarget = CustomOption.Create(835,"Bomber Plant Single Target", true, bomberSpawnRate);
+            bomberAOE = CustomOption.Create(836,"Bomber AOE", true, bomberSpawnRate);
 
 
-            trapperSpawnRate = CustomOption.Create(440, cs(Trapper.color, "Trapper"), rates, null, true);
-            trapperCooldown = CustomOption.Create(441, "Trapper Cooldown", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
-            trapperUnmoveable = CustomOption.Create(442, "Trapper Trap Unmoveable", false, trapperSpawnRate);
+            trapperSpawnRate = CustomOption.Create(840, cs(Trapper.color, "Trapper"), rates, null, true);
+            trapperCooldown = CustomOption.Create(841, "Trapper Cooldown", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
+            trapperUnmoveable = CustomOption.Create(842, "Trapper Trap Unmoveable", false, trapperSpawnRate);
             trapperTrapDuration = CustomOption.Create(443, "Trapper Trap Duration", 15f, 0f, 60f, 2.5f, trapperUnmoveable);
 
 
-            mifuneSpawnRate = CustomOption.Create(450, cs(Mifune.color, "Mifune"), rates, null, true);
-            mifuneCooldown = CustomOption.Create(451, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
-            mifuneDuration = CustomOption.Create(452, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
+            mifuneSpawnRate = CustomOption.Create(850, cs(Mifune.color, "Mifune"), rates, null, true);
+            mifuneCooldown = CustomOption.Create(851, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
+            mifuneDuration = CustomOption.Create(852, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
 
 
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
@@ -414,9 +414,9 @@ namespace TheOtherRoles {
             blockSkippingInEmergencyMeetings = CustomOption.Create(4, "Block Skipping In Emergency Meetings", false);
             noVoteIsSelfVote = CustomOption.Create(5, "No Vote Is Self Vote", false, blockSkippingInEmergencyMeetings);
             hidePlayerNames = CustomOption.Create(6, "Hide Player Names", false);
-            polusRandomSpawn = CustomOption.Create(401, "Polus RandomSpawn", true);
-            additionalVents = CustomOption.Create(402, "Additional Vents", true);
-            ImpostorArrow = CustomOption.Create(403, "Show Impostor Arrows", true);
+            polusRandomSpawn = CustomOption.Create(801, "Polus RandomSpawn", true);
+            additionalVents = CustomOption.Create(802, "Additional Vents", true);
+            ImpostorArrow = CustomOption.Create(803, "Show Impostor Arrows", true);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});
