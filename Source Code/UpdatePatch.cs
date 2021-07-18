@@ -185,6 +185,30 @@ namespace TheOtherRoles
             Trickster.lightsOutTimer -= Time.deltaTime;
         }
 
+		static void MunouActions(){
+			if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+				foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+					if(p == Munou.munou) continue;
+					p.nameText.text = "";
+					p.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+					p.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+					p.HatRenderer.SetHat(0, 0);
+					Helpers.setSkinWithAnim(p.MyPhysics, 0);
+					bool spawnPet = false;
+					if (p.CurrentPet == null) spawnPet = true;
+					else if (p.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+						UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
+						spawnPet = true;
+					}
+					if (spawnPet) {
+						p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+						p.CurrentPet.transform.position = p.transform.position;
+						p.CurrentPet.Source = p;
+					}
+
+				}
+			}
+		}
         static void PredatorActions(){
 
             // 見た目をカモフラージュ状態に
@@ -397,6 +421,8 @@ namespace TheOtherRoles
             lighterActions();
             // Mini
             miniUpdate();
+			// Munou
+			MunouActions();
         }
     }
 }

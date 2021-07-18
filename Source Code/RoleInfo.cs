@@ -66,6 +66,7 @@ namespace TheOtherRoles
         public static RoleInfo trapper = new RoleInfo("Trapper", Trapper.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Trapper);
         public static RoleInfo mifune = new RoleInfo("Mifune", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Mifune);
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
+        public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
             impostor,
@@ -112,6 +113,7 @@ namespace TheOtherRoles
             snitch,
             spy,
             securityGuard,
+			munou,
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
@@ -126,6 +128,7 @@ namespace TheOtherRoles
             if (p == Trapper.trapper) infos.Add(trapper);
             if (p == Mifune.mifune) infos.Add(mifune);
             if (p == Madmate.madmate) infos.Add(madmate);
+            if (p == Munou.munou) infos.Add(munou);
             if (p == Jester.jester) infos.Add(jester);
             if (p == Mayor.mayor) infos.Add(mayor);
             if (p == Engineer.engineer) infos.Add(engineer);

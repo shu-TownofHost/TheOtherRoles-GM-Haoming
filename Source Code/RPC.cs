@@ -52,6 +52,7 @@ namespace TheOtherRoles
         Bomber,
         Trapper,
         Mifune,
+		Munou,
         Crewmate,
         Impostor
     }
@@ -167,6 +168,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Madmate:
                         Madmate.madmate = player;
+                        break;
+                    case RoleId.Munou:
+                        Munou.munou = player;
                         break;
                     case RoleId.Jester:
                         Jester.jester = player;
@@ -555,6 +559,8 @@ namespace TheOtherRoles
                 Jester.jester = oldShifter;
             if (Madmate.madmate != null && Madmate.madmate == player)
                 Madmate.madmate = oldShifter;
+            if (Munou.munou != null && Munou.munou == player)
+                Munou.munou = oldShifter;
             if (Mayor.mayor != null && Mayor.mayor == player)
                 Mayor.mayor = oldShifter;
             if (Engineer.engineer != null && Engineer.engineer == player)
@@ -718,6 +724,8 @@ namespace TheOtherRoles
             if (player == Swapper.swapper) Swapper.clearAndReload();
             if (player == Spy.spy) Spy.clearAndReload();
             if (player == SecurityGuard.securityGuard) SecurityGuard.clearAndReload();
+            if (player == Munou.munou) Munou.clearAndReload();
+
 
             // Impostor roles
             if (player == Morphling.morphling) Morphling.clearAndReload();

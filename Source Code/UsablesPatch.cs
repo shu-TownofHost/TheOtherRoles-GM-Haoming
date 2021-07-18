@@ -177,6 +177,10 @@ namespace TheOtherRoles
                 roleCanCallEmergency = false;
                 statusText = "The Jester can't start an emergency meeting";
             }
+			if (Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+				roleCanCallEmergency = false;
+				statusText = "無能はミーティングを開けない";
+			}
 
             if (!roleCanCallEmergency) {
                 __instance.StatusText.text = statusText;
@@ -222,6 +226,9 @@ namespace TheOtherRoles
             if (Swapper.swapper != null && Swapper.swapper == PlayerControl.LocalPlayer) {
                 __instance.Close();
             }
+			if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+				__instance.Close();
+			}
         }
     }
 
@@ -232,8 +239,35 @@ namespace TheOtherRoles
             if (Swapper.swapper != null && Swapper.swapper == PlayerControl.LocalPlayer) {
                 __instance.Close();
             }
+			if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+				__instance.Close();
+			}
         }
     }
+
+	[HarmonyPatch]
+	class ReactorMiniGamePatch{
+		[HarmonyPatch(typeof(ReactorMinigame), nameof(ReactorMinigame.Begin))]
+		class ReactorMinigameStartPatch{
+			static void Postfix(ReactorMinigame __instance){
+				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+					__instance.Close();
+				}
+			}
+		}
+	}
+	[HarmonyPatch]
+	class AdminMinigamePatch{
+		[HarmonyPatch(typeof(MapConsole), nameof(MapConsole.Use))]
+		class AdminMinigameStartPatch{
+			public static bool Postfix(MapConsole __instance){
+				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+					return false;	
+				}
+				return true;
+			}
+		}
+	}
 
     [HarmonyPatch]
     class VitalsMinigamePatch {
@@ -254,6 +288,9 @@ namespace TheOtherRoles
                     
                     }
                 }
+				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+					__instance.Close();
+				}
             }
         }
 
@@ -442,6 +479,9 @@ namespace TheOtherRoles
                         camera.targetTexture = temporary;
                     }
                 }
+				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+					__instance.Close();
+				}
             }
         }
 

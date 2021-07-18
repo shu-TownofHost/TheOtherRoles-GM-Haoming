@@ -59,6 +59,7 @@ namespace TheOtherRoles
             Bomber.clearAndReload();
             Trapper.clearAndReload();
             Mifune.clearAndReload();
+            Munou.clearAndReload();
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
         }
@@ -93,6 +94,13 @@ namespace TheOtherRoles
                 toggle = false;
             }
         }
+		public static class Munou{
+			public static PlayerControl munou;
+			public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
+			public static void clearAndReload(){
+				munou = null;
+			}
+		}
 
         public static class Mifune {
             public static PlayerControl mifune;
@@ -129,6 +137,7 @@ namespace TheOtherRoles
                 cooldown = CustomOptionHolder.mifuneCooldown.getFloat();
                 duration = CustomOptionHolder.mifuneDuration.getFloat();
                 toggle = false;
+				mifune = null;
             }
         }
         public static class Trapper {
@@ -172,6 +181,7 @@ namespace TheOtherRoles
             }
 
             public static void clearAndReload() {
+				trapper = null;
                 trap = new Vector3(0, 0, 0);
                 cooldown = CustomOptionHolder.trapperCooldown.getFloat();
                 baseTrueSpeed = 0.0f;
@@ -207,6 +217,7 @@ namespace TheOtherRoles
             }
 
             public static void clearAndReload() {
+				bomber = null;
                 targets = new List<PlayerControl>();
                 isSet = false;
                 plantTarget = null;
@@ -278,6 +289,7 @@ namespace TheOtherRoles
             }
 
             public static void clearAndReload() {
+				ballad = null;
                 target = null;
                 isSet = false;
                 meetingCount = 0;
