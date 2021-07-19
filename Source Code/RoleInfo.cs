@@ -65,6 +65,7 @@ namespace TheOtherRoles
         public static RoleInfo bomber = new RoleInfo("Bomber", Bomber.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Bomber);
         public static RoleInfo trapper = new RoleInfo("Trapper", Trapper.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Trapper);
         public static RoleInfo mifune = new RoleInfo("Mifune", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Mifune);
+        public static RoleInfo kan = new RoleInfo("漢", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Kan);
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
 
@@ -87,6 +88,7 @@ namespace TheOtherRoles
             bomber,
             trapper,
             mifune,
+			kan,
             madmate,
             niceMini,
             evilMini,
@@ -127,6 +129,7 @@ namespace TheOtherRoles
             if (p == Bomber.bomber) infos.Add(bomber);
             if (p == Trapper.trapper) infos.Add(trapper);
             if (p == Mifune.mifune) infos.Add(mifune);
+            if (p == Kan.kan) infos.Add(kan);
             if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Munou.munou) infos.Add(munou);
             if (p == Jester.jester) infos.Add(jester);

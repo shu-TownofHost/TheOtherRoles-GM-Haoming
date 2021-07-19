@@ -52,6 +52,7 @@ namespace TheOtherRoles
         Bomber,
         Trapper,
         Mifune,
+		Kan,
 		Munou,
         Crewmate,
         Impostor
@@ -150,6 +151,9 @@ namespace TheOtherRoles
                     switch((RoleId)roleId) {
                     case RoleId.Mifune:
                         Mifune.mifune = player;
+                        break;
+                    case RoleId.Kan:
+                        Kan.kan = player;
                         break;
                     case RoleId.Trapper:
                         Trapper.trapper = player;
@@ -745,6 +749,7 @@ namespace TheOtherRoles
             if (player == Bomber.bomber) Bomber.clearAndReload();
             if (player == Trapper.trapper) Trapper.clearAndReload();
             if (player == Mifune.mifune) Mifune.clearAndReload();
+            if (player == Kan.kan) Kan.clearAndReload();
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();

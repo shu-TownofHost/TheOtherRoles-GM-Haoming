@@ -92,6 +92,7 @@ namespace TheOtherRoles {
         public static CustomOption mifuneSpawnRate;
         public static CustomOption mifuneCooldown;
         public static CustomOption mifuneDuration;
+        public static CustomOption kanSpawnRate;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -307,6 +308,8 @@ namespace TheOtherRoles {
             mifuneSpawnRate = CustomOption.Create(850, cs(Mifune.color, "Mifune"), rates, null, true);
             mifuneCooldown = CustomOption.Create(851, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
             mifuneDuration = CustomOption.Create(852, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
+
+            kanSpawnRate = CustomOption.Create(880, cs(Kan.color, "漢"), rates, null, true);
 
 
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);

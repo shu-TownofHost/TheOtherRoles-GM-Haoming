@@ -260,7 +260,7 @@ namespace TheOtherRoles
 	class AdminMinigamePatch{
 		[HarmonyPatch(typeof(MapConsole), nameof(MapConsole.Use))]
 		class AdminMinigameStartPatch{
-			public static bool Postfix(MapConsole __instance){
+			public static bool Prefix(MapConsole __instance){
 				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
 					return false;	
 				}

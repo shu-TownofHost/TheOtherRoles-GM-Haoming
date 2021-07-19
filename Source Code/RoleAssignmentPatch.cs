@@ -79,6 +79,7 @@ namespace TheOtherRoles
             impSettings.Add((byte)RoleId.Bomber, CustomOptionHolder.bomberSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Mifune, CustomOptionHolder.mifuneSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Kan, CustomOptionHolder.kanSpawnRate.getSelection());
 
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());

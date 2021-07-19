@@ -94,6 +94,14 @@ namespace TheOtherRoles
                 toggle = false;
             }
         }
+		public static class Kan{
+			public static PlayerControl kan;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+			public static void clearAndReload(){
+				kan = null;
+			}
+		}
+
 		public static class Munou{
 			public static PlayerControl munou;
 			public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
