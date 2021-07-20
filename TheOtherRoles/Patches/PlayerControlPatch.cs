@@ -476,7 +476,7 @@ namespace TheOtherRoles.Patches {
             if(Predator.predator != null && !Predator.predator.inVent){
                 if(Predator.predator != null && Predator.predator == __instance && PlayerControl.LocalPlayer != __instance){
                     Predator.predator.Visible = Predator.visibility;
-                } else if(Predator.predator != null && !Predator.predator.Data.IsDead && (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter || targetNearGarlic)){
+                } else if(Predator.predator != null && !Predator.predator.Data.IsDead && ((Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter) || targetNearGarlic)){
                     Predator.predator.Visible = true;
                 } else if(Predator.predator != null && PlayerControl.LocalPlayer.Data.IsDead){
                     Predator.predator.Visible = true;
