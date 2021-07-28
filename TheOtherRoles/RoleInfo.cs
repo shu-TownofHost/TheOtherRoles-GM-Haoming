@@ -67,7 +67,7 @@ namespace TheOtherRoles
         public static RoleInfo mifune = new RoleInfo("Mifune", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Mifune);
         public static RoleInfo kan = new RoleInfo("漢", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Kan);
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
-        public static RoleInfo madmate2 = new RoleInfo("Madmate2", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate2);
+        public static RoleInfo madmate2 = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate2);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
