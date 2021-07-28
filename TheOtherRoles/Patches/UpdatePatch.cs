@@ -74,6 +74,8 @@ namespace TheOtherRoles.Patches {
                 setPlayerNameColor(Jester.jester, Jester.color);
             else if (Madmate.madmate != null && Madmate.madmate == PlayerControl.LocalPlayer)
                 setPlayerNameColor(Madmate.madmate, Madmate.color);
+            else if (Madmate2.madmate2 != null && Madmate2.madmate2 == PlayerControl.LocalPlayer)
+                setPlayerNameColor(Madmate2.madmate2, Madmate2.color);
             else if (Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer)
                 setPlayerNameColor(Mayor.mayor, Mayor.color);
             else if (Engineer.engineer != null && Engineer.engineer == PlayerControl.LocalPlayer)

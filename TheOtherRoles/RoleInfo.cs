@@ -67,6 +67,7 @@ namespace TheOtherRoles
         public static RoleInfo mifune = new RoleInfo("Mifune", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Mifune);
         public static RoleInfo kan = new RoleInfo("漢", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Kan);
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
+        public static RoleInfo madmate2 = new RoleInfo("Madmate2", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate2);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
@@ -90,6 +91,7 @@ namespace TheOtherRoles
             mifune,
 			kan,
             madmate,
+            madmate2,
             niceMini,
             evilMini,
             goodGuesser,
@@ -131,6 +133,7 @@ namespace TheOtherRoles
             if (p == Mifune.mifune) infos.Add(mifune);
             if (p == Kan.kan) infos.Add(kan);
             if (p == Madmate.madmate) infos.Add(madmate);
+            if (p == Madmate2.madmate2) infos.Add(madmate2);
             if (p == Munou.munou) infos.Add(munou);
             if (p == Jester.jester) infos.Add(jester);
             if (p == Mayor.mayor) infos.Add(mayor);

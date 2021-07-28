@@ -48,6 +48,7 @@ namespace TheOtherRoles
         Guesser,
         BountyHunter,
         Madmate,
+        Madmate2,
         Misimo,
         Ballad,
         Predator,
@@ -174,6 +175,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Madmate:
                         Madmate.madmate = player;
+                        break;
+                    case RoleId.Madmate2:
+                        Madmate2.madmate2 = player;
                         break;
                     case RoleId.Munou:
                         Munou.munou = player;
@@ -540,7 +544,7 @@ namespace TheOtherRoles
             Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate) {
+            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2) {
                 oldShifter.Exiled();
                 return;
             }
@@ -565,6 +569,8 @@ namespace TheOtherRoles
                 Jester.jester = oldShifter;
             if (Madmate.madmate != null && Madmate.madmate == player)
                 Madmate.madmate = oldShifter;
+            if (Madmate2.madmate2 != null && Madmate2.madmate2 == player)
+                Madmate2.madmate2 = oldShifter;
             if (Munou.munou != null && Munou.munou == player)
                 Munou.munou = oldShifter;
             if (Mayor.mayor != null && Mayor.mayor == player)
@@ -745,6 +751,7 @@ namespace TheOtherRoles
             if (player == Cleaner.cleaner) Cleaner.clearAndReload();
             if (player == Warlock.warlock) Warlock.clearAndReload();
             if (player == Madmate.madmate) Madmate.clearAndReload();
+            if (player == Madmate2.madmate2) Madmate2.clearAndReload();
             if (player == Misimo.misimo) Misimo.clearAndReload();
             if (player == Ballad.ballad) Ballad.clearAndReload();
             if (player == Predator.predator) Predator.clearAndReload();

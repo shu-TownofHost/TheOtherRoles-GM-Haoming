@@ -73,6 +73,7 @@ namespace TheOtherRoles.Patches {
             if (Jackal.jackal != null) notWinners.Add(Jackal.jackal);
             if (Arsonist.arsonist != null) notWinners.Add(Arsonist.arsonist);
             if (Madmate.madmate != null) notWinners.Add(Madmate.madmate);
+            if (Madmate2.madmate2 != null) notWinners.Add(Madmate2.madmate2);
             notWinners.AddRange(Jackal.formerJackals);
 
             List<WinningPlayerData> winnersToRemove = new List<WinningPlayerData>();
@@ -86,16 +87,22 @@ namespace TheOtherRoles.Patches {
             bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
             bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (TempData.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
             bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
-            bool madmateWin = Madmate.madmate != null && (gameOverReason == GameOverReason.ImpostorByVote || gameOverReason == GameOverReason.ImpostorByKill || gameOverReason == GameOverReason.ImpostorBySabotage);
+            bool madmateWin = (Madmate.madmate != null || Madmate2.madmate2 != null) && (gameOverReason == GameOverReason.ImpostorByVote || gameOverReason == GameOverReason.ImpostorByKill || gameOverReason == GameOverReason.ImpostorBySabotage);
 
             // Madmate win
             if(madmateWin){
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
-                WinningPlayerData wpd = new WinningPlayerData(Madmate.madmate.Data);
-                TempData.winners.Add(wpd);
+				if(Madmate.madmate != null){
+					WinningPlayerData wpd = new WinningPlayerData(Madmate.madmate.Data);
+					TempData.winners.Add(wpd);
+				}
+				if(Madmate2.madmate2 != null){
+					WinningPlayerData wpd = new WinningPlayerData(Madmate2.madmate2.Data);
+					TempData.winners.Add(wpd);
+				}
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
                     if(p.Data.IsImpostor){
-                        wpd = new WinningPlayerData(p.Data);
+                        WinningPlayerData wpd = new WinningPlayerData(p.Data);
                         TempData.winners.Add(wpd);
                     }
                 }

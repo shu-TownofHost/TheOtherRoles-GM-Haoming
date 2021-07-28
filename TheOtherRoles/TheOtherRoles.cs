@@ -54,6 +54,7 @@ namespace TheOtherRoles
             Guesser.clearAndReload();
             BountyHunter.clearAndReload();
             Madmate.clearAndReload();
+            Madmate2.clearAndReload();
             Misimo.clearAndReload();
             Ballad.clearAndReload();
             Predator.clearAndReload();
@@ -430,6 +431,14 @@ namespace TheOtherRoles
 
             public static void clearAndReload() {
                 madmate = null;
+            }
+        }
+        public static class Madmate2 {
+            public static PlayerControl madmate2;
+            public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);
+
+            public static void clearAndReload() {
+                madmate2 = null;
             }
         }
 
