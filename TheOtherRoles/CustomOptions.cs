@@ -759,10 +759,10 @@ namespace TheOtherRoles {
                 gap = 5;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index, "\n");
-                gap = 21;
+                gap = 23;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 29;
+                gap = 31;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             } else if (counter == 2) {
