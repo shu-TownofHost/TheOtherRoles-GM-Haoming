@@ -127,9 +127,9 @@ namespace TheOtherRoles.Patches {
         static void trapperSetTarget(){
             if(Trapper.trapper != null && Trapper.trapper == PlayerControl.LocalPlayer && Trapper.trap != Trapper.zero){
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-                    if(p.Data.IsDead || p == Trapper.trapper) continue;
+                    if(p.Data.IsDead || p == Trapper.trapper || p.Data.IsImpostor) continue;
                     float distance = Vector2.Distance(p.transform.position, Trapper.trap);
-                    if(distance < 0.3f){
+                    if(distance < 0.4f){
                         MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
                         killWriter.Write(p.Data.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(killWriter);
