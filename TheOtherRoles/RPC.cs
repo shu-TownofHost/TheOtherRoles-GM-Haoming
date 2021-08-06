@@ -55,8 +55,9 @@ namespace TheOtherRoles
         Bomber,
         Trapper,
         Mifune,
-		Kan,
-		Munou,
+        Kan,
+        Nottori,
+        Munou,
         Crewmate,
         Impostor
     }
@@ -157,6 +158,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Kan:
                         Kan.kan = player;
+                        break;
+                    case RoleId.Nottori:
+                        Nottori.nottori = player;
                         break;
                     case RoleId.Trapper:
                         Trapper.trapper = player;
@@ -763,6 +767,7 @@ namespace TheOtherRoles
             if (player == Trapper.trapper) Trapper.clearAndReload();
             if (player == Mifune.mifune) Mifune.clearAndReload();
             if (player == Kan.kan) Kan.clearAndReload();
+            if (player == Nottori.nottori) Nottori.clearAndReload();
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();

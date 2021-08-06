@@ -79,6 +79,7 @@ namespace TheOtherRoles.Patches {
             impSettings.Add((byte)RoleId.Trapper, CustomOptionHolder.trapperSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Mifune, CustomOptionHolder.mifuneSpawnRate.getSelection());
             impSettings.Add((byte)RoleId.Kan, CustomOptionHolder.kanSpawnRate.getSelection());
+            impSettings.Add((byte)RoleId.Nottori, CustomOptionHolder.nottoriSpawnRate.getSelection());
 
 
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());

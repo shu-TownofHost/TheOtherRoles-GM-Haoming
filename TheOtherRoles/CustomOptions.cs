@@ -94,6 +94,8 @@ namespace TheOtherRoles {
         public static CustomOption mifuneCooldown;
         public static CustomOption mifuneDuration;
         public static CustomOption kanSpawnRate;
+        public static CustomOption nottoriSpawnRate;
+        public static CustomOption nottoriNeutral;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -310,8 +312,10 @@ namespace TheOtherRoles {
             mifuneCooldown = CustomOption.Create(851, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
             mifuneDuration = CustomOption.Create(852, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
 
-            kanSpawnRate = CustomOption.Create(880, cs(Kan.color, "漢"), rates, null, true);
+            nottoriSpawnRate = CustomOption.Create(890, cs(Nottori.color, "Nottori"), rates, null, true);
+            nottoriNeutral = CustomOption.Create(891, "Show Neutral Role as a Crewmate", false, nottoriSpawnRate);
 
+            kanSpawnRate = CustomOption.Create(880, cs(Kan.color, "漢"), rates, null, true);
 
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
             miniGrowingUpDuration = CustomOption.Create(181, "Mini Growing Up Duration", 400f, 100f, 1500f, 100f, miniSpawnRate);
@@ -762,7 +766,7 @@ namespace TheOtherRoles {
                 gap = 23;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 31;
+                gap = 32;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             } else if (counter == 2) {

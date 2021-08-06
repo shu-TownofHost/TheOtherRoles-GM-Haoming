@@ -65,9 +65,10 @@ namespace TheOtherRoles
         public static RoleInfo bomber = new RoleInfo("Bomber", Bomber.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Bomber);
         public static RoleInfo trapper = new RoleInfo("Trapper", Trapper.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Trapper);
         public static RoleInfo mifune = new RoleInfo("Mifune", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Mifune);
-        public static RoleInfo kan = new RoleInfo("漢", Mifune.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Kan);
+        public static RoleInfo kan = new RoleInfo("漢", Kan.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Kan);
+        public static RoleInfo nottori = new RoleInfo("Nottori", Nottori.color, "Kill All Crewmates", "Kill All Crewmates", RoleId.Nottori);
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
-        public static RoleInfo madmate2 = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate2);
+        public static RoleInfo madmate2 = new RoleInfo("Madmate", Madmate2.color, "Help Impostors", "Help Impostors", RoleId.Madmate2);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
@@ -90,6 +91,7 @@ namespace TheOtherRoles
             trapper,
             mifune,
 			kan,
+			nottori,
             madmate,
             madmate2,
             niceMini,
@@ -132,6 +134,7 @@ namespace TheOtherRoles
             if (p == Trapper.trapper) infos.Add(trapper);
             if (p == Mifune.mifune) infos.Add(mifune);
             if (p == Kan.kan) infos.Add(kan);
+            if (p == Nottori.nottori) infos.Add(nottori);
             if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Madmate2.madmate2) infos.Add(madmate2);
             if (p == Munou.munou) infos.Add(munou);

@@ -22,7 +22,7 @@ namespace TheOtherRoles.Patches {
             if (!ShipStatus.Instance) return result;
             if (targetingPlayer == null) targetingPlayer = PlayerControl.LocalPlayer;
             if (targetingPlayer.Data.IsDead) return result;
-		
+        
             Vector2 truePosition = targetingPlayer.GetTruePosition();
             Il2CppSystem.Collections.Generic.List<GameData.PlayerInfo> allPlayers = GameData.Instance.AllPlayers;
             for (int i = 0; i < allPlayers.Count; i++)
@@ -192,7 +192,7 @@ namespace TheOtherRoles.Patches {
         static void vampireSetTarget() {
             if (Vampire.vampire == null || Vampire.vampire != PlayerControl.LocalPlayer) return;
 
-		    PlayerControl target = null;
+            PlayerControl target = null;
             if (Spy.spy != null) {
                 if (Spy.impostorsCanKillAnyone) {
                     target = setTarget(false, true);
@@ -415,6 +415,58 @@ namespace TheOtherRoles.Patches {
                     meetingInfoText = playerInfoText;
                 }
 
+                playerInfo.text = playerInfoText;
+                playerInfo.gameObject.SetActive(p.Visible);
+                if (meetingInfo != null) meetingInfo.text = MeetingHud.Instance.state == MeetingHud.VoteStates.Results ? "" : meetingInfoText;
+            }
+        }
+        public static void updatePlayerInfoNottori() {
+            if (Nottori.nottori == null || Nottori.nottori != PlayerControl.LocalPlayer ) return;
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
+
+                Transform playerInfoTransform = p.nameText.transform.parent.FindChild("Info");
+                TMPro.TextMeshPro playerInfo = playerInfoTransform != null ? playerInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
+                if (playerInfo == null) {
+                    playerInfo = UnityEngine.Object.Instantiate(p.nameText, p.nameText.transform.parent);
+                    playerInfo.transform.localPosition += Vector3.up * 0.5f;
+                    playerInfo.fontSize *= 0.75f;
+                    playerInfo.gameObject.name = "Info";
+                }
+
+                PlayerVoteArea playerVoteArea = MeetingHud.Instance?.playerStates?.FirstOrDefault(x => x.TargetPlayerId == p.PlayerId);
+                Transform meetingInfoTransform = playerVoteArea != null ? playerVoteArea.NameText.transform.parent.FindChild("Info") : null;
+                TMPro.TextMeshPro meetingInfo = meetingInfoTransform != null ? meetingInfoTransform.GetComponent<TMPro.TextMeshPro>() : null;
+                if (meetingInfo == null && playerVoteArea != null) {
+                    meetingInfo = UnityEngine.Object.Instantiate(playerVoteArea.NameText, playerVoteArea.NameText.transform.parent);
+                    meetingInfo.transform.localPosition += Vector3.down * 0.20f;
+                    meetingInfo.fontSize *= 0.75f;
+                    meetingInfo.gameObject.name = "Info";
+                }
+                
+                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(p.Data);
+                string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
+
+                // 第三陣営をクルーメイトとして表示する
+                if((Madmate.madmate != null && Madmate.madmate == p) ||
+                   (Madmate2.madmate2 != null && Madmate2.madmate2 == p) ||
+                   (Arsonist.arsonist != null && Arsonist.arsonist == p) ||
+                   (Jester.jester != null && Jester.jester == p) ||
+                   (Jackal.jackal != null && Jackal.jackal == p) ||
+                   (Sidekick.sidekick != null && Sidekick.sidekick == p)){
+
+                    if(CustomOptionHolder.nottoriNeutral.getBool()){
+                        Color color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1);
+                        roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(color, "Crewmate")).ToArray());
+                    }
+
+                }
+
+                string taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({tasksCompleted}/{tasksTotal})</color>" : "";
+                
+                string playerInfoText = "";
+                string meetingInfoText ="";
+                playerInfoText = $"{roleNames}";
+                meetingInfoText = playerInfoText;
                 playerInfo.text = playerInfoText;
                 playerInfo.gameObject.SetActive(p.Visible);
                 if (meetingInfo != null) meetingInfo.text = MeetingHud.Instance.state == MeetingHud.VoteStates.Results ? "" : meetingInfoText;
@@ -694,6 +746,7 @@ namespace TheOtherRoles.Patches {
 
                 // Update Player Info
                 updatePlayerInfo();
+                updatePlayerInfoNottori();
 
                 // Time Master
                 bendTimeUpdate();
