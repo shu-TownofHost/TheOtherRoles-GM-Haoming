@@ -452,7 +452,9 @@ namespace TheOtherRoles.Patches {
                    (Arsonist.arsonist != null && Arsonist.arsonist == p) ||
                    (Jester.jester != null && Jester.jester == p) ||
                    (Jackal.jackal != null && Jackal.jackal == p) ||
-                   (Sidekick.sidekick != null && Sidekick.sidekick == p)){
+                   (Sidekick.sidekick != null && Sidekick.sidekick == p) ||
+                   (Lovers.lover1 != null && Lovers.lover1 == p) ||
+                   (Lovers.lover2 != null && Lovers.lover2 == p)){
 
                     if(CustomOptionHolder.nottoriNeutral.getBool()){
                         Color color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1);
