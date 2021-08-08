@@ -335,7 +335,7 @@ namespace TheOtherRoles {
 
             madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "Madmate"), rates, null, true);
             madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
-            madmate2SpawnRate = CustomOption.Create(293, cs(Madmate2.color, "Madmate2"), rates, null, true);
+            madmate2SpawnRate = CustomOption.Create(295, cs(Madmate2.color, "Madmate2"), rates, null, true);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);

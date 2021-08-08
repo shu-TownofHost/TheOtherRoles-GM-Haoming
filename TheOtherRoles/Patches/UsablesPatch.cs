@@ -268,7 +268,9 @@ namespace TheOtherRoles.Patches {
 		[HarmonyPatch(typeof(MapConsole), nameof(MapConsole.Use))]
 		class AdminMinigameStartPatch{
 			public static bool Prefix(MapConsole __instance){
-				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+				if ((Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer)||
+				    (Seer.seer != null && Seer.seer == PlayerControl.LocalPlayer))
+				{
 					return false;	
 				}
 				return true;
