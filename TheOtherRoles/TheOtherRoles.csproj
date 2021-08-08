@@ -26,7 +26,6 @@
         <Message Text="Second occurrence" />
         <Copy SourceFiles="$(ProjectDir)\bin\$(Configuration)\netstandard2.1\TheOtherRoles.dll" DestinationFolder="$(AmongUs)/BepInEx/plugins/" />
     </Target>
-<<<<<<< HEAD
     <!-- il2cpp newtonsoft -->
 	<ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -35,6 +34,3 @@
         <NoWarn>$(NoWarn);MSB3243</NoWarn>
     </PropertyGroup>
 </Project>
-=======
-</Project>
->>>>>>> 7768ceb914a422c118e9e60f2601b1e1990e3fb7
