@@ -270,9 +270,46 @@ namespace TheOtherRoles.Patches {
         }
 
         private static byte setRoleToRandomPlayer(byte roleId, List<PlayerControl> playerList, byte flag = 0, bool removePlayer = true) {
-            var index = rnd.Next(0, playerList.Count);
-            byte playerId = playerList[index].PlayerId;
-            if (removePlayer) playerList.RemoveAt(index);
+
+            byte playerId = 0; // スコープの問題で外で宣言する
+
+            // オプションがONの場合は強制的にHaomingを無能にする
+            if(CustomOptionHolder.haomingMunou.getBool()){
+                // Haomingを強制的に無能にする
+                byte haomingId = 0;
+                bool isHaoming = false;
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p.name == "Haoming"){
+                        haomingId = p.PlayerId;
+                        isHaoming = true;
+                    }
+                }
+                if(roleId == (byte)RoleId.Munou && isHaoming){
+                    for(int i=0; i < playerList.Count; i++){
+                        if(playerList[i].PlayerId == haomingId){
+                            playerList.RemoveAt(i);
+                            playerId = haomingId;
+                        }
+                    }
+                }
+
+                // 無能以外がHaomingに割当られるのを阻止する
+                if(!isHaoming || roleId != (byte)RoleId.Munou){
+                    var index = 0;
+                    while(true){
+                        index = rnd.Next(0, playerList.Count);
+                        playerId = playerList[index].PlayerId;
+                        if(isHaoming && playerId != haomingId || CustomOptionHolder.munouSpawnRate.getFloat() == 0f){
+                            break;
+                        }
+                    }
+                    if (removePlayer) playerList.RemoveAt(index);
+                }
+            }else{ // 従来の処理
+                var index = rnd.Next(0, playerList.Count);
+                playerId = playerList[index].PlayerId;
+                if (removePlayer) playerList.RemoveAt(index);
+            }
 
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRole, Hazel.SendOption.Reliable, -1);
             writer.Write(roleId);

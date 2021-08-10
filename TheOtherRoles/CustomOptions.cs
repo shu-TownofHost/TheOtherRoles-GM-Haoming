@@ -213,6 +213,7 @@ namespace TheOtherRoles {
         public static CustomOption polusRandomSpawn;
         public static CustomOption ImpostorArrow;
         public static CustomOption additionalVents;
+		public static CustomOption haomingMunou;
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
 
@@ -443,6 +444,7 @@ namespace TheOtherRoles {
             polusRandomSpawn = CustomOption.Create(801, "Polus RandomSpawn", true);
             additionalVents = CustomOption.Create(802, "Additional Vents", true);
             ImpostorArrow = CustomOption.Create(803, "Show Impostor Arrows", true);
+            haomingMunou = CustomOption.Create(804, "はおみんは無能", false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
             blockedRolePairings.Add((byte)RoleId.Warlock, new [] { (byte)RoleId.Vampire});

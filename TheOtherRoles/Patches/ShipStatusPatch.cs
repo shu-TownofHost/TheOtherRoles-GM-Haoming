@@ -3,6 +3,8 @@ using static TheOtherRoles.TheOtherRoles;
 using Hazel;
 using UnityEngine;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace TheOtherRoles.Patches {
 
@@ -92,6 +94,38 @@ namespace TheOtherRoles.Patches {
                     RPCProcedure.randomSpawn((byte)player.Data.PlayerId, (byte)randVal);
                 }
             }
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.SelectInfected))]
+        public static bool Prefix2(ShipStatus __instance) {
+            // オプションが有効でない場合は何もしない
+            if(!CustomOptionHolder.haomingMunou.getBool()) return true;
+
+            // オプションが有効の場合はHaomingにインポスターを割り当てない
+            List<GameData.PlayerInfo> list = new List<GameData.PlayerInfo>();
+            foreach(GameData.PlayerInfo pi in GameData.Instance.AllPlayers){
+                if(!pi.Disconnected && !pi.IsDead && pi.PlayerName != "Haoming"){
+                    TheOtherRolesPlugin.Instance.Log.LogInfo($"Add {pi.PlayerName} to Impostor Pool");
+                    list.Add(pi);
+                }
+            }
+            // List<GameData.PlayerInfo> list = (from pcd in GameData.Instance.AllPlayers
+            // where !pcd.Disconnected
+            // select pcd into pc
+            // where !pc.IsDead
+            // select pc).ToList<GameData.PlayerInfo>();
+            int adjustedNumImpostors = PlayerControl.GameOptions.GetAdjustedNumImpostors(GameData.Instance.PlayerCount);
+            GameData.PlayerInfo[] array = new GameData.PlayerInfo[Mathf.Min(list.Count, adjustedNumImpostors)];
+            for (int i = 0; i < array.Length; i++)
+            {
+                int index = HashRandom.FastNext(list.Count);
+                array[i] = list[index];
+                TheOtherRolesPlugin.Instance.Log.LogInfo($"{list[index].PlayerName} is selected");
+                list.RemoveAt(index);
+            }
+            PlayerControl.LocalPlayer.RpcSetInfected(array);
+            return false;
         }
     }
 }
