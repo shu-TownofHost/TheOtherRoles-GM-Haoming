@@ -299,7 +299,7 @@ namespace TheOtherRoles.Patches {
                     while(true){
                         index = rnd.Next(0, playerList.Count);
                         playerId = playerList[index].PlayerId;
-                        if(isHaoming && playerId != haomingId || CustomOptionHolder.munouSpawnRate.getFloat() == 0f){
+                        if(isHaoming && playerId != haomingId){
                             break;
                         }
                     }

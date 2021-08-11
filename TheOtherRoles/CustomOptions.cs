@@ -58,10 +58,12 @@ namespace TheOtherRoles {
         public static CustomOption jesterSpawnRate;
         public static CustomOption jesterCanCallEmergency;
         public static CustomOption jesterCanSabotage;
+        public static CustomOption jesterArrow;
 
         public static CustomOption madmateSpawnRate;
         public static CustomOption madmate2SpawnRate;
         public static CustomOption madmateCanDieToSheriff;
+        public static CustomOption madmateArrow;
         public static CustomOption misimoSpawnRate;
         public static CustomOption misimoCooldown;
         public static CustomOption misimoDuration;
@@ -341,10 +343,12 @@ namespace TheOtherRoles {
             jesterSpawnRate = CustomOption.Create(60, cs(Jester.color, "Jester"), rates, null, true);
             jesterCanCallEmergency = CustomOption.Create(61, "Jester can call emergency meeting", true, jesterSpawnRate);
             jesterCanSabotage = CustomOption.Create(62, "Jester can sabotage", true, jesterSpawnRate);
+            jesterArrow = CustomOption.Create(63, "Jester Arrow", true, jesterSpawnRate);
 
             madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "Madmate"), rates, null, true);
             madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
-            madmate2SpawnRate = CustomOption.Create(295, cs(Madmate2.color, "Madmate2"), rates, null, true);
+            madmateArrow = CustomOption.Create(295, "Madmate Arrow", false, madmateSpawnRate);
+            madmate2SpawnRate = CustomOption.Create(296, cs(Madmate2.color, "Madmate2"), rates, madmateSpawnRate);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);

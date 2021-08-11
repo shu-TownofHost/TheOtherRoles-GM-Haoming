@@ -647,6 +647,47 @@ namespace TheOtherRoles.Patches {
                 ImpostorPlayer.updateTimer = 1.0f;
             }
         }
+        static void deadBodyArrowUpdate(){
+
+            // MadmateとJester以外の場合は表示しない
+            bool flag = false;
+            if(Madmate.madmate != null && PlayerControl.LocalPlayer == Madmate.madmate && CustomOptionHolder.madmateArrow.getBool()){
+                flag = true;
+            }else if(Madmate2.madmate2 != null && PlayerControl.LocalPlayer == Madmate2.madmate2 && CustomOptionHolder.madmateArrow.getBool()){
+                flag = true;
+            }else if(Jester.jester != null && PlayerControl.LocalPlayer == Jester.jester && CustomOptionHolder.jesterArrow.getBool()){
+                flag = true;
+            }
+            if(!flag) return;
+        
+            // 前フレームからの経過時間をマイナスする
+            MadmateAndJester.updateTimer -= Time.fixedDeltaTime;
+
+            // 1秒経過したらArrowを更新
+            if(flag && MadmateAndJester.updateTimer <= 0.0f){
+
+                // 前回のArrowをすべて破棄する
+                foreach(Arrow arrow in MadmateAndJester.arrows){
+                    arrow.arrow.SetActive(false);
+                    UnityEngine.Object.Destroy(arrow.arrow);
+                }
+
+                // Arrorw一覧
+                MadmateAndJester.arrows = new List<Arrow>();
+
+                // 死体位置に矢印を表示
+                DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+                foreach(DeadBody deadbody in array){
+                    Arrow arrow = new Arrow(Color.black);
+                    arrow.arrow.SetActive(true);
+                    arrow.Update(deadbody.transform.position);
+                    MadmateAndJester.arrows.Add(arrow);
+                }
+
+                // タイマーに時間をセット
+                MadmateAndJester.updateTimer = 1.0f;
+            }
+        }
         static void additionalVentsUpdate(){
             if (AdditionalVents.flag) return;
             AdditionalVents.flag = true;
@@ -839,6 +880,8 @@ namespace TheOtherRoles.Patches {
                 TrapEffect.UpdateAll();
                 // Impostor
                 impostorArrowUpdate();
+                // Jester & Madmate
+                deadBodyArrowUpdate();
 
                 // Snitch
                 snitchUpdate();

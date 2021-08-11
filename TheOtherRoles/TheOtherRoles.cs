@@ -65,8 +65,17 @@ namespace TheOtherRoles
             Munou.clearAndReload();
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
+			MadmateAndJester.clearAndReload();
         }
         public static class ImpostorPlayer{
+            public static List<Arrow> arrows = new List<Arrow>();
+            public static float updateTimer = 1.0f;
+            public static void clearAndReload(){
+                arrows = new List<Arrow>();
+                updateTimer = 1.0f;
+            }
+        }
+        public static class MadmateAndJester{
             public static List<Arrow> arrows = new List<Arrow>();
             public static float updateTimer = 1.0f;
             public static void clearAndReload(){
