@@ -348,7 +348,7 @@ namespace TheOtherRoles {
             madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "Madmate"), rates, null, true);
             madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
             madmateArrow = CustomOption.Create(295, "Madmate Arrow", false, madmateSpawnRate);
-            madmate2SpawnRate = CustomOption.Create(296, cs(Madmate2.color, "Madmate2"), rates, madmateSpawnRate);
+            madmate2SpawnRate = CustomOption.Create(296, cs(Madmate2.color, "Madmate2"), rates, null, true);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
@@ -416,7 +416,7 @@ namespace TheOtherRoles {
             hackerOnlyColorType = CustomOption.Create(173, "Hacker Only Sees Color Type", false, hackerSpawnRate);
 
             trackerSpawnRate = CustomOption.Create(200, cs(Tracker.color, "Tracker"), rates, null, true);
-            trackerUpdateIntervall = CustomOption.Create(201, "Tracker Update Intervall", 5f, 2.5f, 30f, 2.5f, trackerSpawnRate);
+            trackerUpdateIntervall = CustomOption.Create(201, "Tracker Update Intervall", 1f, 1f, 10f, 1f, trackerSpawnRate);
             trackerResetTargetAfterMeeting = CustomOption.Create(202, "Tracker Reset Target After Meeting", false, trackerSpawnRate);
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "Snitch"), rates, null, true);
             snitchLeftTasksForReveal = CustomOption.Create(211, "Task Count Where The Snitch Will Be Revealed", 1f, 0f, 5f, 1f, snitchSpawnRate);
