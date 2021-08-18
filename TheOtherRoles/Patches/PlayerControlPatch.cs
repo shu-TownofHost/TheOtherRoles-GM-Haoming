@@ -9,6 +9,7 @@ using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.GameHistory;
 using TheOtherRoles.Objects;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -474,6 +475,123 @@ namespace TheOtherRoles.Patches {
                 if (meetingInfo != null) meetingInfo.text = MeetingHud.Instance.state == MeetingHud.VoteStates.Results ? "" : meetingInfoText;
             }
         }
+        public static void impostorTextUpdate(){
+            if(!PlayerControl.LocalPlayer.Data.IsImpostor) return;
+            if(Nottori.text == null){
+                // TheOtherRolesPlugin.Instance.Log.LogInfo("Instatiate Nottori.text");
+                // PingTracker pt = UnityEngine.Object.FindObjectOfType<PingTracker>();
+                var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
+                var obj = UnityEngine.Object.Instantiate(HudManager._instance.GameSettings);
+                Nottori.text = obj.GetComponent<TMPro.TMP_Text>();
+                Nottori.text.transform.position = new Vector3(HudManager._instance.GameSettings.transform.position.x , position.y - 0.1f, -14f); 
+                Nottori.text.transform.localScale = new Vector3(1f, 1f, 1f);
+                Nottori.text.fontSize = 1.5f;
+                Nottori.text.fontSizeMin = 1.5f;
+                Nottori.text.fontSizeMax = 1.5f;
+                Nottori.text.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                Nottori.text.transform.parent = HudManager._instance.GameSettings.transform.parent;
+            }
+            // Nottori.text.gameObject.SetActive(true);
+            String text = "";
+
+            if(CustomOptionHolder.ImpostorRoleInfo.getBool()){
+                text += "[今回のゲームの役職]\n";
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
+                    if(!roleNames.Contains("Crewmate")){
+                        text += $"{roleNames} ";
+                    }
+                }
+                text += "\n\n";
+            }
+
+
+            if(CustomOptionHolder.ImpostorLocation.getBool()){
+                text += "[プレイヤー位置情報]\n";
+                Dictionary<PlayerControl, float> dic = new Dictionary<PlayerControl, float>();
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p == PlayerControl.LocalPlayer) continue;
+                    float dist = Vector3.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
+                    dic.Add(p, dist);
+                }
+                var sortedDict = from entry in dic orderby entry.Value ascending select entry;
+                foreach(var item in sortedDict){
+                    PlayerControl p = item.Key;
+                    float dist = item.Value;
+                    // 角度計算
+                    float x = p.transform.position.x - PlayerControl.LocalPlayer.transform.position.x;
+                    float y = p.transform.position.y - PlayerControl.LocalPlayer.transform.position.y;
+                    double rad = Math.Atan2(x,y);
+                    string arrow = "";
+                    if(rad <= Math.PI/8 && rad >= -(Math.PI/8)){ //上
+                        arrow = "↑";
+                    }else if(rad <= 3 * Math.PI/8 && rad >= Math.PI/8){ //右上
+                        arrow = "↗";
+                    }else if(rad <= 5 * Math.PI/8 && rad >= 3 * Math.PI/8){ //右
+                        arrow = "→";
+                    }else if(rad <= 7 * Math.PI/8 && rad >= 5 * Math.PI/8){ //右下
+                        arrow = "↘";
+                    }else if( (rad <= -7 * Math.PI/8 && rad >= -Math.PI) || (rad >= 7 * Math.PI/8 &&  rad <= Math.PI)){ //下
+                        arrow = "↓";
+                    }else if(rad <= -(Math.PI/8) && rad >= -3 *Math.PI/8){ //左上
+                        arrow = "↖";
+                    }else if(rad <= -3 * Math.PI/8 && rad >= -5 * Math.PI/8){ //左
+                        arrow = "←";
+                    }else if(rad <= -5 * Math.PI/8 && rad >= -7 * Math.PI/8){ //左下
+                        arrow = "↙";
+                    }
+                    string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
+                    // text += p.Data.PlayerName + "(" + roleNames + ")" + $" {dist} {arrow}" + "\n";
+                    text += p.Data.PlayerName + ":" + $" {dist} {arrow}" + "\n";
+                }
+            }
+            Nottori.text.text = text;
+        }
+        
+        
+        public static void MorphButtonUpdate(){
+            if(PlayerControl.LocalPlayer != Morphling.morphling) return;
+            if(Morphling.buttons.Count == 0){
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    KillButtonManager killButtonManager = UnityEngine.Object.Instantiate(HudManager.Instance.KillButton, HudManager.Instance.transform);
+                    killButtonManager.renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MorphButton.png", 115f);
+                    killButtonManager.renderer.enabled = true;
+                    killButtonManager.gameObject.SetActive(true);
+                    killButtonManager.killText.enabled = false;
+                    var text = killButtonManager.GetComponentInChildren<TMPro.TextMeshPro>();
+                    text.text = p.name;
+                    text.fontSize = 3.0f;
+                    text.fontSizeMax = 3.0f;
+                    text.fontSizeMin = 3.0f;
+                    text.alignment = TMPro.TextAlignmentOptions.Center;
+                    // var label = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(HudManager.Instance.KillButton.killText, killButtonManager.killText.transform.parent);
+                    var button = killButtonManager.GetComponent<PassiveButton>();
+                    button.OnClick = new Button.ButtonClickedEvent();
+                    button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
+                         TheOtherRolesPlugin.Instance.Log.LogInfo($"{p.name} button is clicked");
+                         Morphling.sampledTarget = p;
+                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
+                         writer.Write(Morphling.sampledTarget.PlayerId);
+                         AmongUsClient.Instance.FinishRpcImmediately(writer);
+                         RPCProcedure.morphlingMorph(Morphling.sampledTarget.PlayerId);
+                         Morphling.sampledTarget = null;
+                         // HudManagerStartPatch.morphlingButton.EffectDuration = Morphling.duration;
+                         HudManagerStartPatch.morphlingButton.Timer = Morphling.duration;
+                         // HudManagerStartPatch.morphlingButton.isEffectActive = true;
+                    }));
+                    Morphling.buttons.Add(killButtonManager);
+                }
+            }
+
+            int counter = 0;
+            foreach(var button in Morphling.buttons){
+                int x = counter / 2;
+                int y = counter % 2;
+                button.transform.localPosition =  HudManager.Instance.KillButton.transform.localPosition + new Vector3(- 1.3f - (0.5f * x), y * 0.5f, 0);
+                button.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                counter += 1;
+            }
+        }
 
         public static void securityGuardSetTarget() {
             if (SecurityGuard.securityGuard == null || SecurityGuard.securityGuard != PlayerControl.LocalPlayer || ShipStatus.Instance == null || ShipStatus.Instance.AllVents == null) return;
@@ -832,6 +950,8 @@ namespace TheOtherRoles.Patches {
                 // Update Player Info
                 updatePlayerInfo();
                 updatePlayerInfoNottori();
+                impostorTextUpdate();
+                MorphButtonUpdate();
 
                 // Time Master
                 bendTimeUpdate();

@@ -214,6 +214,8 @@ namespace TheOtherRoles {
         public static CustomOption hidePlayerNames;
         public static CustomOption polusRandomSpawn;
         public static CustomOption ImpostorArrow;
+        public static CustomOption ImpostorLocation;
+        public static CustomOption ImpostorRoleInfo;
         public static CustomOption additionalVents;
 		public static CustomOption haomingMunou;
 
@@ -248,7 +250,7 @@ namespace TheOtherRoles {
 
             morphlingSpawnRate = CustomOption.Create(20, cs(Morphling.color, "Morphling"), rates, null, true);
             morphlingCooldown = CustomOption.Create(21, "Morphling Cooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
-            morphlingDuration = CustomOption.Create(22, "Morph Duration", 10f, 1f, 20f, 0.5f, morphlingSpawnRate);
+            morphlingDuration = CustomOption.Create(22, "Morph Duration", 10f, 1f, 60f, 0.5f, morphlingSpawnRate);
 
             camouflagerSpawnRate = CustomOption.Create(30, cs(Camouflager.color, "Camouflager"), rates, null, true);
             camouflagerCooldown = CustomOption.Create(31, "Camouflager Cooldown", 30f, 10f, 60f, 2.5f, camouflagerSpawnRate);
@@ -416,7 +418,7 @@ namespace TheOtherRoles {
             hackerOnlyColorType = CustomOption.Create(173, "Hacker Only Sees Color Type", false, hackerSpawnRate);
 
             trackerSpawnRate = CustomOption.Create(200, cs(Tracker.color, "Tracker"), rates, null, true);
-            trackerUpdateIntervall = CustomOption.Create(201, "Tracker Update Intervall", 1f, 1f, 10f, 1f, trackerSpawnRate);
+            trackerUpdateIntervall = CustomOption.Create(201, "Tracker Update Intervall", 5f, 2.5f, 30f, 2.5f, trackerSpawnRate);
             trackerResetTargetAfterMeeting = CustomOption.Create(202, "Tracker Reset Target After Meeting", false, trackerSpawnRate);
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "Snitch"), rates, null, true);
             snitchLeftTasksForReveal = CustomOption.Create(211, "Task Count Where The Snitch Will Be Revealed", 1f, 0f, 5f, 1f, snitchSpawnRate);
@@ -448,6 +450,8 @@ namespace TheOtherRoles {
             polusRandomSpawn = CustomOption.Create(801, "Polus RandomSpawn", true);
             additionalVents = CustomOption.Create(802, "Additional Vents", true);
             ImpostorArrow = CustomOption.Create(803, "Show Impostor Arrows", true);
+            ImpostorRoleInfo = CustomOption.Create(805, "Show Role Info for Impostor", true);
+            ImpostorLocation = CustomOption.Create(806, "Show Locations for Impostor", true);
             haomingMunou = CustomOption.Create(804, "はおみんは無能", false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});

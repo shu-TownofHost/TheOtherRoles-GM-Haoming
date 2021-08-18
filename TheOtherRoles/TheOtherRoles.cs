@@ -108,9 +108,12 @@ namespace TheOtherRoles
         }
         public static class Nottori{
             public static PlayerControl nottori;
+			public static TMPro.TMP_Text text = null;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             public static void clearAndReload(){
                 nottori = null;
+				if(text != null) GameObject.Destroy(text);
+				text = null;
             }
         }
 
@@ -804,6 +807,7 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         private static Sprite sampleSprite;
         private static Sprite morphSprite;
+        public static List<KillButtonManager> buttons = new List<KillButtonManager>();
     
         public static float cooldown = 30f;
         public static float duration = 10f;
@@ -834,6 +838,10 @@ namespace TheOtherRoles
             morphTimer = 0f;
             cooldown = CustomOptionHolder.morphlingCooldown.getFloat();
             duration = CustomOptionHolder.morphlingDuration.getFloat();
+			foreach(var button in buttons){
+				UnityEngine.Object.Destroy(button);
+			}
+			buttons = new List<KillButtonManager>();
         }
 
         public static Sprite getSampleSprite() {
