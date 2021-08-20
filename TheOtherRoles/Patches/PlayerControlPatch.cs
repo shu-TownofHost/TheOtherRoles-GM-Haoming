@@ -477,21 +477,21 @@ namespace TheOtherRoles.Patches {
         }
         public static void impostorTextUpdate(){
             if(!PlayerControl.LocalPlayer.Data.IsImpostor) return;
-            if(Nottori.text == null){
-                // TheOtherRolesPlugin.Instance.Log.LogInfo("Instatiate Nottori.text");
+            if(ImpostorPlayer.text == null){
+                // TheOtherRolesPlugin.Instance.Log.LogInfo("Instatiate ImpostorPlayer.text");
                 // PingTracker pt = UnityEngine.Object.FindObjectOfType<PingTracker>();
                 var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
                 var obj = UnityEngine.Object.Instantiate(HudManager._instance.GameSettings);
-                Nottori.text = obj.GetComponent<TMPro.TMP_Text>();
-                Nottori.text.transform.position = new Vector3(HudManager._instance.GameSettings.transform.position.x , position.y - 0.1f, -14f); 
-                Nottori.text.transform.localScale = new Vector3(1f, 1f, 1f);
-                Nottori.text.fontSize = 1.5f;
-                Nottori.text.fontSizeMin = 1.5f;
-                Nottori.text.fontSizeMax = 1.5f;
-                Nottori.text.alignment = TMPro.TextAlignmentOptions.BottomLeft;
-                Nottori.text.transform.parent = HudManager._instance.GameSettings.transform.parent;
+                ImpostorPlayer.text = obj.GetComponent<TMPro.TMP_Text>();
+                ImpostorPlayer.text.transform.position = new Vector3(HudManager._instance.GameSettings.transform.position.x , position.y - 0.1f, -14f); 
+                ImpostorPlayer.text.transform.localScale = new Vector3(1f, 1f, 1f);
+                ImpostorPlayer.text.fontSize = 1.5f;
+                ImpostorPlayer.text.fontSizeMin = 1.5f;
+                ImpostorPlayer.text.fontSizeMax = 1.5f;
+                ImpostorPlayer.text.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                ImpostorPlayer.text.transform.parent = HudManager._instance.GameSettings.transform.parent;
             }
-            // Nottori.text.gameObject.SetActive(true);
+            ImpostorPlayer.text.gameObject.SetActive(true);
             String text = "";
 
             if(CustomOptionHolder.ImpostorRoleInfo.getBool()){
@@ -511,6 +511,7 @@ namespace TheOtherRoles.Patches {
                 Dictionary<PlayerControl, float> dic = new Dictionary<PlayerControl, float>();
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
                     if(p == PlayerControl.LocalPlayer) continue;
+					if(p.Data.IsDead) continue;
                     float dist = Vector3.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
                     dic.Add(p, dist);
                 }
@@ -545,7 +546,7 @@ namespace TheOtherRoles.Patches {
                     text += p.Data.PlayerName + ":" + $" {dist} {arrow}" + "\n";
                 }
             }
-            Nottori.text.text = text;
+            ImpostorPlayer.text.text = text;
         }
         
         

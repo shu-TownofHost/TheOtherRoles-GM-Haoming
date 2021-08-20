@@ -65,14 +65,17 @@ namespace TheOtherRoles
             Munou.clearAndReload();
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
-			MadmateAndJester.clearAndReload();
+            MadmateAndJester.clearAndReload();
         }
         public static class ImpostorPlayer{
             public static List<Arrow> arrows = new List<Arrow>();
+            public static TMPro.TMP_Text text = null;
             public static float updateTimer = 1.0f;
             public static void clearAndReload(){
                 arrows = new List<Arrow>();
                 updateTimer = 1.0f;
+                if(text != null) GameObject.Destroy(text);
+                text = null;
             }
         }
         public static class MadmateAndJester{
@@ -108,12 +111,9 @@ namespace TheOtherRoles
         }
         public static class Nottori{
             public static PlayerControl nottori;
-			public static TMPro.TMP_Text text = null;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             public static void clearAndReload(){
                 nottori = null;
-				if(text != null) GameObject.Destroy(text);
-				text = null;
             }
         }
 
@@ -838,10 +838,10 @@ namespace TheOtherRoles
             morphTimer = 0f;
             cooldown = CustomOptionHolder.morphlingCooldown.getFloat();
             duration = CustomOptionHolder.morphlingDuration.getFloat();
-			foreach(var button in buttons){
-				UnityEngine.Object.Destroy(button);
-			}
-			buttons = new List<KillButtonManager>();
+            foreach(var button in buttons){
+                UnityEngine.Object.Destroy(button);
+            }
+            buttons = new List<KillButtonManager>();
         }
 
         public static Sprite getSampleSprite() {

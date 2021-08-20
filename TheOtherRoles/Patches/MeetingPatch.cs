@@ -70,9 +70,9 @@ namespace TheOtherRoles.Patches {
                         }
                     }
 
-			        Dictionary<byte, int> self = CalculateVotes(__instance);
+                    Dictionary<byte, int> self = CalculateVotes(__instance);
                     bool tie;
-			        KeyValuePair<byte, int> max = self.MaxPair(out tie);
+                    KeyValuePair<byte, int> max = self.MaxPair(out tie);
                     GameData.PlayerInfo exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == max.Key && !v.IsDead);
 
                     MeetingHud.VoterState[] array = new MeetingHud.VoterState[__instance.playerStates.Length];
@@ -423,10 +423,15 @@ namespace TheOtherRoles.Patches {
 
         }
 
-        // Polusの湧き位置をランダムにする
+        // Polusの湧き位置をランダムにする + Morphlingを元に戻す
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
         class MeetingHudClosePatch{
             static void Postfix(MeetingHud __instance){
+                // Morphlingを元に戻す
+                TheOtherRolesPlugin.Instance.Log.LogInfo("reset Morph");
+                Morphling.resetMorph();
+                HudManagerStartPatch.morphlingButton.Timer = 0f;
+
                 if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusRandomSpawn.getBool()){
                     if(AmongUsClient.Instance.AmHost){
                         foreach(PlayerControl player in PlayerControl.AllPlayerControls){
