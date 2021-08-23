@@ -511,7 +511,7 @@ namespace TheOtherRoles.Patches {
                 Dictionary<PlayerControl, float> dic = new Dictionary<PlayerControl, float>();
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
                     if(p == PlayerControl.LocalPlayer) continue;
-					if(p.Data.IsDead) continue;
+                    if(p.Data.IsDead) continue;
                     float dist = Vector3.Distance(p.transform.position, PlayerControl.LocalPlayer.transform.position);
                     dic.Add(p, dist);
                 }
@@ -838,6 +838,19 @@ namespace TheOtherRoles.Patches {
             })));
         }
 
+        static void moveVital(){
+            if(SpecimenVital.flag) return;
+            if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusSpecimenVital.getBool()){
+                var panel = GameObject.Find("panel_vitals");
+                if(panel != null){
+                    TheOtherRolesPlugin.Instance.Log.LogInfo("Move Vital to Specimen");
+                    var transform = panel.GetComponent<Transform>();
+                    transform.SetPositionAndRotation(SpecimenVital.pos, transform.rotation);
+                    SpecimenVital.flag = true;
+                }
+            }
+        }
+
         static void bountyHunterUpdate() {
             if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
 
@@ -1013,6 +1026,9 @@ namespace TheOtherRoles.Patches {
 
                 // additional vents update
                 additionalVentsUpdate();
+
+                // Vital
+                moveVital();
             } 
         }
     }

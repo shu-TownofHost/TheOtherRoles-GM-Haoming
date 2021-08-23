@@ -125,7 +125,8 @@ namespace TheOtherRoles
         // Main Controls
 
         public static void resetVariables() {
-            AdditionalVents.ClearAndReload();
+            SpecimenVital.clearAndReload();
+            AdditionalVents.clearAndReload();
             BombEffect.clearBombEffects();
             TrapEffect.clearTrapEffects();
             Garlic.clearGarlics();
@@ -436,15 +437,15 @@ namespace TheOtherRoles
                                 Trapper.basePos = Trapper.zero;
                                 player.moveable = true;
                                 Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(Trapper.baseTrueSpeed);
-								TrapEffect.clearTrapEffects();
+                                TrapEffect.clearTrapEffects();
                             }
                         }
                     }else{
                         foreach(PlayerControl player in PlayerControl.AllPlayerControls){
                             if(player.PlayerId == targetId){
-								if(TrapEffect.trapeffects.Count == 0){
-									new TrapEffect(player);
-								}
+                                if(TrapEffect.trapeffects.Count == 0){
+                                    new TrapEffect(player);
+                                }
                                 if(Trapper.basePos == Trapper.zero){
                                     Trapper.basePos = player.transform.position;
                                 }

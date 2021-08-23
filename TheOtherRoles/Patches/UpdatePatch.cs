@@ -337,10 +337,12 @@ namespace TheOtherRoles.Patches {
                     bool spawnPet = false;
                     if (p.CurrentPet == null) spawnPet = true;
                     else if (p.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+						TheOtherRolesPlugin.Instance.Log.LogInfo("camouflager 1");
                         UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
                         spawnPet = true;
                     }
                     if (spawnPet) {
+						TheOtherRolesPlugin.Instance.Log.LogInfo("camouflager 2");
                         p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
                         p.CurrentPet.transform.position = p.transform.position;
                         p.CurrentPet.Source = p;

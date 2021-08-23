@@ -217,6 +217,7 @@ namespace TheOtherRoles {
         public static CustomOption ImpostorLocation;
         public static CustomOption ImpostorRoleInfo;
         public static CustomOption additionalVents;
+        public static CustomOption polusSpecimenVital;
 		public static CustomOption haomingMunou;
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
@@ -452,6 +453,7 @@ namespace TheOtherRoles {
             ImpostorArrow = CustomOption.Create(803, "Show Impostor Arrows", true);
             ImpostorRoleInfo = CustomOption.Create(805, "Show Role Info for Impostor", true);
             ImpostorLocation = CustomOption.Create(806, "Show Locations for Impostor", true);
+            polusSpecimenVital = CustomOption.Create(807, "Polus Specimen Vital", true);
             haomingMunou = CustomOption.Create(804, "はおみんは無能", false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
