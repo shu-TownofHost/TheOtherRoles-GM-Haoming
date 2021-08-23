@@ -624,6 +624,9 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void Prefix(PlayerControl __instance) {
+            // レポート距離変更
+            __instance.MaxReportDistance = CustomOptionHolder.reportDistance.getFloat();
+
             // Misimoは消えることができる
             if(Misimo.misimo != null && !Misimo.misimo.inVent){
                 if(Misimo.misimo == __instance && PlayerControl.LocalPlayer != __instance){

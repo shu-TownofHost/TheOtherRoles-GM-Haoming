@@ -218,6 +218,7 @@ namespace TheOtherRoles {
         public static CustomOption ImpostorRoleInfo;
         public static CustomOption additionalVents;
         public static CustomOption polusSpecimenVital;
+        public static CustomOption reportDistance;
 		public static CustomOption haomingMunou;
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
@@ -448,12 +449,13 @@ namespace TheOtherRoles {
             blockSkippingInEmergencyMeetings = CustomOption.Create(4, "Block Skipping In Emergency Meetings", false);
             noVoteIsSelfVote = CustomOption.Create(5, "No Vote Is Self Vote", false, blockSkippingInEmergencyMeetings);
             hidePlayerNames = CustomOption.Create(6, "Hide Player Names", false);
+            reportDistance = CustomOption.Create(808, "Report Distance 5 is Default", 5f, 1f, 10f, 0.5f, null, true);
             polusRandomSpawn = CustomOption.Create(801, "Polus RandomSpawn", true);
+            polusSpecimenVital = CustomOption.Create(807, "Polus Specimen Vital", true);
             additionalVents = CustomOption.Create(802, "Additional Vents", true);
             ImpostorArrow = CustomOption.Create(803, "Show Impostor Arrows", true);
             ImpostorRoleInfo = CustomOption.Create(805, "Show Role Info for Impostor", true);
             ImpostorLocation = CustomOption.Create(806, "Show Locations for Impostor", true);
-            polusSpecimenVital = CustomOption.Create(807, "Polus Specimen Vital", true);
             haomingMunou = CustomOption.Create(804, "はおみんは無能", false);
 
             blockedRolePairings.Add((byte)RoleId.Vampire, new [] { (byte)RoleId.Warlock});
