@@ -66,6 +66,7 @@ namespace TheOtherRoles
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
             MadmateAndJester.clearAndReload();
+            MadScientist.clearAndReload();
         }
         public static class ImpostorPlayer{
             public static List<Arrow> arrows = new List<Arrow>();
@@ -461,6 +462,37 @@ namespace TheOtherRoles
             public static void clearAndReload() {
                 madmate2 = null;
             }
+        }
+
+        public static class MadScientist{
+            public static PlayerControl madScientist;
+            public static PlayerControl currentTarget;
+            public static Dictionary<int, PlayerControl> infected;
+            public static Dictionary<int, float> progress;
+            public static TMPro.TMP_Text text = null;
+            public static bool triggerMadScientistWin = false;
+            public static bool syringeFlag = false;
+            public static Color color = new Color(00f / 255f, 255f / 255f, 00f / 255f, 1);
+
+            public static Sprite buttonSylinge;
+            public static float duration;
+            public static float distance;
+            public static Sprite getButtonSylinge() {
+                if (buttonSylinge) return buttonSylinge;
+                buttonSylinge = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Sylinge.png", 115f);
+                return buttonSylinge;
+            }
+            public static void clearAndReload(){
+                madScientist = null;
+                distance = CustomOptionHolder.madScientistDistance.getFloat();
+                duration = CustomOptionHolder.madScientistDuration.getFloat();
+                syringeFlag = false;
+                triggerMadScientistWin = false;
+                infected = new Dictionary<int, PlayerControl>();
+                progress = new Dictionary<int, float>();
+                text = null;
+            }
+            
         }
 
         public static class Jester {

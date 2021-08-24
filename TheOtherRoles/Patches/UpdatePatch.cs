@@ -118,6 +118,8 @@ namespace TheOtherRoles.Patches {
                 setPlayerNameColor(SecurityGuard.securityGuard, SecurityGuard.color);
             } else if (Arsonist.arsonist != null && Arsonist.arsonist == PlayerControl.LocalPlayer) {
                 setPlayerNameColor(Arsonist.arsonist, Arsonist.color);
+            } else if (MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer) {
+                setPlayerNameColor(MadScientist.madScientist, MadScientist.color);
             } else if (Guesser.guesser != null && Guesser.guesser == PlayerControl.LocalPlayer) {
                 setPlayerNameColor(Guesser.guesser, Guesser.guesser.Data.IsImpostor ? Palette.ImpostorRed : Guesser.color);
             } else if (Bait.bait != null && Bait.bait == PlayerControl.LocalPlayer) {

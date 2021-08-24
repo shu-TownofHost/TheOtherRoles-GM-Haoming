@@ -17,7 +17,8 @@ namespace TheOtherRoles.Patches {
         TeamJackalWin = 11,
         MiniLose = 12,
         JesterWin = 13,
-        ArsonistWin = 14
+        ArsonistWin = 14,
+        MadScientistWin = 15
     }
 
     enum WinCondition {
@@ -27,7 +28,8 @@ namespace TheOtherRoles.Patches {
         JesterWin,
         JackalWin,
         MiniLose,
-        ArsonistWin
+        ArsonistWin,
+        MadScientistWin
     }
 
     static class AdditionalTempData {
@@ -74,6 +76,7 @@ namespace TheOtherRoles.Patches {
             if (Arsonist.arsonist != null) notWinners.Add(Arsonist.arsonist);
             if (Madmate.madmate != null) notWinners.Add(Madmate.madmate);
             if (Madmate2.madmate2 != null) notWinners.Add(Madmate2.madmate2);
+            if (MadScientist.madScientist != null) notWinners.Add(MadScientist.madScientist);
             notWinners.AddRange(Jackal.formerJackals);
 
             List<WinningPlayerData> winnersToRemove = new List<WinningPlayerData>();
@@ -84,6 +87,7 @@ namespace TheOtherRoles.Patches {
 
             bool jesterWin = Jester.jester != null && gameOverReason == (GameOverReason)CustomGameOverReason.JesterWin;
             bool arsonistWin = Arsonist.arsonist != null && gameOverReason == (GameOverReason)CustomGameOverReason.ArsonistWin;
+            bool madScientistWin = MadScientist.madScientist != null && gameOverReason == (GameOverReason)CustomGameOverReason.MadScientistWin;
             bool miniLose = Mini.mini != null && gameOverReason == (GameOverReason)CustomGameOverReason.MiniLose;
             bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (TempData.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
             bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
@@ -92,14 +96,14 @@ namespace TheOtherRoles.Patches {
             // Madmate win
             if(madmateWin){
                 TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
-				if(Madmate.madmate != null){
-					WinningPlayerData wpd = new WinningPlayerData(Madmate.madmate.Data);
-					TempData.winners.Add(wpd);
-				}
-				if(Madmate2.madmate2 != null){
-					WinningPlayerData wpd = new WinningPlayerData(Madmate2.madmate2.Data);
-					TempData.winners.Add(wpd);
-				}
+                if(Madmate.madmate != null){
+                    WinningPlayerData wpd = new WinningPlayerData(Madmate.madmate.Data);
+                    TempData.winners.Add(wpd);
+                }
+                if(Madmate2.madmate2 != null){
+                    WinningPlayerData wpd = new WinningPlayerData(Madmate2.madmate2.Data);
+                    TempData.winners.Add(wpd);
+                }
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
                     if(p.Data.IsImpostor){
                         WinningPlayerData wpd = new WinningPlayerData(p.Data);
@@ -133,6 +137,14 @@ namespace TheOtherRoles.Patches {
                 AdditionalTempData.winCondition = WinCondition.ArsonistWin;
             }
 
+            // MadScientist win
+            else if (madScientistWin) {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new WinningPlayerData(MadScientist.madScientist.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.MadScientistWin;
+            }
+
             // Lovers win conditions
             else if (loversWin) {
                 // Double win for lovers, crewmates also win
@@ -143,7 +155,7 @@ namespace TheOtherRoles.Patches {
                         if (p == null) continue;
                         if (p == Lovers.lover1 || p == Lovers.lover2)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
-                        else if (p != Jester.jester && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && !Jackal.formerJackals.Contains(p) && !p.Data.IsImpostor)
+                        else if (p != Jester.jester && p != Jackal.jackal && p != Sidekick.sidekick && p != Arsonist.arsonist && p != Madmate.madmate && p != Madmate2.madmate2 && p != MadScientist.madScientist && !Jackal.formerJackals.Contains(p) && !p.Data.IsImpostor)
                             TempData.winners.Add(new WinningPlayerData(p.Data));
                     }
                 }
@@ -198,6 +210,10 @@ namespace TheOtherRoles.Patches {
             else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin) {
                 textRenderer.text = "Arsonist Wins";
                 textRenderer.color = Arsonist.color;
+            }
+            else if (AdditionalTempData.winCondition == WinCondition.MadScientistWin) {
+                textRenderer.text = "MadScientist Wins";
+                textRenderer.color = MadScientist.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin) {
                 textRenderer.text = "Lovers And Crewmates Win";
@@ -256,6 +272,7 @@ namespace TheOtherRoles.Patches {
             if (CheckAndEndGameForMiniLose(__instance)) return false;
             if (CheckAndEndGameForJesterWin(__instance)) return false;
             if (CheckAndEndGameForArsonistWin(__instance)) return false;
+            if (CheckAndEndGameForMadScientistWin(__instance)) return false;
             if (CheckAndEndGameForSabotageWin(__instance)) return false;
             if (CheckAndEndGameForTaskWin(__instance)) return false;
             if (CheckAndEndGameForLoverWin(__instance, statistics)) return false;
@@ -287,6 +304,15 @@ namespace TheOtherRoles.Patches {
             if (Arsonist.triggerArsonistWin) {
                 __instance.enabled = false;
                 ShipStatus.RpcEndGame((GameOverReason)CustomGameOverReason.ArsonistWin, false);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool CheckAndEndGameForMadScientistWin(ShipStatus __instance) {
+            if (MadScientist.triggerMadScientistWin) {
+                __instance.enabled = false;
+                ShipStatus.RpcEndGame((GameOverReason)CustomGameOverReason.MadScientistWin, false);
                 return true;
             }
             return false;

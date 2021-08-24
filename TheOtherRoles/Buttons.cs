@@ -22,6 +22,7 @@ namespace TheOtherRoles
         public static CustomButton trapperUnsetTrapButton;
         public static CustomButton mifuneButton;
         public static CustomButton soulPlayerButton;
+        public static CustomButton madScientistSyringeButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
         private static CustomButton sheriffKillButton;
@@ -454,6 +455,20 @@ namespace TheOtherRoles
                 false,
                 0.0f, /* Effect Duration */
                 () => {predatorInvisibleButton.Timer = predatorInvisibleButton.MaxTimer;}
+            );
+
+            madScientistSyringeButton = new CustomButton(
+                () => {/*ボタンが押されたとき*/ MadScientist.infected.Add(MadScientist.currentTarget.Data.PlayerId, MadScientist.currentTarget); MadScientist.syringeFlag = true;},
+                () => {/*ボタンが有効になる条件*/ return MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer && !MadScientist.syringeFlag && !MadScientist.madScientist.Data.IsDead; },
+                () => {/*ボタンが使える条件*/ return MadScientist.currentTarget != null && !MadScientist.syringeFlag && PlayerControl.LocalPlayer.CanMove;},
+                () => {/*ミーティング終了時*/ },
+                MadScientist.getButtonSylinge(),
+                new Vector3(-1.3f, 1.3f, 0),
+                __instance,
+                KeyCode.F,
+                true,
+                0.0f, /* Effect Duration */
+                () => {}
             );
 
             // Time Master Rewind Time

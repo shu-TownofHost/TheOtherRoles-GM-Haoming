@@ -98,6 +98,9 @@ namespace TheOtherRoles {
         public static CustomOption kanSpawnRate;
         public static CustomOption nottoriSpawnRate;
         public static CustomOption nottoriNeutral;
+        public static CustomOption madScientistSpawnRate;
+        public static CustomOption madScientistDistance;
+        public static CustomOption madScientistDuration;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -353,6 +356,10 @@ namespace TheOtherRoles {
             madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
             madmateArrow = CustomOption.Create(295, "Madmate Arrow", false, madmateSpawnRate);
             madmate2SpawnRate = CustomOption.Create(296, cs(Madmate2.color, "Madmate2"), rates, null, true);
+
+            madScientistSpawnRate = CustomOption.Create(901, cs(MadScientist.color, "MadScientist"), rates, null, true);
+            madScientistDistance = CustomOption.Create(902, "MadScientist Distance", 2.5f, 0.5f, 5.0f, 0.25f, madScientistSpawnRate);
+            madScientistDuration = CustomOption.Create(903, "MadScientist Duration", 3f, 1f, 10f, 1f, madScientistSpawnRate);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
