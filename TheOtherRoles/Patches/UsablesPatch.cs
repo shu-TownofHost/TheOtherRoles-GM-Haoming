@@ -136,6 +136,19 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // MadScientist sabotage
+            if (MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer && PlayerControl.LocalPlayer.CanMove) {
+                var useButton = __instance.currentButtonShown;
+                if (!MadScientist.madScientist.Data.IsDead && __instance.currentTarget == null) { // no target, so sabotage
+                    useButton.graphic.sprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.SabotageButton);
+                    useButton.graphic.color = UseButtonManager.EnabledColor;
+                    useButton.text.enabled = false;
+                } else {
+                    useButton.graphic.sprite = DestroyableSingleton<TranslationController>.Instance.GetImage(ImageNames.UseButton);
+                    useButton.text.enabled = false;
+                }
+            }
+
             // Mafia sabotage button render patch
             bool blockSabotageJanitor = (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer);
             bool blockSabotageMafioso = (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead);
@@ -159,6 +172,14 @@ namespace TheOtherRoles.Patches {
                 DestroyableSingleton<HudManager>.Instance.ShowMap(action);
                 return false;
             }
+
+            // MadScientist sabotage
+            if (MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead) {
+                Action<MapBehaviour> action = m => m.ShowInfectedMap() ;
+                DestroyableSingleton<HudManager>.Instance.ShowMap(action);
+                return false;
+            }
+
             // Mafia sabotage button click patch
             bool blockSabotageJanitor = (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer);
             bool blockSabotageMafioso = (Mafioso.mafioso != null && Mafioso.mafioso == PlayerControl.LocalPlayer && Godfather.godfather != null && !Godfather.godfather.Data.IsDead);

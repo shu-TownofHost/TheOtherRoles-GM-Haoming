@@ -463,7 +463,7 @@ namespace TheOtherRoles
                 () => {/*ボタンが使える条件*/ return MadScientist.currentTarget != null && !MadScientist.syringeFlag && PlayerControl.LocalPlayer.CanMove;},
                 () => {/*ミーティング終了時*/ },
                 MadScientist.getButtonSylinge(),
-                new Vector3(-1.3f, 1.3f, 0),
+                new Vector3(-1.3f, 0, 0),
                 __instance,
                 KeyCode.F,
                 true,

@@ -472,6 +472,7 @@ namespace TheOtherRoles
             public static TMPro.TMP_Text text = null;
             public static bool triggerMadScientistWin = false;
             public static bool syringeFlag = false;
+			public static bool meetingFlag = false;
             public static Color color = new Color(00f / 255f, 255f / 255f, 00f / 255f, 1);
 
             public static Sprite buttonSylinge;
@@ -491,6 +492,7 @@ namespace TheOtherRoles
                 infected = new Dictionary<int, PlayerControl>();
                 progress = new Dictionary<int, float>();
                 text = null;
+				meetingFlag = false;
             }
             
         }

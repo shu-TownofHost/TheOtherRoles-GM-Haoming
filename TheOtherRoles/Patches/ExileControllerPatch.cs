@@ -91,6 +91,14 @@ namespace TheOtherRoles.Patches {
         }
 
         static void WrapUpPostfix(GameData.PlayerInfo exiled) {
+            TheOtherRolesPlugin.Instance.Log.LogInfo("ExileControllerWrapUpPatch");
+            // MadScientist
+            HudManager.Instance.StartCoroutine(Effects.Lerp(5.0f, new Action<float>((p) => { // Delayed action
+                if (p == 1f) {
+                    MadScientist.meetingFlag = false;
+                }
+            })));
+
             // Mini exile lose condition
             if (exiled != null && Mini.mini != null && Mini.mini.PlayerId == exiled.PlayerId && !Mini.isGrownUp() && !Mini.mini.Data.IsImpostor) {
                 Mini.triggerMiniLose = true;

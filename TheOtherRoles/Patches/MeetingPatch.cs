@@ -388,6 +388,8 @@ namespace TheOtherRoles.Patches {
             public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) {
                 // Ballad
                 Ballad.meetingCount += 1;
+                // MadScientist
+                MadScientist.meetingFlag = true;
                 // Reset vampire bitten
                 Vampire.bitten = null;
                 // Count meetings
@@ -410,15 +412,15 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.CallMeeting))]
         class EmergencyMinigameCallMeetingPatch {
             static void Prefix(EmergencyMinigame __instance){
+                TheOtherRolesPlugin.Instance.Log.LogInfo("EmergencyMinigameCallMeetingPatch");
                 Trapper.meetingFlag = true;
-                System.Console.WriteLine("EmergencyMinigameCallMeetingPatch");
             }
         }
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
         class PlayerControlReportDeadBodyPatch{
             static void Prefix(PlayerControl __instance){
+                TheOtherRolesPlugin.Instance.Log.LogInfo("PlayerControlReportDeadBodyPatch");
                 Trapper.meetingFlag = true;
-                System.Console.WriteLine("PlayerControlReportDeadBodyPatch");
             }
 
         }
@@ -427,6 +429,7 @@ namespace TheOtherRoles.Patches {
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
         class MeetingHudClosePatch{
             static void Postfix(MeetingHud __instance){
+                TheOtherRolesPlugin.Instance.Log.LogInfo("MeetingHudClosePatch");
                 // Morphlingを元に戻す
                 TheOtherRolesPlugin.Instance.Log.LogInfo("reset Morph");
                 Morphling.resetMorph();

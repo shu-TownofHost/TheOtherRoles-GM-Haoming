@@ -551,8 +551,7 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void madScientistUpdate(){
-            if(MadScientist.madScientist != null && PlayerControl.LocalPlayer == MadScientist.madScientist) {
-                TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistUpdate");
+            if(MadScientist.madScientist != null && PlayerControl.LocalPlayer == MadScientist.madScientist && !MadScientist.meetingFlag) {
 
                 List<PlayerControl> newInfected = new List<PlayerControl>();
                 foreach(PlayerControl p1 in PlayerControl.AllPlayerControls){ // 非感染プレイヤーのループ
