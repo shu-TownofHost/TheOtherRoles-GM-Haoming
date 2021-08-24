@@ -71,6 +71,7 @@ namespace TheOtherRoles
         public static RoleInfo madmate = new RoleInfo("Madmate", Madmate.color, "Help Impostors", "Help Impostors", RoleId.Madmate);
         public static RoleInfo madmate2 = new RoleInfo("Madmate", Madmate2.color, "Help Impostors", "Help Impostors", RoleId.Madmate2);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
+        public static RoleInfo madScientist = new RoleInfo("MadScientist", MadScientist.color, "Infect All Crewmates and Impostors", "Infect All Crewmatest and Impostors", RoleId.MadScientist);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
             impostor,
@@ -96,6 +97,7 @@ namespace TheOtherRoles
             madmate,
             madmate2,
 			munou,
+			madScientist,
             niceMini,
             evilMini,
             goodGuesser,
@@ -141,6 +143,7 @@ namespace TheOtherRoles
             if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Madmate2.madmate2) infos.Add(madmate2);
             if (p == Munou.munou) infos.Add(munou);
+            if (p == MadScientist.madScientist) infos.Add(madScientist);
             if (p == Jester.jester) infos.Add(jester);
             if (p == Mayor.mayor) infos.Add(mayor);
             if (p == Engineer.engineer) infos.Add(engineer);

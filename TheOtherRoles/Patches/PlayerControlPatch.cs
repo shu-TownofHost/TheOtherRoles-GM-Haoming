@@ -451,6 +451,7 @@ namespace TheOtherRoles.Patches {
                 if((Madmate.madmate != null && Madmate.madmate == p) ||
                    (Madmate2.madmate2 != null && Madmate2.madmate2 == p) ||
                    (Arsonist.arsonist != null && Arsonist.arsonist == p) ||
+                   (MadScientist.madScientist != null && MadScientist.madScientist == p) ||
                    (Jester.jester != null && Jester.jester == p) ||
                    (Jackal.jackal != null && Jackal.jackal == p) ||
                    (Sidekick.sidekick != null && Sidekick.sidekick == p) ||
@@ -548,6 +549,88 @@ namespace TheOtherRoles.Patches {
             }
             ImpostorPlayer.text.text = text;
         }
+
+        public static void madScientistUpdate(){
+            if(MadScientist.madScientist != null && PlayerControl.LocalPlayer == MadScientist.madScientist) {
+                TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistUpdate");
+
+                List<PlayerControl> newInfected = new List<PlayerControl>();
+                foreach(PlayerControl p1 in PlayerControl.AllPlayerControls){ // 非感染プレイヤーのループ
+                    if(p1 == MadScientist.madScientist || p1.Data.IsDead || MadScientist.infected.ContainsKey(p1.Data.PlayerId)) continue;
+                    // データが無い場合は作成する
+                    if(!MadScientist.progress.ContainsKey(p1.Data.PlayerId)){
+                        MadScientist.progress[p1.Data.PlayerId] = 0f;
+                    }
+                    foreach(int key in MadScientist.infected.Keys){ // 感染プレイヤーのループ
+                        if(MadScientist.infected[key].Data.IsDead) continue;
+                        float distance = Vector3.Distance(MadScientist.infected[key].transform.position, p1.transform.position);
+                        if(distance <= CustomOptionHolder.madScientistDistance.getFloat()){
+                            MadScientist.progress[p1.Data.PlayerId] += Time.fixedDeltaTime;
+                            // 既定値を超えたら感染扱いにする
+                            if(MadScientist.progress[p1.Data.PlayerId] >= CustomOptionHolder.madScientistDuration.getFloat()){
+                                newInfected.Add(p1);
+                            }
+                        }
+
+                    }
+                }
+
+                // 感染者に追加する
+                foreach(PlayerControl p in newInfected){
+                    MadScientist.infected.Add(p.Data.PlayerId, p);
+                }
+
+                // 勝利条件を満たしたか確認する
+                bool winFlag = true;
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p.Data.IsDead) continue;
+                    if(p == MadScientist.madScientist) continue;
+                    if(!MadScientist.infected.ContainsKey(p.Data.PlayerId)) winFlag = false;
+                }
+                if(winFlag){
+                    MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistWin, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                    RPCProcedure.madScientistWin();
+                }
+            }
+        }
+
+        public static void madScientistTextUpdate(){
+            if(MadScientist.madScientist != null && PlayerControl.LocalPlayer == MadScientist.madScientist){
+                TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistTextUpdate1");
+                if(MadScientist.text == null){
+                    TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistTextUpdate2");
+                    var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
+                    var obj = UnityEngine.Object.Instantiate(HudManager._instance.GameSettings);
+                    MadScientist.text = obj.GetComponent<TMPro.TMP_Text>();
+                    MadScientist.text.transform.position = new Vector3(HudManager._instance.GameSettings.transform.position.x , position.y - 0.1f, -14f); 
+                    MadScientist.text.transform.localScale = new Vector3(1f, 1f, 1f);
+                    MadScientist.text.fontSize = 1.5f;
+                    MadScientist.text.fontSizeMin = 1.5f;
+                    MadScientist.text.fontSizeMax = 1.5f;
+                    MadScientist.text.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+                    MadScientist.text.transform.parent = HudManager._instance.GameSettings.transform.parent;
+                }
+                TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistTextUpdate3");
+                MadScientist.text.gameObject.SetActive(true);
+                String text = "[感染状況]\n";
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistTextUpdate4");
+                    if(p.Data.IsDead) continue;
+                    if(p == MadScientist.madScientist) continue;
+                    if(MadScientist.infected.ContainsKey(p.Data.PlayerId)){
+                        text += $"{p.name}: <color=\"red\">感染</color>\n";
+                    }else{
+                        TheOtherRolesPlugin.Instance.Log.LogInfo("madScientistTextUpdate5");
+                        float progress =100 * MadScientist.progress[p.Data.PlayerId]/CustomOptionHolder.madScientistDuration.getFloat();
+                        string prog = progress.ToString("F1");
+                        text += $"{p.name}: {prog}%\n";
+                    }
+                }
+
+                MadScientist.text.text = text;
+            }
+        }
         
         
         public static void MorphButtonUpdate(){
@@ -621,6 +704,11 @@ namespace TheOtherRoles.Patches {
                 untargetables = Arsonist.dousedPlayers;
             Arsonist.currentTarget = setTarget(untargetablePlayers: untargetables);
             if (Arsonist.currentTarget != null) setPlayerOutline(Arsonist.currentTarget, Arsonist.color);
+        }
+        public static void madScientistSetTarget() {
+            if (MadScientist.madScientist == null || MadScientist.madScientist != PlayerControl.LocalPlayer) return;
+            MadScientist.currentTarget = setTarget();
+            setPlayerOutline(MadScientist.currentTarget, MadScientist.color);
         }
 
         public static void Prefix(PlayerControl __instance) {
@@ -970,6 +1058,10 @@ namespace TheOtherRoles.Patches {
                 impostorTextUpdate();
                 MorphButtonUpdate();
 
+                // Mad Scientist
+                madScientistUpdate();
+                madScientistTextUpdate();
+
                 // Time Master
                 bendTimeUpdate();
                 // Morphling
@@ -1007,6 +1099,8 @@ namespace TheOtherRoles.Patches {
                 securityGuardSetTarget();
                 // Arsonist
                 arsonistSetTarget();
+                // MadScientist
+                madScientistSetTarget();
                 //Ballad
                 BalladSetTarget();
                 // Bomber
@@ -1210,6 +1304,11 @@ namespace TheOtherRoles.Patches {
                 }
                 else
                     BountyHunter.bountyHunter.SetKillTimer(PlayerControl.GameOptions.KillCooldown + BountyHunter.punishmentTime); 
+            }
+
+            // MadScientistを殺したプレイヤーも感染する
+            if(MadScientist.madScientist != null && target == MadScientist.madScientist && PlayerControl.LocalPlayer == MadScientist.madScientist){
+                MadScientist.infected.Add(__instance.Data.PlayerId, __instance);
             }
         }
     }

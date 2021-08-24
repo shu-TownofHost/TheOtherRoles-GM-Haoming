@@ -58,6 +58,7 @@ namespace TheOtherRoles
         Kan,
         Nottori,
         Munou,
+        MadScientist,
         Bait,
         Crewmate,
         Impostor
@@ -116,6 +117,7 @@ namespace TheOtherRoles
         PredatorInvisible,
         BomberKill,
         TrapperKill,
+        MadScientistWin,
         RandomSpawn,
         GuesserShoot
     }
@@ -190,6 +192,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Munou:
                         Munou.munou = player;
+                        break;
+                    case RoleId.MadScientist:
+                        MadScientist.madScientist = player;
                         break;
                     case RoleId.Jester:
                         Jester.jester = player;
@@ -566,7 +571,7 @@ namespace TheOtherRoles
             Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2) {
+            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2 || player == MadScientist.madScientist) {
                 oldShifter.Exiled();
                 return;
             }
@@ -788,6 +793,7 @@ namespace TheOtherRoles
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
             if (player == Arsonist.arsonist) Arsonist.clearAndReload();
+            if (player == MadScientist.madScientist) MadScientist.clearAndReload();
             if (player == Guesser.guesser) Guesser.clearAndReload();
             if (!ignoreLovers && (player == Lovers.lover1 || player == Lovers.lover2)) { // The whole Lover couple is being erased
                 Lovers.clearAndReload(); 
@@ -891,6 +897,9 @@ namespace TheOtherRoles
 
         public static void arsonistWin() {
             Arsonist.triggerArsonistWin = true;
+        }
+        public static void madScientistWin() {
+            MadScientist.triggerMadScientistWin = true;
         }
 
         public static void guesserShoot(byte playerId) {
@@ -1141,6 +1150,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.ArsonistWin:
                     RPCProcedure.arsonistWin();
+                    break;
+                case (byte)CustomRPC.MadScientistWin:
+                    RPCProcedure.madScientistWin();
                     break;
                 case (byte)CustomRPC.GuesserShoot:
                     RPCProcedure.guesserShoot(reader.ReadByte());
