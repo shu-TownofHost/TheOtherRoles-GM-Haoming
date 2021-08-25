@@ -563,7 +563,10 @@ namespace TheOtherRoles.Patches {
                     foreach(int key in MadScientist.infected.Keys){ // 感染プレイヤーのループ
                         if(MadScientist.infected[key].Data.IsDead) continue;
                         float distance = Vector3.Distance(MadScientist.infected[key].transform.position, p1.transform.position);
-                        if(distance <= CustomOptionHolder.madScientistDistance.getFloat()){
+                        // 障害物判定
+                        bool anythingBetween = PhysicsHelpers.AnythingBetween(MadScientist.infected[key].GetTruePosition(), p1.GetTruePosition(), Constants.ShipAndObjectsMask, false);
+
+                        if(distance <= CustomOptionHolder.madScientistDistance.getFloat() && !anythingBetween){
                             MadScientist.progress[p1.Data.PlayerId] += Time.fixedDeltaTime;
                             // 既定値を超えたら感染扱いにする
                             if(MadScientist.progress[p1.Data.PlayerId] >= CustomOptionHolder.madScientistDuration.getFloat()){
@@ -1218,6 +1221,20 @@ namespace TheOtherRoles.Patches {
             resetToDead = __instance.Data.IsDead;
             __instance.Data.IsImpostor = true;
             __instance.Data.IsDead = false;
+
+            // MadScientistの勝利条件を満たしたか確認する
+            bool winFlag = true;
+            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                if(p.Data.IsDead) continue;
+                if(p == MadScientist.madScientist) continue;
+                if(p.Data.PlayerId == target.Data.PlayerId) continue;
+                if(!MadScientist.infected.ContainsKey(p.Data.PlayerId)) winFlag = false;
+            }
+            if(winFlag){
+                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistWin, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(winWriter);
+                RPCProcedure.madScientistWin();
+            }
         }
 
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]PlayerControl target)
@@ -1304,6 +1321,7 @@ namespace TheOtherRoles.Patches {
             if(MadScientist.madScientist != null && target == MadScientist.madScientist && PlayerControl.LocalPlayer == MadScientist.madScientist){
                 MadScientist.infected.Add(__instance.Data.PlayerId, __instance);
             }
+
         }
     }
 
