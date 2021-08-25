@@ -579,7 +579,11 @@ namespace TheOtherRoles.Patches {
 
                 // 感染者に追加する
                 foreach(PlayerControl p in newInfected){
-                    MadScientist.infected.Add(p.Data.PlayerId, p);
+                    // MadScientist.infected.Add(p.Data.PlayerId, p);
+                    byte targetId = p.Data.PlayerId;
+                    MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistSetInfected, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                    AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                    RPCProcedure.setInfected(targetId);
                 }
 
                 // 勝利条件を満たしたか確認する
@@ -1222,19 +1226,6 @@ namespace TheOtherRoles.Patches {
             __instance.Data.IsImpostor = true;
             __instance.Data.IsDead = false;
 
-            // MadScientistの勝利条件を満たしたか確認する
-            bool winFlag = true;
-            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-                if(p.Data.IsDead) continue;
-                if(p == MadScientist.madScientist) continue;
-                if(p.Data.PlayerId == target.Data.PlayerId) continue;
-                if(!MadScientist.infected.ContainsKey(p.Data.PlayerId)) winFlag = false;
-            }
-            if(winFlag){
-                MessageWriter winWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistWin, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(winWriter);
-                RPCProcedure.madScientistWin();
-            }
         }
 
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)]PlayerControl target)
@@ -1319,7 +1310,11 @@ namespace TheOtherRoles.Patches {
 
             // MadScientistを殺したプレイヤーも感染する
             if(MadScientist.madScientist != null && target == MadScientist.madScientist && PlayerControl.LocalPlayer == MadScientist.madScientist){
-                MadScientist.infected.Add(__instance.Data.PlayerId, __instance);
+                // MadScientist.infected.Add(__instance.Data.PlayerId, __instance);
+                byte targetId = __instance.Data.PlayerId;
+                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistSetInfected, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                RPCProcedure.setInfected(targetId);
             }
 
         }

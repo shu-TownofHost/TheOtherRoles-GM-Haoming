@@ -57,6 +57,21 @@ namespace TheOtherRoles.Patches {
         public static void Prefix(AmongUsClient __instance, [HarmonyArgument(0)]ref GameOverReason reason, [HarmonyArgument(1)]bool showAd) {
             gameOverReason = reason;
             if ((int)reason >= 10) reason = GameOverReason.ImpostorByKill;
+
+            if(reason != (GameOverReason)CustomGameOverReason.MadScientistWin){
+                // MadScientistの勝利条件を満たしたか確認する
+                TheOtherRolesPlugin.Instance.Log.LogInfo("MadScientist勝利条件確認");
+                bool winFlag = true;
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p.Data.IsDead) continue;
+                    if(p == MadScientist.madScientist) continue;
+                    if(!MadScientist.infected.ContainsKey(p.Data.PlayerId)) winFlag = false;
+                    if(!MadScientist.infected.ContainsKey(p.Data.PlayerId)) TheOtherRolesPlugin.Instance.Log.LogInfo($"{p.Data.PlayerId}: {p.name} is not infected");
+                }
+                if(winFlag){
+                    gameOverReason = (GameOverReason)CustomGameOverReason.MadScientistWin;
+                }
+            }
         }
 
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)]ref GameOverReason reason, [HarmonyArgument(1)]bool showAd) {

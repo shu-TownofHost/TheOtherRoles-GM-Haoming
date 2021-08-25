@@ -118,6 +118,7 @@ namespace TheOtherRoles
         BomberKill,
         TrapperKill,
         MadScientistWin,
+        MadScientistSetInfected,
         RandomSpawn,
         GuesserShoot
     }
@@ -359,7 +360,13 @@ namespace TheOtherRoles
                     UnityEngine.Object.Destroy(array[i].gameObject);
             }
         }
-
+        public static void setInfected(byte targetId){
+            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                if(p.Data.PlayerId == targetId){
+                    MadScientist.infected.Add(targetId, p);
+                }
+            }
+        }
         public static void misimoKill(byte targetId) {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
@@ -1153,6 +1160,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.MadScientistWin:
                     RPCProcedure.madScientistWin();
+                    break;
+                case (byte)CustomRPC.MadScientistSetInfected:
+                    RPCProcedure.setInfected(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.GuesserShoot:
                     RPCProcedure.guesserShoot(reader.ReadByte());
