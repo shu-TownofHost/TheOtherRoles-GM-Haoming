@@ -241,140 +241,139 @@ namespace TheOtherRoles {
             presetSelection = CustomOption.Create(0, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Preset"), presets, null, true);
 
             // Using new id's for the options to not break compatibilty with older versions
-            crewmateRolesCountMin = CustomOption.Create(300, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Minimum Crewmate Roles"), 0f, 0f, 15f, 1f, null, true);
-            crewmateRolesCountMax = CustomOption.Create(301, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Crewmate Roles"), 0f, 0f, 15f, 1f);
-            neutralRolesCountMin = CustomOption.Create(302, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Minimum Neutral Roles"), 0f, 0f, 15f, 1f);
-            neutralRolesCountMax = CustomOption.Create(303, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Neutral Roles"), 0f, 0f, 15f, 1f);
-            impostorRolesCountMin = CustomOption.Create(304, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Minimum Impostor Roles"), 0f, 0f, 3f, 1f);
-            impostorRolesCountMax = CustomOption.Create(305, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "Maximum Impostor Roles"), 0f, 0f, 3f, 1f);
+            crewmateRolesCountMin = CustomOption.Create(300, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "最小クルーメイト役職数"), 0f, 0f, 15f, 1f, null, true);
+            crewmateRolesCountMax = CustomOption.Create(301, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "最大クルーメイト役職数"), 0f, 0f, 15f, 1f);
+            neutralRolesCountMin = CustomOption.Create(302, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "最小第三陣営役職数"), 0f, 0f, 15f, 1f);
+            neutralRolesCountMax = CustomOption.Create(303, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "最大第三陣営役職数"), 0f, 0f, 15f, 1f);
+            impostorRolesCountMin = CustomOption.Create(304, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "最小インポスター役職数"), 0f, 0f, 3f, 1f);
+            impostorRolesCountMax = CustomOption.Create(305, cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "最大インポスター役職数"), 0f, 0f, 3f, 1f);
             
 
-            mafiaSpawnRate = CustomOption.Create(10, cs(Janitor.color, "Mafia"), rates, null, true);
-            janitorClean = CustomOption.Create(12, "Janitor Clean On/Off", false, mafiaSpawnRate);
-            janitorCooldown = CustomOption.Create(11, "Janitor Cooldown", 30f, 10f, 60f, 2.5f, janitorClean);
+            mafiaSpawnRate = CustomOption.Create(10, cs(Janitor.color, "マフィア"), rates, null, true);
+            janitorClean = CustomOption.Create(12, "ジェニターが死体を消せるOn/Off", false, mafiaSpawnRate);
+            janitorCooldown = CustomOption.Create(11, "ジェニター死体消しクールダウン", 30f, 10f, 60f, 2.5f, janitorClean);
 
-            morphlingSpawnRate = CustomOption.Create(20, cs(Morphling.color, "Morphling"), rates, null, true);
-            morphlingCooldown = CustomOption.Create(21, "Morphling Cooldown", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
-            morphlingDuration = CustomOption.Create(22, "Morph Duration", 10f, 1f, 60f, 0.5f, morphlingSpawnRate);
+            morphlingSpawnRate = CustomOption.Create(20, cs(Morphling.color, "モーフィング"), rates, null, true);
+            morphlingCooldown = CustomOption.Create(21, "モーフィングクールダウン", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
+            morphlingDuration = CustomOption.Create(22, "変身効果時間", 10f, 1f, 60f, 0.5f, morphlingSpawnRate);
 
-            camouflagerSpawnRate = CustomOption.Create(30, cs(Camouflager.color, "Camouflager"), rates, null, true);
-            camouflagerCooldown = CustomOption.Create(31, "Camouflager Cooldown", 30f, 10f, 60f, 2.5f, camouflagerSpawnRate);
-            camouflagerDuration = CustomOption.Create(32, "Camo Duration", 10f, 1f, 20f, 0.5f, camouflagerSpawnRate);
+            camouflagerSpawnRate = CustomOption.Create(30, cs(Camouflager.color, "カモフラジャー"), rates, null, true);
+            camouflagerCooldown = CustomOption.Create(31, "カモフラジャークールダウン", 30f, 10f, 60f, 2.5f, camouflagerSpawnRate);
+            camouflagerDuration = CustomOption.Create(32, "カモフラージュ効果時間", 10f, 1f, 20f, 0.5f, camouflagerSpawnRate);
 
-            vampireSpawnRate = CustomOption.Create(40, cs(Vampire.color, "Vampire"), rates, null, true);
-            vampireKillDelay = CustomOption.Create(41, "Vampire Kill Delay", 10f, 1f, 20f, 1f, vampireSpawnRate);
-            vampireCooldown = CustomOption.Create(42, "Vampire Cooldown", 30f, 10f, 60f, 2.5f, vampireSpawnRate);
-            vampireCanKillNearGarlics = CustomOption.Create(43, "Vampire Can Kill Near Garlics", true, vampireSpawnRate);
+            vampireSpawnRate = CustomOption.Create(40, cs(Vampire.color, "ヴァンパイア"), rates, null, true);
+            vampireKillDelay = CustomOption.Create(41, "キルまでの遅延時間", 10f, 1f, 20f, 1f, vampireSpawnRate);
+            vampireCooldown = CustomOption.Create(42, "ヴァンパイアクールダウン", 30f, 10f, 60f, 2.5f, vampireSpawnRate);
+            vampireCanKillNearGarlics = CustomOption.Create(43, "ヴァンパイアがニンニクの近くでキルを行うことができる", true, vampireSpawnRate);
 
-            eraserSpawnRate = CustomOption.Create(230, cs(Eraser.color, "Eraser"), rates, null, true);
-            eraserCooldown = CustomOption.Create(231, "Eraser Cooldown", 30f, 10f, 120f, 5f, eraserSpawnRate);
-            eraserCanEraseAnyone = CustomOption.Create(232, "Eraser Can Erase Anyone", false, eraserSpawnRate);
+            eraserSpawnRate = CustomOption.Create(230, cs(Eraser.color, "イレイザー"), rates, null, true);
+            eraserCooldown = CustomOption.Create(231, "イレイザークールダウン", 30f, 10f, 120f, 5f, eraserSpawnRate);
+            eraserCanEraseAnyone = CustomOption.Create(232, "何の役職でも消すことができる", false, eraserSpawnRate);
 
-            tricksterSpawnRate = CustomOption.Create(250, cs(Trickster.color, "Trickster"), rates, null, true);
-            tricksterPlaceBoxCooldown = CustomOption.Create(251, "Trickster Box Cooldown", 10f, 0f, 30f, 2.5f, tricksterSpawnRate);
-            tricksterLightsOutCooldown = CustomOption.Create(252, "Trickster Lights Out Cooldown", 30f, 10f, 60f, 5f, tricksterSpawnRate);
-            tricksterLightsOutDuration = CustomOption.Create(253, "Trickster Lights Out Duration", 15f, 5f, 60f, 2.5f, tricksterSpawnRate);
+            tricksterSpawnRate = CustomOption.Create(250, cs(Trickster.color, "トリックスター"), rates, null, true);
+            tricksterPlaceBoxCooldown = CustomOption.Create(251, "トリックスターボックスクールダウン", 10f, 0f, 30f, 2.5f, tricksterSpawnRate);
+            tricksterLightsOutCooldown = CustomOption.Create(252, "トリックスター停電クールダウン", 30f, 10f, 60f, 5f, tricksterSpawnRate);
+            tricksterLightsOutDuration = CustomOption.Create(253, "トリックスター停電の効果時間", 15f, 5f, 60f, 2.5f, tricksterSpawnRate);
 
-            cleanerSpawnRate = CustomOption.Create(260, cs(Cleaner.color, "Cleaner"), rates, null, true);
-            cleanerCooldown = CustomOption.Create(261, "Cleaner Cooldown", 30f, 10f, 60f, 2.5f, cleanerSpawnRate);
+            cleanerSpawnRate = CustomOption.Create(260, cs(Cleaner.color, "クリーナー"), rates, null, true);
+            cleanerCooldown = CustomOption.Create(261, "クリーナークールダウン", 30f, 10f, 60f, 2.5f, cleanerSpawnRate);
 
-            warlockSpawnRate = CustomOption.Create(270, cs(Cleaner.color, "Warlock"), rates, null, true);
-            warlockCooldown = CustomOption.Create(271, "Warlock Cooldown", 30f, 10f, 60f, 2.5f, warlockSpawnRate);
-            warlockRootTime = CustomOption.Create(272, "Warlock Root Time", 5f, 0f, 15f, 1f, warlockSpawnRate);
-            bountyHunterSpawnRate = CustomOption.Create(320, cs(BountyHunter.color, "Bounty Hunter"), rates, null, true);
+            warlockSpawnRate = CustomOption.Create(270, cs(Cleaner.color, "ウォーロック"), rates, null, true);
+            warlockCooldown = CustomOption.Create(271, "ウォーロッククールダウン", 30f, 10f, 60f, 2.5f, warlockSpawnRate);
+            warlockRootTime = CustomOption.Create(272, "ウォーロック硬直時間", 5f, 0f, 15f, 1f, warlockSpawnRate);
 
-
+            bountyHunterSpawnRate = CustomOption.Create(320, cs(BountyHunter.color, "賞金稼ぎ"), rates, null, true);
             bountyHunterBountyDuration = CustomOption.Create(321, "Duration After Which Bounty Changes",  60f, 10f, 180f, 10f, bountyHunterSpawnRate);
-            bountyHunterReducedCooldown = CustomOption.Create(322, "Cooldown After Killing Bounty", 2.5f, 0f, 30f, 2.5f, bountyHunterSpawnRate);
-            bountyHunterPunishmentTime = CustomOption.Create(323, "Additional Cooldown After Killing Others", 20f, 0f, 60f, 2.5f, bountyHunterSpawnRate);
-            bountyHunterShowArrow = CustomOption.Create(324, "Show Arrow Pointing Towards The Bounty", true, bountyHunterSpawnRate);
-            bountyHunterArrowUpdateIntervall = CustomOption.Create(325, "Arrow Update Intervall", 15f, 2.5f, 60f, 2.5f, bountyHunterShowArrow);
+            bountyHunterReducedCooldown = CustomOption.Create(322, "賞金首をキルした場合のクールダウン", 2.5f, 0f, 30f, 2.5f, bountyHunterSpawnRate);
+            bountyHunterPunishmentTime = CustomOption.Create(323, "賞金首以外をキルした場合の追加クールダウン", 20f, 0f, 60f, 2.5f, bountyHunterSpawnRate);
+            bountyHunterShowArrow = CustomOption.Create(324, "賞金首にアローを表示する", true, bountyHunterSpawnRate);
+            bountyHunterArrowUpdateIntervall = CustomOption.Create(325, "アローの更新間隔", 15f, 2.5f, 60f, 2.5f, bountyHunterShowArrow);
 
 
             misimoSpawnRate = CustomOption.Create(810, cs(Misimo.color, "Misimo"), rates, null, true);
-            misimoCooldown = CustomOption.Create(811, "Misimo Kill Cooldown", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
-            misimoDuration = CustomOption.Create(812, "Misimo Self-Destruct Countdown", 40f, 1f, 60f, 1f, misimoSpawnRate);
-            misimoInvisibleOn = CustomOption.Create(813, "Toggle Invisible On/Off", true, misimoSpawnRate);
+            misimoCooldown = CustomOption.Create(811, "Misimoキルクールダウン", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
+            misimoDuration = CustomOption.Create(812, "Misimo自爆までのカウントダウン", 40f, 1f, 60f, 1f, misimoSpawnRate);
+            misimoInvisibleOn = CustomOption.Create(813, "透明化能力 On/Off", true, misimoSpawnRate);
 
 
             balladSpawnRate = CustomOption.Create(860, cs(Ballad.color, "Ballad"), rates, null, true);
-            balladCooldown = CustomOption.Create(861, "Ballad Seal Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
-            balladTimer = CustomOption.Create(862, "Ballad Seal Expiration Timer", 120f, 5f, 180f, 2.5f, balladSpawnRate);
-            balladSetOnce = CustomOption.Create(863, "Ballad Can Only Set Target Once", true, balladSpawnRate);
-            balladShowSealedVote = CustomOption.Create(864, "Toggle between hiding and showing a sealed vote", true, balladSpawnRate);
+            balladCooldown = CustomOption.Create(861, "Ballad投票無効化Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
+            balladTimer = CustomOption.Create(862, "Ballad投票無効化有効時間", 120f, 5f, 180f, 2.5f, balladSpawnRate);
+            balladSetOnce = CustomOption.Create(863, "一度しか無効化対象を選べない（効果は永続)", true, balladSpawnRate);
+            balladShowSealedVote = CustomOption.Create(864, "無効化した投票を投票結果に表示する", true, balladSpawnRate);
 
 
-            predatorSpawnRate = CustomOption.Create(820, cs(Predator.color, "Predator"), rates, null, true);
-            predatorInvisibleCooldown = CustomOption.Create(821, "Predator Invisible Cooldown", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
-            predatorInvisibleDuration = CustomOption.Create(822, "Predator Invisible Duration", 10f, 1f, 60f, 1f, predatorSpawnRate);
-            predatorSpeedMultiplier = CustomOption.Create(823, "Predator SpeedMultiplier", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
-            predatorHatesGarlics = CustomOption.Create(824, "Predator Hates Garlics", true, predatorSpawnRate);
+            predatorSpawnRate = CustomOption.Create(820, cs(Predator.color, "プレデター"), rates, null, true);
+            predatorInvisibleCooldown = CustomOption.Create(821, "プレデター透明化クールダウン", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
+            predatorInvisibleDuration = CustomOption.Create(822, "プレデター透明化効果時間", 10f, 1f, 60f, 1f, predatorSpawnRate);
+            predatorSpeedMultiplier = CustomOption.Create(823, "プレデター移動速度増加倍率", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
+            predatorHatesGarlics = CustomOption.Create(824, "プレデターはニンニクの近くでカモフラージュ状態になる", true, predatorSpawnRate);
 
 
-            bomberSpawnRate = CustomOption.Create(830, cs(Bomber.color, "Bomber"), rates, null, true);
-            bomberPlantDuration = CustomOption.Create(831, "Bomber Plant Duration", 5f, 1f, 20f, 1.0f, bomberSpawnRate);
-            bomberPlantCooldown = CustomOption.Create(832, "Bomber Plant Cooldown", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
-            bomberDefuseAfterMeeting = CustomOption.Create(833, "Bomber Defuse After Meeting", true, bomberSpawnRate);
-            bomberBombEffect = CustomOption.Create(834, "Bomber Bomb Effect", true, bomberSpawnRate);
-            bomberPlantSingleTarget = CustomOption.Create(835,"Bomber Plant Single Target", true, bomberSpawnRate);
-            bomberAOE = CustomOption.Create(836,"Bomber AOE", true, bomberSpawnRate);
+            bomberSpawnRate = CustomOption.Create(830, cs(Bomber.color, "爆弾魔"), rates, null, true);
+            bomberPlantDuration = CustomOption.Create(831, "爆弾設置時間", 5f, 1f, 20f, 1.0f, bomberSpawnRate);
+            bomberPlantCooldown = CustomOption.Create(832, "爆弾設置クールダウン", 10f, 0f, 60f, 2.5f, bomberSpawnRate);
+            bomberDefuseAfterMeeting = CustomOption.Create(833, "会議後に爆弾を解除する", true, bomberSpawnRate);
+            bomberBombEffect = CustomOption.Create(834, "爆弾のエフェクトを表示する", true, bomberSpawnRate);
+            bomberPlantSingleTarget = CustomOption.Create(835,"一度に一人までしか爆弾をつけられない", true, bomberSpawnRate);
+            bomberAOE = CustomOption.Create(836,"一定範囲内のクルーメイトをキルすることができる", true, bomberSpawnRate);
 
 
-            trapperSpawnRate = CustomOption.Create(840, cs(Trapper.color, "Trapper"), rates, null, true);
-            trapperCooldown = CustomOption.Create(841, "Trapper Cooldown", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
-            trapperUnmoveable = CustomOption.Create(842, "Trapper Trap Unmoveable", false, trapperSpawnRate);
-            trapperTrapDuration = CustomOption.Create(443, "Trapper Trap Duration", 15f, 0f, 60f, 2.5f, trapperUnmoveable);
+            trapperSpawnRate = CustomOption.Create(840, cs(Trapper.color, "トラッパー"), rates, null, true);
+            trapperCooldown = CustomOption.Create(841, "トラッパークールダウン", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
+            trapperUnmoveable = CustomOption.Create(842, "キルの代わりに動けなくする", true, trapperSpawnRate);
+            trapperTrapDuration = CustomOption.Create(443, "移動不能時間", 15f, 0f, 60f, 2.5f, trapperUnmoveable);
 
 
-            mifuneSpawnRate = CustomOption.Create(850, cs(Mifune.color, "Mifune"), rates, null, true);
-            mifuneCooldown = CustomOption.Create(851, "Mifune Cooldown", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
-            mifuneDuration = CustomOption.Create(852, "Mifune Duration", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
+            mifuneSpawnRate = CustomOption.Create(850, cs(Mifune.color, "三船"), rates, null, true);
+            mifuneCooldown = CustomOption.Create(851, "千里眼クールダウン", 10f, 0f, 60f, 2.5f, mifuneSpawnRate);
+            mifuneDuration = CustomOption.Create(852, "千里眼効果時間", 5f, 0f, 20f, 1.0f, mifuneSpawnRate);
 
-            nottoriSpawnRate = CustomOption.Create(890, cs(Nottori.color, "Nottori"), rates, null, true);
-            nottoriNeutral = CustomOption.Create(891, "Show Neutral Role as a Crewmate", false, nottoriSpawnRate);
+            nottoriSpawnRate = CustomOption.Create(890, cs(Nottori.color, "乗っ取り"), rates, null, true);
+            nottoriNeutral = CustomOption.Create(891, "第三陣営をクルーメイトとして表示する", true, nottoriSpawnRate);
 
             kanSpawnRate = CustomOption.Create(880, cs(Kan.color, "漢"), rates, null, true);
 
-            miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "Mini"), rates, null, true);
-            miniGrowingUpDuration = CustomOption.Create(181, "Mini Growing Up Duration", 400f, 100f, 1500f, 100f, miniSpawnRate);
+            miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "ミニ"), rates, null, true);
+            miniGrowingUpDuration = CustomOption.Create(181, "ミニの成長にかかる時間, 400f, 100f, 1500f, 100f, miniSpawnRate);
 
-            loversSpawnRate = CustomOption.Create(50, cs(Lovers.color, "Lovers"), rates, null, true);
-            loversImpLoverRate = CustomOption.Create(51, "Chance That One Lover Is Impostor", rates, loversSpawnRate);
-            loversBothDie = CustomOption.Create(52, "Both Lovers Die", true, loversSpawnRate);
-            loversCanHaveAnotherRole = CustomOption.Create(53, "Lovers Can Have Another Role", true, loversSpawnRate);
+            loversSpawnRate = CustomOption.Create(50, cs(Lovers.color, "恋人"), rates, null, true);
+            loversImpLoverRate = CustomOption.Create(51, "恋人の片方がインポスターになる確率", rates, loversSpawnRate);
+            loversBothDie = CustomOption.Create(52, "恋人の片方が死んだら療法が死ぬ", true, loversSpawnRate);
+            loversCanHaveAnotherRole = CustomOption.Create(53, "恋人が他の役職を持つことができる", true, loversSpawnRate);
 
-            guesserSpawnRate = CustomOption.Create(310, cs(Guesser.color, "Guesser"), rates, null, true);
-            guesserIsImpGuesserRate = CustomOption.Create(311, "Chance That The Guesser Is An Impostor", rates, guesserSpawnRate);
-            guesserNumberOfShots = CustomOption.Create(312, "Guesser Number Of Shots", 2f, 1f, 15f, 1f, guesserSpawnRate);
+            guesserSpawnRate = CustomOption.Create(310, cs(Guesser.color, "ゲッサー"), rates, null, true);
+            guesserIsImpGuesserRate = CustomOption.Create(311, "ゲッサーがインポスターになる確率", rates, guesserSpawnRate);
+            guesserNumberOfShots = CustomOption.Create(312, "推測できる回数", 2f, 1f, 15f, 1f, guesserSpawnRate);
 
-            jesterSpawnRate = CustomOption.Create(60, cs(Jester.color, "Jester"), rates, null, true);
-            jesterCanCallEmergency = CustomOption.Create(61, "Jester can call emergency meeting", true, jesterSpawnRate);
-            jesterCanSabotage = CustomOption.Create(62, "Jester can sabotage", true, jesterSpawnRate);
-            jesterArrow = CustomOption.Create(63, "Jester Arrow", true, jesterSpawnRate);
+            jesterSpawnRate = CustomOption.Create(60, cs(Jester.color, "ジェスター"), rates, null, true);
+            jesterCanCallEmergency = CustomOption.Create(61, "ジェスターが緊急会議を起こせる", true, jesterSpawnRate);
+            jesterCanSabotage = CustomOption.Create(62, "ジェスターがサボタージュを行える", true, jesterSpawnRate);
+            jesterArrow = CustomOption.Create(63, "死体位置にアローを表示する", true, jesterSpawnRate);
 
-            madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "Madmate"), rates, null, true);
-            madmateCanDieToSheriff = CustomOption.Create(294, "Madmate Can Die To Sheriff", false, madmateSpawnRate);
-            madmateArrow = CustomOption.Create(295, "Madmate Arrow", false, madmateSpawnRate);
-            madmate2SpawnRate = CustomOption.Create(296, cs(Madmate2.color, "Madmate2"), rates, null, true);
+            madmateSpawnRate = CustomOption.Create(293, cs(Madmate.color, "マッドメイト"), rates, null, true);
+            madmateCanDieToSheriff = CustomOption.Create(294, "シェリフに殺される", false, madmateSpawnRate);
+            madmateArrow = CustomOption.Create(295, "死体位置にアローを表示する", false, madmateSpawnRate);
+            madmate2SpawnRate = CustomOption.Create(296, cs(Madmate2.color, "マッドメイト2"), rates, null, true);
 
-            madScientistSpawnRate = CustomOption.Create(901, cs(MadScientist.color, "MadScientist"), rates, null, true);
-            madScientistDistance = CustomOption.Create(902, "MadScientist Distance", 2.5f, 0.5f, 5.0f, 0.25f, madScientistSpawnRate);
-            madScientistDuration = CustomOption.Create(903, "MadScientist Duration", 3f, 1f, 10f, 1f, madScientistSpawnRate);
+            madScientistSpawnRate = CustomOption.Create(901, cs(MadScientist.color, "マッドサイエンティスト"), rates, null, true);
+            madScientistDistance = CustomOption.Create(902, "感染距離", 2.5f, 0.5f, 5.0f, 0.25f, madScientistSpawnRate);
+            madScientistDuration = CustomOption.Create(903, "感染に必要な時間", 3f, 1f, 10f, 1f, madScientistSpawnRate);
 
-            arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "Arsonist"), rates, null, true);
-            arsonistCooldown = CustomOption.Create(291, "Arsonist Cooldown", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
-            arsonistDuration = CustomOption.Create(292, "Arsonist Douse Duration", 3f, 1f, 10f, 1f, arsonistSpawnRate);
+            arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "放火魔"), rates, null, true);
+            arsonistCooldown = CustomOption.Create(291, "放火魔クールダウン", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
+            arsonistDuration = CustomOption.Create(292, "ガソリンをかけるのにかかる時間", 3f, 1f, 10f, 1f, arsonistSpawnRate);
 
-            jackalSpawnRate = CustomOption.Create(220, cs(Jackal.color, "Jackal"), rates, null, true);
-            jackalKillCooldown = CustomOption.Create(221, "Jackal/Sidekick Kill Cooldown", 30f, 10f, 60f, 2.5f, jackalSpawnRate);
-            jackalCreateSidekickCooldown = CustomOption.Create(222, "Jackal Create Sidekick Cooldown", 30f, 10f, 60f, 2.5f, jackalSpawnRate);
-            jackalCanUseVents = CustomOption.Create(223, "Jackal Can Use Vents", true, jackalSpawnRate);
-            jackalCanCreateSidekick = CustomOption.Create(224, "Jackal Can Create A Sidekick", false, jackalSpawnRate);
-            sidekickPromotesToJackal = CustomOption.Create(225, "Sidekick Gets Promoted To Jackal On Jackal Death", false, jackalSpawnRate);
-            sidekickCanKill = CustomOption.Create(226, "Sidekick Can Kill", false, jackalSpawnRate);
-            sidekickCanUseVents = CustomOption.Create(227, "Sidekick Can Use Vents", true, jackalSpawnRate);
-            jackalPromotedFromSidekickCanCreateSidekick = CustomOption.Create(228, "Jackals Promoted From Sidekick Can Create A Sidekick", true, jackalSpawnRate);
-            jackalCanCreateSidekickFromImpostor = CustomOption.Create(229, "Jackals Can Make An Impostor To His Sidekick", true, jackalSpawnRate);
+            jackalSpawnRate = CustomOption.Create(220, cs(Jackal.color, "ジャッカル"), rates, null, true);
+            jackalKillCooldown = CustomOption.Create(221, "ジャッカル/サイドキック キルクールダウン", 30f, 10f, 60f, 2.5f, jackalSpawnRate);
+            jackalCreateSidekickCooldown = CustomOption.Create(222, "ジャッカル　サイドキック作成クールダウン", 30f, 10f, 60f, 2.5f, jackalSpawnRate);
+            jackalCanUseVents = CustomOption.Create(223, "ジャッカルがベントを使うことができる", true, jackalSpawnRate);
+            jackalCanCreateSidekick = CustomOption.Create(224, "ジャッカルがサイドキックを作ることができる", false, jackalSpawnRate);
+            sidekickPromotesToJackal = CustomOption.Create(225, "ジャッカル死亡時にサイドキックがジャッカルに昇格する", false, jackalSpawnRate);
+            sidekickCanKill = CustomOption.Create(226, "サイドキックがキルを行うことができる", false, jackalSpawnRate);
+            sidekickCanUseVents = CustomOption.Create(227, "サイドキックがベントを使うことができる", true, jackalSpawnRate);
+            jackalPromotedFromSidekickCanCreateSidekick = CustomOption.Create(228, "ジャッカルに昇格したサイドキックがサイドキックを作ることができる", true, jackalSpawnRate);
+            jackalCanCreateSidekickFromImpostor = CustomOption.Create(229, "ジャッカルが", true, jackalSpawnRate);
             jackalAndSidekickHaveImpostorVision = CustomOption.Create(430, "Jackal And Sidekick Have Impostor Vision", false, jackalSpawnRate);
 
             shifterSpawnRate = CustomOption.Create(70, cs(Shifter.color, "Shifter"), rates, null, true);
