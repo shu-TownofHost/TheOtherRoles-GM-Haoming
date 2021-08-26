@@ -899,49 +899,7 @@ namespace TheOtherRoles.Patches {
                 MadmateAndJester.updateTimer = 1.0f;
             }
         }
-        static void additionalVentsUpdate(){
-            if (AdditionalVents.flag) return;
-            AdditionalVents.flag = true;
-            if (AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started) return;
-            HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => { // Delayed action
-                if(p == 1f){
-                    if(AdditionalVents.AllVents.Count()>0) return;
-                    System.Console.WriteLine("additionalVentsUpdate");
-                    // Polusにベントを追加する
-                    if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.additionalVents.getBool()){
-                        AdditionalVents vents1 = new AdditionalVents(new Vector3(36.54f, -21.77f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Specimen
-                        AdditionalVents vents2 = new AdditionalVents(new Vector3(16.64f, -2.46f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // InitialSpawn
-                        AdditionalVents vents3 = new AdditionalVents(new Vector3(26.67f, -17.54f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Vital
-                        //vents1.vent.Right = vents2.vent; // Specimen - InitialSpawn
-                        vents1.vent.Left = vents3.vent; // Specimen - Vital
-                        //vents2.vent.Right = vents1.vent; // InitialSpawn - Specimen
-                        vents2.vent.Center = vents3.vent; // InitialSpawn - Vital
-                        vents3.vent.Right = vents1.vent; // Vital - Specimen
-                        vents3.vent.Left = vents2.vent; // Vital - InitialSpawn
-                    }
-                    // AirShipにベントを追加する
-                    if(PlayerControl.GameOptions.MapId == 4 && CustomOptionHolder.additionalVents.getBool()){
-                        AdditionalVents vents1 = new AdditionalVents(new Vector3(17.086f, 15.24f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // MeetingRoom
-                        AdditionalVents vents2 = new AdditionalVents(new Vector3(19.137f, -11.32f, PlayerControl.LocalPlayer.transform.position.z + 1f)); // Electrical
-                        vents1.vent.Right = vents2.vent;
-                        vents2.vent.Left = vents1.vent;
-                    }
-                }
-            })));
-        }
 
-        static void moveVital(){
-            if(SpecimenVital.flag) return;
-            if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusSpecimenVital.getBool()){
-                var panel = GameObject.Find("panel_vitals");
-                if(panel != null){
-                    TheOtherRolesPlugin.Instance.Log.LogInfo("Move Vital to Specimen");
-                    var transform = panel.GetComponent<Transform>();
-                    transform.SetPositionAndRotation(SpecimenVital.pos, transform.rotation);
-                    SpecimenVital.flag = true;
-                }
-            }
-        }
 
         static void bountyHunterUpdate() {
             if (BountyHunter.bountyHunter == null || PlayerControl.LocalPlayer != BountyHunter.bountyHunter) return;
@@ -1121,12 +1079,6 @@ namespace TheOtherRoles.Patches {
                 bountyHunterUpdate();
                 // Bait
                 baitUpdate();
-
-                // additional vents update
-                additionalVentsUpdate();
-
-                // Vital
-                moveVital();
             } 
         }
     }

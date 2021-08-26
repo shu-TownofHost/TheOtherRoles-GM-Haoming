@@ -40,6 +40,11 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            // Vitalを動かす
+            SpecimenVital.moveVital();
+            // ベントを追加する
+            AdditionalVents.AddAdditionalVents();
+
             // Force Bounty Hunter to load a new Bounty when the Intro is over
             if (BountyHunter.bounty != null && PlayerControl.LocalPlayer == BountyHunter.bountyHunter) {
                 BountyHunter.bountyUpdateTimer = 0f;

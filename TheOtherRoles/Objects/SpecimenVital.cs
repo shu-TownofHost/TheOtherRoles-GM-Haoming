@@ -14,5 +14,18 @@ namespace TheOtherRoles {
 			System.Console.WriteLine("SpecimenVitalClearAndReload");
 			flag = false;
 		}
+
+        public static void moveVital(){
+            if(SpecimenVital.flag) return;
+            if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusSpecimenVital.getBool()){
+                var panel = GameObject.Find("panel_vitals");
+                if(panel != null){
+                    TheOtherRolesPlugin.Instance.Log.LogInfo("Move Vital to Specimen");
+                    var transform = panel.GetComponent<Transform>();
+                    transform.SetPositionAndRotation(SpecimenVital.pos, transform.rotation);
+                    SpecimenVital.flag = true;
+                }
+            }
+        }
     }
 }
