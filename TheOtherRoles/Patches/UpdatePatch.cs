@@ -247,6 +247,38 @@ namespace TheOtherRoles.Patches {
                 Predator.predator.SetColor(Predator.predator.Data.ColorId);
             }
         }
+        static void MotarikeActions(){
+
+            // 見た目をカモフラージュ状態に
+            if(Motarike.motarike !=null && !Motarike.visibility && !Motarike.motarike.Data.IsDead){
+                Motarike.motarike.nameText.text = "";
+                Motarike.motarike.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+                Motarike.motarike.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+                Motarike.motarike.HatRenderer.SetHat(0, 0);
+                Helpers.setSkinWithAnim(Motarike.motarike.MyPhysics, 0);
+                bool spawnPet = false;
+                if (Motarike.motarike.CurrentPet == null) spawnPet = true;
+                else if (Motarike.motarike.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+                    UnityEngine.Object.Destroy(Motarike.motarike.CurrentPet.gameObject);
+                    spawnPet = true;
+                }
+                if (spawnPet) {
+                    Motarike.motarike.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+                    Motarike.motarike.CurrentPet.transform.position = Motarike.motarike.transform.position;
+                    Motarike.motarike.CurrentPet.Source = Motarike.motarike;
+                }
+            }
+
+            // 見た目を元に戻す
+            if(Motarike.motarike !=null && Motarike.visibility && !Motarike.motarike.Data.IsDead){
+                Motarike.motarike.SetName(Motarike.motarike.Data.PlayerName);
+                Motarike.motarike.SetHat(Motarike.motarike.Data.HatId, (int)Motarike.motarike.Data.ColorId);
+                Helpers.setSkinWithAnim(Motarike.motarike.MyPhysics, Motarike.motarike.Data.SkinId);
+                Motarike.motarike.SetPet(Motarike.motarike.Data.PetId);
+                Motarike.motarike.CurrentPet.Visible = Motarike.motarike.Visible;
+                Motarike.motarike.SetColor(Motarike.motarike.Data.ColorId);
+            }
+        }
         static void MisimoActions(){
             // 見た目をカモフラージュ状態に
             if(Misimo.misimo !=null && !Misimo.visibility && !Misimo.misimo.Data.IsDead){
@@ -421,6 +453,8 @@ namespace TheOtherRoles.Patches {
             timerUpdate();
             // Predator
             PredatorActions();
+			// Motarike
+			MotarikeActions();
             // Misimo
             MisimoActions();
             // Camouflager and Morphling

@@ -338,13 +338,15 @@ namespace TheOtherRoles
             motarikeButton = new CustomButton(
                 () => { // ボタンが押された時に実行
                     Motarike.riskyDice();
+					motarikeButton.Timer = motarikeButton.MaxTimer;
                 },
                 () => { /*ボタン有効になる条件*/return !PlayerControl.LocalPlayer.Data.IsDead && Motarike.motarike != null && Motarike.motarike == PlayerControl.LocalPlayer; },
                 () => { /*ボタンが使える条件*/
-                    return true;
+                    return Motarike.button;
                 },
                 () => { /*ミーティング終了時*/
                     motarikeButton.Timer = motarikeButton.MaxTimer ;
+					Motarike.reset();
                 },
                 Motarike.getButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0f),

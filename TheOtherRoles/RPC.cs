@@ -116,8 +116,11 @@ namespace TheOtherRoles
         BalladSetTarget,
         PredatorVisible,
         PredatorInvisible,
+		MotarikeVisible,
+		MotarikeInvisible,
         BomberKill,
         TrapperKill,
+		MotarikeKill,
         MadScientistWin,
         MadScientistSetInfected,
         RandomSpawn,
@@ -378,45 +381,34 @@ namespace TheOtherRoles
                 }
             }
         }
-        public static void misimoVisible(byte targetId) {
+        public static void motarikeKill(byte targetId) {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
                 if (player.PlayerId == targetId)
                 {
-                    Misimo.visibility = true;
+                    Motarike.motarike.MurderPlayer(player);
                     return;
                 }
             }
         }
-        public static void misimoInvisible(byte targetId) {
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == targetId)
-                {
-                    Misimo.visibility = false;
-                    return;
-                }
-            }
+        public static void misimoVisible() {
+			Misimo.visibility = true;
         }
-        public static void predatorVisible(byte targetId) {
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == targetId)
-                {
-                    Predator.visibility = true;
-                    return;
-                }
-            }
+        public static void misimoInvisible() {
+			Misimo.visibility = false;
         }
-        public static void predatorInvisible(byte targetId) {
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == targetId)
-                {
-                    Predator.visibility = false;
-                    return;
-                }
-            }
+        public static void predatorVisible() {
+			Predator.visibility = true;
+        }
+        public static void predatorInvisible() {
+			Predator.visibility = false;
+        }
+        public static void motarikeVisible() {
+			Motarike.visibility = true;
+        }
+
+        public static void motarikeInvisible() {
+			Motarike.visibility = false;
         }
         public static void bomberKill(byte targetId){
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -664,7 +656,7 @@ namespace TheOtherRoles
         }
 
         public static void camouflagerCamouflage() {
-            if (Camouflager.camouflager == null) return;
+            if (Camouflager.camouflager == null && Motarike.motarike == null) return;
 
             Camouflager.camouflageTimer = Camouflager.duration;
         }
@@ -1058,16 +1050,22 @@ namespace TheOtherRoles
                     RPCProcedure.misimoKill(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.MisimoVisible:
-                    RPCProcedure.misimoVisible(reader.ReadByte());
+                    RPCProcedure.misimoVisible();
                     break;
                 case (byte)CustomRPC.MisimoInvisible:
-                    RPCProcedure.misimoInvisible(reader.ReadByte());
+                    RPCProcedure.misimoInvisible();
                     break;
                 case (byte)CustomRPC.PredatorVisible:
-                    RPCProcedure.predatorVisible(reader.ReadByte());
+                    RPCProcedure.predatorVisible();
                     break;
                 case (byte)CustomRPC.PredatorInvisible:
-                    RPCProcedure.predatorInvisible(reader.ReadByte());
+                    RPCProcedure.predatorInvisible();
+                    break;
+                case (byte)CustomRPC.MotarikeVisible:
+                    RPCProcedure.motarikeVisible();
+                    break;
+                case (byte)CustomRPC.MotarikeInvisible:
+                    RPCProcedure.motarikeInvisible();
                     break;
                 case (byte)CustomRPC.BomberKill:
                     RPCProcedure.bomberKill(reader.ReadByte());
@@ -1077,6 +1075,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.BalladSetTarget:
                     RPCProcedure.balladSetTarget(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.MotarikeKill:
+                    RPCProcedure.motarikeKill(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.TimeMasterRewindTime:
                     RPCProcedure.timeMasterRewindTime();

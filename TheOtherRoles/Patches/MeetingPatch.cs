@@ -139,6 +139,7 @@ namespace TheOtherRoles.Patches {
                     playerVoteArea.ClearForResults();
                     int num2 = 0;
                     bool mayorFirstVoteDisplayed = false;
+					bool motarikeFirstVoteDisplayed = false;
                     for (int j = 0; j < states.Length; j++) {
                         MeetingHud.VoterState voterState = states[j];
                         GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
@@ -162,6 +163,12 @@ namespace TheOtherRoles.Patches {
                         // Major vote, redo this iteration to place a second vote
                         if (Mayor.mayor != null && voterState.VoterId == (sbyte)Mayor.mayor.PlayerId && !mayorFirstVoteDisplayed) {
                             mayorFirstVoteDisplayed = true;
+                            j--;    
+                        }
+
+						// Motarike vote
+						if (Motarike.motarike != null && voterState.VoterId ==(sbyte)Motarike.motarike.PlayerId && !motarikeFirstVoteDisplayed && Motarike.doubleVote) {
+							motarikeFirstVoteDisplayed = true;
                             j--;    
                         }
                     }

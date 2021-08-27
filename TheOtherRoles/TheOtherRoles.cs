@@ -115,7 +115,11 @@ namespace TheOtherRoles
             public static PlayerControl motarike;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
+            public static bool doubleVote;
+            public static bool visibility = true;
             public static float cooldown;
+            public static string text;
+            public static bool button;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
                 buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RiskyDice.png", 115f);
@@ -123,10 +127,71 @@ namespace TheOtherRoles
             }
             public static void clearAndReload(){
                 motarike = null;
+                visibility = true;
+                cooldown = CustomOptionHolder.motarikeCooldown.getFloat();
                 getButtonSprite();
+                reset();
+            }
+            public static void invisible(){
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeInvisible, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.motarikeInvisible();
+            }
+            public static void visible(){
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeVisible, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.motarikeVisible();
+            }
+
+            public static void toggleVisibility(){
+                if(visibility){
+                    invisible();
+                }else{
+                    visible();
+                }
+            }
+            public static void reset(){
+                visible();
+                button = true;
+                doubleVote = false;
+                text = "";
+            }
+            public static void camouflage(){
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CamouflagerCamouflage, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.camouflagerCamouflage();
             }
             public static void riskyDice(){
+                TheOtherRolesPlugin.Instance.Log.LogInfo("リスキーダイス");
+                int rndVal = rnd.Next(0,99);
+                TheOtherRolesPlugin.Instance.Log.LogInfo($"ダイス={rndVal}");
+                if(rndVal < 5){
+                    text = "[大凶]自爆\n";
+                    selfDestruct();
+                }else if(rndVal < 20){
+                    text = "[大吉]キルクールダウン解消\n";
+                    button = false;
+                    motarike.SetKillTimer(0);
+                }else if(rndVal < 35){
+                    doubleVote = true;
+                    button = false;
+                    text = "[大吉]次の投票が2票になる\n";
+                }else if(rndVal < 65){
+                    text = "[大吉]カモフラージュ発動　再度ダイスを振れる\n";
+                    camouflage();
+                }else if(rndVal < 100){
+                    text = "[大吉]透明、非透明が入れ替わる 再度ダイスを振れる\n";
+                    toggleVisibility();
+                }
             }
+            public static void selfDestruct(){
+                doubleVote = false;
+                byte targetId = PlayerControl.LocalPlayer.PlayerId;
+                MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeKill, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                RPCProcedure.motarikeKill(targetId);
+            }
+            
         }
 
         public static class Nottori{
@@ -455,13 +520,13 @@ namespace TheOtherRoles
                 byte targetId = PlayerControl.LocalPlayer.PlayerId;
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PredatorInvisible, Hazel.SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.predatorInvisible(targetId);
+                RPCProcedure.predatorInvisible();
             }
             public static void visible(){
                 byte targetId = PlayerControl.LocalPlayer.PlayerId;
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PredatorVisible, Hazel.SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.predatorVisible(targetId);
+                RPCProcedure.predatorVisible();
             }
 
         }

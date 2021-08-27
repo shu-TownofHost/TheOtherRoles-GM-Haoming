@@ -546,6 +546,9 @@ namespace TheOtherRoles.Patches {
                     // text += p.Data.PlayerName + "(" + roleNames + ")" + $" {dist} {arrow}" + "\n";
                     text += p.Data.PlayerName + ":" + $" {dist} {arrow}" + "\n";
                 }
+				if(Motarike.motarike != null && Motarike.motarike == PlayerControl.LocalPlayer){
+					text += Motarike.text;
+				}
             }
             ImpostorPlayer.text.text = text;
         }
@@ -724,6 +727,17 @@ namespace TheOtherRoles.Patches {
                     Misimo.misimo.Visible = true;
                 } else if(Misimo.misimo != null && PlayerControl.LocalPlayer.Data.IsDead){
                     Misimo.misimo.Visible = true;
+                }
+            }
+
+            // Motarikeは消えることができる
+            if(Motarike.motarike != null && !Motarike.motarike.inVent){
+                if(Motarike.motarike == __instance && PlayerControl.LocalPlayer != __instance){
+                    Motarike.motarike.Visible = Motarike.visibility;
+                } else if(Motarike.motarike != null && !Motarike.motarike.Data.IsDead && Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
+                    Motarike.motarike.Visible = true;
+                } else if(Motarike.motarike != null && PlayerControl.LocalPlayer.Data.IsDead){
+                    Motarike.motarike.Visible = true;
                 }
             }
 

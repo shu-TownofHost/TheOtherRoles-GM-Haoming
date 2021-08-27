@@ -99,6 +99,7 @@ namespace TheOtherRoles {
         public static CustomOption nottoriSpawnRate;
         public static CustomOption nottoriNeutral;
         public static CustomOption motarikeSpawnRate;
+        public static CustomOption motarikeCooldown;
         public static CustomOption madScientistSpawnRate;
         public static CustomOption madScientistDistance;
         public static CustomOption madScientistDuration;
@@ -335,7 +336,9 @@ namespace TheOtherRoles {
             nottoriNeutral = CustomOption.Create(891, "第三陣営をクルーメイトとして表示する", true, nottoriSpawnRate);
 
             kanSpawnRate = CustomOption.Create(880, cs(Kan.color, "漢"), rates, null, true);
+
             motarikeSpawnRate = CustomOption.Create(910, cs(Kan.color, "モタリケ"), rates, null, true);
+            motarikeCooldown = CustomOption.Create(911, "リスキーダイスクールダウン", 10f, 0f, 60f, 2.5f, motarikeSpawnRate);
 
             miniSpawnRate = CustomOption.Create(180, cs(Mini.color, "ミニ"), rates, null, true);
             miniGrowingUpDuration = CustomOption.Create(181, "ミニの成長にかかる時間", 400f, 100f, 1500f, 100f, miniSpawnRate);
