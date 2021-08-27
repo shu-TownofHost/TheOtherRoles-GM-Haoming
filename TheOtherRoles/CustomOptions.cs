@@ -101,6 +101,7 @@ namespace TheOtherRoles {
         public static CustomOption madScientistSpawnRate;
         public static CustomOption madScientistDistance;
         public static CustomOption madScientistDuration;
+        public static CustomOption madScientistSabotage;
 
         public static CustomOption arsonistSpawnRate;
         public static CustomOption arsonistCooldown;
@@ -254,59 +255,59 @@ namespace TheOtherRoles {
             janitorCooldown = CustomOption.Create(11, "ジェニター死体消しクールダウン", 30f, 10f, 60f, 2.5f, janitorClean);
 
             morphlingSpawnRate = CustomOption.Create(20, cs(Morphling.color, "モーフィング"), rates, null, true);
-            morphlingCooldown = CustomOption.Create(21, "モーフィングクールダウン", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
+            morphlingCooldown = CustomOption.Create(21, "変身クールダウン", 30f, 10f, 60f, 2.5f, morphlingSpawnRate);
             morphlingDuration = CustomOption.Create(22, "変身効果時間", 10f, 1f, 60f, 0.5f, morphlingSpawnRate);
 
             camouflagerSpawnRate = CustomOption.Create(30, cs(Camouflager.color, "カモフラジャー"), rates, null, true);
-            camouflagerCooldown = CustomOption.Create(31, "カモフラジャークールダウン", 30f, 10f, 60f, 2.5f, camouflagerSpawnRate);
-            camouflagerDuration = CustomOption.Create(32, "カモフラージュ効果時間", 10f, 1f, 20f, 0.5f, camouflagerSpawnRate);
+            camouflagerCooldown = CustomOption.Create(31, "迷彩クールダウン", 30f, 10f, 60f, 2.5f, camouflagerSpawnRate);
+            camouflagerDuration = CustomOption.Create(32, "迷彩効果時間", 10f, 1f, 20f, 0.5f, camouflagerSpawnRate);
 
             vampireSpawnRate = CustomOption.Create(40, cs(Vampire.color, "ヴァンパイア"), rates, null, true);
             vampireKillDelay = CustomOption.Create(41, "キルまでの遅延時間", 10f, 1f, 20f, 1f, vampireSpawnRate);
-            vampireCooldown = CustomOption.Create(42, "ヴァンパイアクールダウン", 30f, 10f, 60f, 2.5f, vampireSpawnRate);
+            vampireCooldown = CustomOption.Create(42, "ヴァンパイアキルクールダウン", 30f, 10f, 60f, 2.5f, vampireSpawnRate);
             vampireCanKillNearGarlics = CustomOption.Create(43, "ヴァンパイアがニンニクの近くでキルを行うことができる", true, vampireSpawnRate);
 
             eraserSpawnRate = CustomOption.Create(230, cs(Eraser.color, "イレイザー"), rates, null, true);
-            eraserCooldown = CustomOption.Create(231, "イレイザークールダウン", 30f, 10f, 120f, 5f, eraserSpawnRate);
+            eraserCooldown = CustomOption.Create(231, "役職消去クールダウン", 30f, 10f, 120f, 5f, eraserSpawnRate);
             eraserCanEraseAnyone = CustomOption.Create(232, "何の役職でも消すことができる", false, eraserSpawnRate);
 
             tricksterSpawnRate = CustomOption.Create(250, cs(Trickster.color, "トリックスター"), rates, null, true);
-            tricksterPlaceBoxCooldown = CustomOption.Create(251, "トリックスターボックスクールダウン", 10f, 0f, 30f, 2.5f, tricksterSpawnRate);
-            tricksterLightsOutCooldown = CustomOption.Create(252, "トリックスター停電クールダウン", 30f, 10f, 60f, 5f, tricksterSpawnRate);
-            tricksterLightsOutDuration = CustomOption.Create(253, "トリックスター停電の効果時間", 15f, 5f, 60f, 2.5f, tricksterSpawnRate);
+            tricksterPlaceBoxCooldown = CustomOption.Create(251, "ボックス設置クールダウン", 10f, 0f, 30f, 2.5f, tricksterSpawnRate);
+            tricksterLightsOutCooldown = CustomOption.Create(252, "停電クールダウン", 30f, 10f, 60f, 5f, tricksterSpawnRate);
+            tricksterLightsOutDuration = CustomOption.Create(253, "停電の効果時間", 15f, 5f, 60f, 2.5f, tricksterSpawnRate);
 
             cleanerSpawnRate = CustomOption.Create(260, cs(Cleaner.color, "クリーナー"), rates, null, true);
-            cleanerCooldown = CustomOption.Create(261, "クリーナークールダウン", 30f, 10f, 60f, 2.5f, cleanerSpawnRate);
+            cleanerCooldown = CustomOption.Create(261, "死体消去クールダウン", 30f, 10f, 60f, 2.5f, cleanerSpawnRate);
 
             warlockSpawnRate = CustomOption.Create(270, cs(Cleaner.color, "ウォーロック"), rates, null, true);
-            warlockCooldown = CustomOption.Create(271, "ウォーロッククールダウン", 30f, 10f, 60f, 2.5f, warlockSpawnRate);
-            warlockRootTime = CustomOption.Create(272, "ウォーロック硬直時間", 5f, 0f, 15f, 1f, warlockSpawnRate);
+            warlockCooldown = CustomOption.Create(271, "ウォーロックキルクールダウン", 30f, 10f, 60f, 2.5f, warlockSpawnRate);
+            warlockRootTime = CustomOption.Create(272, "キル後の硬直時間", 5f, 0f, 15f, 1f, warlockSpawnRate);
 
             bountyHunterSpawnRate = CustomOption.Create(320, cs(BountyHunter.color, "賞金稼ぎ"), rates, null, true);
-            bountyHunterBountyDuration = CustomOption.Create(321, "Duration After Which Bounty Changes",  60f, 10f, 180f, 10f, bountyHunterSpawnRate);
+            bountyHunterBountyDuration = CustomOption.Create(321, "賞金首が更新されるまでの時間",  60f, 10f, 180f, 10f, bountyHunterSpawnRate);
             bountyHunterReducedCooldown = CustomOption.Create(322, "賞金首をキルした場合のクールダウン", 2.5f, 0f, 30f, 2.5f, bountyHunterSpawnRate);
-            bountyHunterPunishmentTime = CustomOption.Create(323, "賞金首以外をキルした場合の追加クールダウン", 20f, 0f, 60f, 2.5f, bountyHunterSpawnRate);
-            bountyHunterShowArrow = CustomOption.Create(324, "賞金首にアローを表示する", true, bountyHunterSpawnRate);
-            bountyHunterArrowUpdateIntervall = CustomOption.Create(325, "アローの更新間隔", 15f, 2.5f, 60f, 2.5f, bountyHunterShowArrow);
+            bountyHunterPunishmentTime = CustomOption.Create(323, "賞金首以外をキルした場合のペナルティ", 20f, 0f, 60f, 2.5f, bountyHunterSpawnRate);
+            bountyHunterShowArrow = CustomOption.Create(324, "賞金首に矢印を表示する", true, bountyHunterSpawnRate);
+            bountyHunterArrowUpdateIntervall = CustomOption.Create(325, "矢印の更新間隔", 15f, 2.5f, 60f, 2.5f, bountyHunterShowArrow);
 
 
             misimoSpawnRate = CustomOption.Create(810, cs(Misimo.color, "Misimo"), rates, null, true);
             misimoCooldown = CustomOption.Create(811, "Misimoキルクールダウン", 20f, 5f, 60f, 2.5f, misimoSpawnRate);
-            misimoDuration = CustomOption.Create(812, "Misimo自爆までのカウントダウン", 40f, 1f, 60f, 1f, misimoSpawnRate);
+            misimoDuration = CustomOption.Create(812, "自爆までのカウントダウン", 40f, 1f, 60f, 1f, misimoSpawnRate);
             misimoInvisibleOn = CustomOption.Create(813, "透明化能力 On/Off", true, misimoSpawnRate);
 
 
             balladSpawnRate = CustomOption.Create(860, cs(Ballad.color, "Ballad"), rates, null, true);
-            balladCooldown = CustomOption.Create(861, "Ballad投票無効化Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
-            balladTimer = CustomOption.Create(862, "Ballad投票無効化有効時間", 120f, 5f, 180f, 2.5f, balladSpawnRate);
-            balladSetOnce = CustomOption.Create(863, "一度しか無効化対象を選べない（効果は永続)", true, balladSpawnRate);
+            balladCooldown = CustomOption.Create(861, "投票無効化Cooldown", 20f, 5f, 60f, 2.5f, balladSpawnRate);
+            balladTimer = CustomOption.Create(862, "投票無効化有効時間", 120f, 5f, 180f, 2.5f, balladSpawnRate);
+            balladSetOnce = CustomOption.Create(863, "一度しか無効化対象を選べない（効果は永続になる)", true, balladSpawnRate);
             balladShowSealedVote = CustomOption.Create(864, "無効化した投票を投票結果に表示する", true, balladSpawnRate);
 
 
             predatorSpawnRate = CustomOption.Create(820, cs(Predator.color, "プレデター"), rates, null, true);
-            predatorInvisibleCooldown = CustomOption.Create(821, "プレデター透明化クールダウン", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
-            predatorInvisibleDuration = CustomOption.Create(822, "プレデター透明化効果時間", 10f, 1f, 60f, 1f, predatorSpawnRate);
-            predatorSpeedMultiplier = CustomOption.Create(823, "プレデター移動速度増加倍率", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
+            predatorInvisibleCooldown = CustomOption.Create(821, "透明化クールダウン", 20f, 0f, 60f, 2.5f, predatorSpawnRate);
+            predatorInvisibleDuration = CustomOption.Create(822, "透明化効果時間", 10f, 1f, 60f, 1f, predatorSpawnRate);
+            predatorSpeedMultiplier = CustomOption.Create(823, "移動速度増加倍率", 1f, 1.0f, 3.0f, 0.1f, predatorSpawnRate);
             predatorHatesGarlics = CustomOption.Create(824, "ニンニクの近くでカモフラージュ状態になる", true, predatorSpawnRate);
 
 
@@ -320,7 +321,7 @@ namespace TheOtherRoles {
 
 
             trapperSpawnRate = CustomOption.Create(840, cs(Trapper.color, "トラッパー"), rates, null, true);
-            trapperCooldown = CustomOption.Create(841, "トラッパークールダウン", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
+            trapperCooldown = CustomOption.Create(841, "トラップ再設置クールダウン", 10f, 0f, 60f, 2.5f, trapperSpawnRate);
             trapperUnmoveable = CustomOption.Create(842, "キルの代わりに動けなくする", true, trapperSpawnRate);
             trapperTrapDuration = CustomOption.Create(443, "移動不能時間", 15f, 0f, 60f, 2.5f, trapperUnmoveable);
 
@@ -359,9 +360,10 @@ namespace TheOtherRoles {
             madScientistSpawnRate = CustomOption.Create(901, cs(MadScientist.color, "マッドサイエンティスト"), rates, null, true);
             madScientistDistance = CustomOption.Create(902, "感染距離", 2.5f, 0.5f, 5.0f, 0.25f, madScientistSpawnRate);
             madScientistDuration = CustomOption.Create(903, "感染に必要な時間", 3f, 1f, 10f, 1f, madScientistSpawnRate);
+            madScientistSabotage = CustomOption.Create(904, "サボタージュを行える", false, madScientistSpawnRate);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "放火魔"), rates, null, true);
-            arsonistCooldown = CustomOption.Create(291, "放火魔クールダウン", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
+            arsonistCooldown = CustomOption.Create(291, "ガソリンクールダウン", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
             arsonistDuration = CustomOption.Create(292, "ガソリンをかけるのにかかる時間", 3f, 1f, 10f, 1f, arsonistSpawnRate);
 
             jackalSpawnRate = CustomOption.Create(220, cs(Jackal.color, "ジャッカル"), rates, null, true);
@@ -430,8 +432,8 @@ namespace TheOtherRoles {
             trackerResetTargetAfterMeeting = CustomOption.Create(202, "ミーティングの都度対象を選ぶことができる", false, trackerSpawnRate);
             snitchSpawnRate = CustomOption.Create(210, cs(Snitch.color, "スニッチ"), rates, null, true);
             snitchLeftTasksForReveal = CustomOption.Create(211, "インポスターにスニッチの位置が表示される残タスク数", 1f, 0f, 5f, 1f, snitchSpawnRate);
-            snitchIncludeTeamJackal = CustomOption.Create(212, "ジャッカルも含める", false, snitchSpawnRate);
-            snitchTeamJackalUseDifferentArrowColor = CustomOption.Create(213, "ジャッカルとインポスターでアローの色を変更する", true, snitchIncludeTeamJackal);
+            snitchIncludeTeamJackal = CustomOption.Create(212, "ジャッカルの位置も表示する", false, snitchSpawnRate);
+            snitchTeamJackalUseDifferentArrowColor = CustomOption.Create(213, "ジャッカルとインポスターで矢印の色を変更する", true, snitchIncludeTeamJackal);
 
             spySpawnRate = CustomOption.Create(240, cs(Spy.color, "スパイ"), rates, null, true);
             spyCanDieToSheriff = CustomOption.Create(241, "スパイがシェリフに殺される", false, spySpawnRate);
@@ -456,10 +458,10 @@ namespace TheOtherRoles {
             noVoteIsSelfVote = CustomOption.Create(5, "無投票時に自分に投票する", false, blockSkippingInEmergencyMeetings);
             hidePlayerNames = CustomOption.Create(6, "プレイヤーの名前を表示しない", false);
             reportDistance = CustomOption.Create(808, "レポート距離(5がデフォルト)", 5f, 1f, 10f, 0.5f, null, true);
-            polusRandomSpawn = CustomOption.Create(801, "ランダムスポーン(Polus)", true);
+            polusRandomSpawn = CustomOption.Create(801, "ランダム沸き位置(Polus)", true);
             polusSpecimenVital = CustomOption.Create(807, "バイタルをスペシメンに移動する(Polus)", true);
             additionalVents = CustomOption.Create(802, "追加ベント", true);
-            ImpostorArrow = CustomOption.Create(803, "固まっているプレイヤー位置にアローを表示", true);
+            ImpostorArrow = CustomOption.Create(803, "固まっているプレイヤー位置にアローを表示(インポスター)", true);
             ImpostorRoleInfo = CustomOption.Create(805, "ゲーム内役職一覧を表示(インポスター)", true);
             ImpostorLocation = CustomOption.Create(806, "他のプレイヤーの方向と距離を表示(インポスター)", true);
             haomingMunou = CustomOption.Create(804, "はおみんは無能", false);

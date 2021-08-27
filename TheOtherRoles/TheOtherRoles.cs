@@ -478,6 +478,7 @@ namespace TheOtherRoles
             public static Sprite buttonSylinge;
             public static float duration;
             public static float distance;
+            public static bool canSabotage = false;
             public static Sprite getButtonSylinge() {
                 if (buttonSylinge) return buttonSylinge;
                 buttonSylinge = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Sylinge.png", 115f);
@@ -493,6 +494,7 @@ namespace TheOtherRoles
                 progress = new Dictionary<int, float>();
                 text = null;
 				meetingFlag = false;
+                canSabotage = CustomOptionHolder.madScientistSabotage.getBool();
             }
             
         }

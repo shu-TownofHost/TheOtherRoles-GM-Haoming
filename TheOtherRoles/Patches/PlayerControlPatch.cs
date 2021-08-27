@@ -499,7 +499,7 @@ namespace TheOtherRoles.Patches {
                 text += "[今回のゲームの役職]\n";
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
                     string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
-                    if(!roleNames.Contains("Crewmate")){
+                    if(!roleNames.Contains("クルーメイト")){
                         text += $"{roleNames} ";
                     }
                 }
@@ -1136,15 +1136,15 @@ namespace TheOtherRoles.Patches {
                     string msg = "";
 
                     if (isMedicReport) {
-                        msg = $"Body Report: Killed {Math.Round(timeSinceDeath / 1000)}s ago!";
+                        msg = $"Body Report: {Math.Round(timeSinceDeath / 1000)}秒前に殺されました!";
                     } else if (isDetectiveReport) {
                         if (timeSinceDeath < Detective.reportNameDuration * 1000) {
-                            msg =  $"Body Report: The killer appears to be {deadPlayer.killerIfExisting.name}!";
+                            msg =  $"死体発見: 犯人は{deadPlayer.killerIfExisting.name}です!";
                         } else if (timeSinceDeath < Detective.reportColorDuration * 1000) {
-                            var typeOfColor = Helpers.isLighterColor(deadPlayer.killerIfExisting.Data.ColorId) ? "lighter" : "darker";
-                            msg =  $"Body Report: The killer appears to be a {typeOfColor} color!";
+                            var typeOfColor = Helpers.isLighterColor(deadPlayer.killerIfExisting.Data.ColorId) ? "明るい" : "暗い";
+                            msg =  $"死体発見: 犯人は{typeOfColor}色です!";
                         } else {
-                            msg = $"Body Report: The corpse is too old to gain information from!";
+                            msg = $"死体発見: 死体が古すぎて情報を得ることができなかった!";
                         }
                     }
 

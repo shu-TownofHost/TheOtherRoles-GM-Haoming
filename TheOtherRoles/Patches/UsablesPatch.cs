@@ -174,7 +174,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // MadScientist sabotage
-            if (MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead) {
+            if (MadScientist.canSabotage && MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead) {
                 Action<MapBehaviour> action = m => m.ShowInfectedMap() ;
                 DestroyableSingleton<HudManager>.Instance.ShowMap(action);
                 return false;
