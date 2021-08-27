@@ -57,6 +57,7 @@ namespace TheOtherRoles
         Mifune,
         Kan,
         Nottori,
+		Motarike,
         Munou,
         MadScientist,
         Bait,
@@ -164,8 +165,8 @@ namespace TheOtherRoles
                     case RoleId.Mifune:
                         Mifune.mifune = player;
                         break;
-                    case RoleId.Kan:
-                        Kan.kan = player;
+                    case RoleId.Motarike:
+                        Motarike.motarike = player;
                         break;
                     case RoleId.Nottori:
                         Nottori.nottori = player;
@@ -796,6 +797,7 @@ namespace TheOtherRoles
             if (player == Mifune.mifune) Mifune.clearAndReload();
             if (player == Kan.kan) Kan.clearAndReload();
             if (player == Nottori.nottori) Nottori.clearAndReload();
+            if (player == Motarike.motarike) Motarike.clearAndReload();
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();

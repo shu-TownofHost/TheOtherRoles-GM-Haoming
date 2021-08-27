@@ -22,6 +22,7 @@ namespace TheOtherRoles
         public static CustomButton trapperUnsetTrapButton;
         public static CustomButton mifuneButton;
         public static CustomButton soulPlayerButton;
+        public static CustomButton motarikeButton;
         public static CustomButton madScientistSyringeButton;
         private static CustomButton engineerRepairButton;
         private static CustomButton janitorCleanButton;
@@ -59,6 +60,7 @@ namespace TheOtherRoles
             trapperSetTrapButton.MaxTimer = Trapper.cooldown;
             mifuneButton.MaxTimer = Mifune.cooldown;
             mifuneButton.EffectDuration = Mifune.duration;
+			motarikeButton.MaxTimer = Motarike.cooldown;
             soulPlayerButton.MaxTimer = 0f;
             engineerRepairButton.MaxTimer = 0f;
             janitorCleanButton.MaxTimer = Janitor.cooldown;
@@ -328,6 +330,23 @@ namespace TheOtherRoles
                     soulPlayerButton.Timer = soulPlayerButton.MaxTimer ;
                 },
                 Mifune.getButtonSprite(),
+                new Vector3(-1.3f, 1.3f, 0f),
+                __instance,
+                KeyCode.F
+            );
+
+            motarikeButton = new CustomButton(
+                () => { // ボタンが押された時に実行
+                    Motarike.riskyDice();
+                },
+                () => { /*ボタン有効になる条件*/return !PlayerControl.LocalPlayer.Data.IsDead && Motarike.motarike != null && Motarike.motarike == PlayerControl.LocalPlayer; },
+                () => { /*ボタンが使える条件*/
+                    return true;
+                },
+                () => { /*ミーティング終了時*/
+                    motarikeButton.Timer = motarikeButton.MaxTimer ;
+                },
+                Motarike.getButtonSprite(),
                 new Vector3(-1.3f, 1.3f, 0f),
                 __instance,
                 KeyCode.F

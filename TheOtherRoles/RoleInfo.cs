@@ -67,6 +67,7 @@ namespace TheOtherRoles
         public static RoleInfo trapper = new RoleInfo("トラッパー", Trapper.color, "罠を設置しろ", "罠を設置しろ", RoleId.Trapper);
         public static RoleInfo mifune = new RoleInfo("御船", Mifune.color, "千里眼でマップを見渡せ", "千里眼でマップを見渡せ", RoleId.Mifune);
         public static RoleInfo kan = new RoleInfo("漢", Kan.color, "疑ってきたやつを殺せ", "疑ってきたやつを殺せ", RoleId.Kan);
+        public static RoleInfo motarike = new RoleInfo("モタリケ", Motarike.color, "ちょっといいトコ見てみたいーーーー♪", "もーー1回", RoleId.Kan);
         public static RoleInfo nottori = new RoleInfo("乗っ取り", Nottori.color, "役職を殺して乗っ取れ", "役職を殺して乗っ取れ", RoleId.Nottori);
         public static RoleInfo madmate = new RoleInfo("マッドメイト", Madmate.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate);
         public static RoleInfo madmate2 = new RoleInfo("マッドメイト", Madmate2.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate2);
@@ -92,12 +93,13 @@ namespace TheOtherRoles
             bomber,
             trapper,
             mifune,
-			kan,
-			nottori,
+            kan,
+            motarike,
+            nottori,
             madmate,
             madmate2,
-			munou,
-			madScientist,
+            munou,
+            madScientist,
             niceMini,
             evilMini,
             goodGuesser,
@@ -139,6 +141,7 @@ namespace TheOtherRoles
             if (p == Trapper.trapper) infos.Add(trapper);
             if (p == Mifune.mifune) infos.Add(mifune);
             if (p == Kan.kan) infos.Add(kan);
+            if (p == Motarike.motarike) infos.Add(motarike);
             if (p == Nottori.nottori) infos.Add(nottori);
             if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Madmate2.madmate2) infos.Add(madmate2);

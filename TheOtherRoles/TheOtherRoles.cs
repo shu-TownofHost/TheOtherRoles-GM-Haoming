@@ -63,6 +63,7 @@ namespace TheOtherRoles
             Trapper.clearAndReload();
             Mifune.clearAndReload();
             Munou.clearAndReload();
+            Motarike.clearAndReload();
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
             MadmateAndJester.clearAndReload();
@@ -110,6 +111,24 @@ namespace TheOtherRoles
                 toggle = false;
             }
         }
+        public static class Motarike{
+            public static PlayerControl motarike;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            private static Sprite buttonSprite;
+            public static float cooldown;
+            public static Sprite getButtonSprite() {
+                if (buttonSprite) return buttonSprite;
+                buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RiskyDice.png", 115f);
+                return buttonSprite;
+            }
+            public static void clearAndReload(){
+                motarike = null;
+                getButtonSprite();
+            }
+            public static void riskyDice(){
+            }
+        }
+
         public static class Nottori{
             public static PlayerControl nottori;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
@@ -472,7 +491,7 @@ namespace TheOtherRoles
             public static TMPro.TMP_Text text = null;
             public static bool triggerMadScientistWin = false;
             public static bool syringeFlag = false;
-			public static bool meetingFlag = false;
+            public static bool meetingFlag = false;
             public static Color color = new Color(00f / 255f, 255f / 255f, 00f / 255f, 1);
 
             public static Sprite buttonSylinge;
@@ -493,7 +512,7 @@ namespace TheOtherRoles
                 infected = new Dictionary<int, PlayerControl>();
                 progress = new Dictionary<int, float>();
                 text = null;
-				meetingFlag = false;
+                meetingFlag = false;
                 canSabotage = CustomOptionHolder.madScientistSabotage.getBool();
             }
             
