@@ -31,7 +31,7 @@ namespace TheOtherRoles
         public static RoleInfo mafioso = new RoleInfo("マフィオソ", Mafioso.color, "<color=#FF1919FF>マフィア</color>の一員として全てのクルーメイトを殺せ", "全てのクルーメイトを殺せ", RoleId.Mafioso);
         public static RoleInfo janitor = new RoleInfo("ジェニター", Janitor.color, "<color=#FF1919FF>マフィア</color>の一員として死体を隠せ", "死体を隠せ", RoleId.Janitor);
         public static RoleInfo morphling = new RoleInfo("モーフィング", Morphling.color, "見た目を変えて逃げ切れ", "見た目を変えろ", RoleId.Morphling);
-        public static RoleInfo camouflager = new RoleInfo("カモフラジャー", Camouflager.color, "迷彩に紛れて殺せ", "みんなの姿を隠せ", RoleId.Camouflager);
+        public static RoleInfo camouflager = new RoleInfo("カモフラジャー", Camouflager.color, "迷彩中に殺せ", "みんなの姿を隠せ", RoleId.Camouflager);
         public static RoleInfo vampire = new RoleInfo("ヴァンパイア", Vampire.color, "クルーメイトを噛み殺せ", "お前の敵を噛め", RoleId.Vampire);
         public static RoleInfo eraser = new RoleInfo("イレイザー", Eraser.color, "奴らの役職を消す、そして殺せ", "敵の役職を消せ", RoleId.Eraser);
         public static RoleInfo trickster = new RoleInfo("トリックスター", Trickster.color, "ジャックインザボックスで奴らを驚かせろ", "敵を驚かせろ", RoleId.Trickster);
@@ -49,7 +49,7 @@ namespace TheOtherRoles
         public static RoleInfo evilMini = new RoleInfo("悪いミニ", Palette.ImpostorRed, "成長するまでは誰もあなたを傷つけられない", "誰もあなたを傷つけられない", RoleId.Mini);
         public static RoleInfo tracker = new RoleInfo("トラッカー", Tracker.color, "<color=#FF1919FF>インポスター</color>を追跡しろ", "インポスターを追跡しろ", RoleId.Tracker);
         public static RoleInfo snitch = new RoleInfo("スニッチ", Snitch.color, "タスクを終わらせて<color=#FF1919FF>インポスター</color>を発見しろ", "タスクを終わらせろ", RoleId.Snitch);
-        public static RoleInfo jackal = new RoleInfo("ジャッカル", Jackal.color, "全てのクルーメイトと<color=#FF1919FF>インポスター</color>を殺すと勝利", "全員殺せ", RoleId.Jackal);
+        public static RoleInfo jackal = new RoleInfo("ジャッカル", Jackal.color, "全てのクルーメイトと<color=#FF1919FF>インポスター</color>を殺せ", "全員殺せ", RoleId.Jackal);
         public static RoleInfo sidekick = new RoleInfo("サイドキック", Sidekick.color, "ジャッカルが全員殺すのをサポートせよ", "ジャッカルが全員殺すのをサポートせよ", RoleId.Sidekick);
         public static RoleInfo spy = new RoleInfo("スパイ", Spy.color, "<color=#FF1919FF>インポスター</color>を困惑させろ", "インポスターを困惑させろ", RoleId.Spy);
         public static RoleInfo securityGuard = new RoleInfo("セキュリティーガード", SecurityGuard.color, "ベントを塞いでカメラを設置しろ", "ベントを塞いでカメラを設置しろ", RoleId.SecurityGuard);
@@ -71,7 +71,7 @@ namespace TheOtherRoles
         public static RoleInfo madmate = new RoleInfo("マッドメイト", Madmate.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate);
         public static RoleInfo madmate2 = new RoleInfo("マッドメイト", Madmate2.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate2);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
-        public static RoleInfo madScientist = new RoleInfo("マッドサイエンティスト", MadScientist.color, "Infect All Crewmates and Impostors", "Infect All Crewmatest and Impostors", RoleId.MadScientist);
+        public static RoleInfo madScientist = new RoleInfo("マッドサイエンティスト", MadScientist.color, "全員を感染させろ", "全員を感染させろ", RoleId.MadScientist);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
             impostor,
