@@ -126,6 +126,7 @@ namespace TheOtherRoles
         MadScientistWin,
         MadScientistSetInfected,
         RandomSpawn,
+		FortuneTellerShoot,
         GuesserShoot
     }
 
@@ -917,6 +918,20 @@ namespace TheOtherRoles
             MadScientist.triggerMadScientistWin = true;
         }
 
+        public static void fortuneTellerShoot(byte playerId) {
+            PlayerControl target = Helpers.playerById(playerId);
+            if (target == null) return;
+            target.Exiled();
+            if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
+            if (MeetingHud.Instance) {
+                if (AmongUsClient.Instance.AmHost) 
+                    MeetingHud.Instance.CheckForEndVoting();
+            }
+            if (HudManager.Instance != null && FortuneTeller.fortuneTeller != null)
+                if (PlayerControl.LocalPlayer == target) 
+                    HudManager.Instance.KillOverlay.ShowKillAnimation(FortuneTeller.fortuneTeller.Data, target.Data);
+        }
+
         public static void guesserShoot(byte playerId) {
             PlayerControl target = Helpers.playerById(playerId);
             if (target == null) return;
@@ -1183,6 +1198,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.GuesserShoot:
                     RPCProcedure.guesserShoot(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.FortuneTellerShoot:
+                    RPCProcedure.fortuneTellerShoot(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.RandomSpawn:
                     byte pId = reader.ReadByte();

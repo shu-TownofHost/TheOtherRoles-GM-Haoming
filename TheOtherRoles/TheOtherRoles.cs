@@ -272,6 +272,14 @@ namespace TheOtherRoles
                     }
                 }
                 numUsed += 1;
+
+                // 狐の場合はキルする
+                if(Kitsune.kitsune != null && p == Kitsune.kitsune){
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FortuneTellerShoot, Hazel.SendOption.Reliable, -1);
+                    writer.Write(p.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.fortuneTellerShoot(p.PlayerId);
+                }
             }
             public static Sprite getTargetSprite() {
                 if (targetSprite) return targetSprite;
