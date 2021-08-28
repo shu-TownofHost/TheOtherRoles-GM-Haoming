@@ -49,6 +49,7 @@ namespace TheOtherRoles
         BountyHunter,
         Madmate,
         Madmate2,
+		Kitsune,
         Misimo,
         Ballad,
         Predator,
@@ -195,6 +196,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Madmate2:
                         Madmate2.madmate2 = player;
+                        break;
+                    case RoleId.Kitsune:
+                        Kitsune.kitsune = player;
                         break;
                     case RoleId.Munou:
                         Munou.munou = player;
@@ -575,7 +579,7 @@ namespace TheOtherRoles
             Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2 || player == MadScientist.madScientist) {
+            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2 || player == MadScientist.madScientist || player == Kitsune.kitsune) {
                 oldShifter.Exiled();
                 return;
             }
@@ -602,6 +606,8 @@ namespace TheOtherRoles
                 Madmate.madmate = oldShifter;
             if (Madmate2.madmate2 != null && Madmate2.madmate2 == player)
                 Madmate2.madmate2 = oldShifter;
+            if (Kitsune.kitsune!= null && Kitsune.kitsune== player)
+                Kitsune.kitsune= oldShifter;
             if (Munou.munou != null && Munou.munou == player)
                 Munou.munou = oldShifter;
             if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == player)
@@ -800,6 +806,7 @@ namespace TheOtherRoles
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
+            if (player == Kitsune.kitsune) Kitsune.clearAndReload();
             if (player == Arsonist.arsonist) Arsonist.clearAndReload();
             if (player == MadScientist.madScientist) MadScientist.clearAndReload();
             if (player == Guesser.guesser) Guesser.clearAndReload();

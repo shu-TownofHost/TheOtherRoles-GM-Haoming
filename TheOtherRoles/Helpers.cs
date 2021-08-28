@@ -191,7 +191,7 @@ namespace TheOtherRoles {
         }
 
         public static bool hasFakeTasks(this PlayerControl player) {
-            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Madmate.madmate || player == Madmate2.madmate2 || player == MadScientist.madScientist || Jackal.formerJackals.Contains(player));
+            return (player == Jester.jester || player == Jackal.jackal || player == Sidekick.sidekick || player == Arsonist.arsonist || player == Madmate.madmate || player == Madmate2.madmate2 || player == MadScientist.madScientist || player == Kitsune.kitsune || Jackal.formerJackals.Contains(player));
         }
 
         public static bool canBeErased(this PlayerControl player) {

@@ -450,6 +450,7 @@ namespace TheOtherRoles.Patches {
                 // 第三陣営をクルーメイトとして表示する
                 if((Madmate.madmate != null && Madmate.madmate == p) ||
                    (Madmate2.madmate2 != null && Madmate2.madmate2 == p) ||
+                   (Kitsune.kitsune != null && Kitsune.kitsune == p) ||
                    (Arsonist.arsonist != null && Arsonist.arsonist == p) ||
                    (MadScientist.madScientist != null && MadScientist.madScientist == p) ||
                    (Jester.jester != null && Jester.jester == p) ||

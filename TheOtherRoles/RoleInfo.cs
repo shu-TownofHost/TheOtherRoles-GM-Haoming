@@ -71,6 +71,7 @@ namespace TheOtherRoles
         public static RoleInfo nottori = new RoleInfo("乗っ取り", Nottori.color, "役職を殺して乗っ取れ", "役職を殺して乗っ取れ", RoleId.Nottori);
         public static RoleInfo madmate = new RoleInfo("マッドメイト", Madmate.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate);
         public static RoleInfo madmate2 = new RoleInfo("マッドメイト", Madmate2.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate2);
+        public static RoleInfo kitsune = new RoleInfo("狐", Kitsune.color, "最後まで生き残れ", "最後まで生き残れ", RoleId.Kitsune);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
         public static RoleInfo fortuneTeller = new RoleInfo("占い師", FortuneTeller.color, "占いでインポスターを見つけろ", "タスクをして占え", RoleId.FortuneTeller);
         public static RoleInfo madScientist = new RoleInfo("マッドサイエンティスト", MadScientist.color, "全員を感染させろ", "全員を感染させろ", RoleId.MadScientist);
@@ -99,6 +100,7 @@ namespace TheOtherRoles
             nottori,
             madmate,
             madmate2,
+			kitsune,
             munou,
 			fortuneTeller,
             madScientist,
@@ -147,6 +149,7 @@ namespace TheOtherRoles
             if (p == Nottori.nottori) infos.Add(nottori);
             if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Madmate2.madmate2) infos.Add(madmate2);
+            if (p == Kitsune.kitsune) infos.Add(kitsune);
             if (p == Munou.munou) infos.Add(munou);
             if (p == FortuneTeller.fortuneTeller) infos.Add(fortuneTeller);
             if (p == MadScientist.madScientist) infos.Add(madScientist);

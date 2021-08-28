@@ -430,6 +430,9 @@ namespace TheOtherRoles.Patches {
                 if (meetingTarget == null) meetingsCount++;
                 // Save the meeting target
                 target = meetingTarget;
+
+                // 狐生存通知
+                Kitsune.kitsuneMsg();
             }
         }
 

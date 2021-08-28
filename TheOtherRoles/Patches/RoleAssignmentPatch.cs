@@ -86,6 +86,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Madmate, CustomOptionHolder.madmateSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Madmate2, CustomOptionHolder.madmate2SpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Kitsune, CustomOptionHolder.kitsuneSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.MadScientist, CustomOptionHolder.madScientistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Arsonist, CustomOptionHolder.arsonistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Jackal, CustomOptionHolder.jackalSpawnRate.getSelection());

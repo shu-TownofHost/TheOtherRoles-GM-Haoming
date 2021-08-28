@@ -29,7 +29,8 @@ namespace TheOtherRoles.Patches {
         JackalWin,
         MiniLose,
         ArsonistWin,
-        MadScientistWin
+        MadScientistWin,
+		KitsuneWin
     }
 
     static class AdditionalTempData {
@@ -91,6 +92,7 @@ namespace TheOtherRoles.Patches {
             if (Arsonist.arsonist != null) notWinners.Add(Arsonist.arsonist);
             if (Madmate.madmate != null) notWinners.Add(Madmate.madmate);
             if (Madmate2.madmate2 != null) notWinners.Add(Madmate2.madmate2);
+            if (Kitsune.kitsune != null) notWinners.Add(Kitsune.kitsune);
             if (MadScientist.madScientist != null) notWinners.Add(MadScientist.madScientist);
             notWinners.AddRange(Jackal.formerJackals);
 
@@ -107,6 +109,7 @@ namespace TheOtherRoles.Patches {
             bool loversWin = Lovers.existingAndAlive() && (gameOverReason == (GameOverReason)CustomGameOverReason.LoversWin || (TempData.DidHumansWin(gameOverReason) && !Lovers.existingWithKiller())); // Either they win if they are among the last 3 players, or they win if they are both Crewmates and both alive and the Crew wins (Team Imp/Jackal Lovers can only win solo wins)
             bool teamJackalWin = gameOverReason == (GameOverReason)CustomGameOverReason.TeamJackalWin && ((Jackal.jackal != null && !Jackal.jackal.Data.IsDead) || (Sidekick.sidekick != null && !Sidekick.sidekick.Data.IsDead));
             bool madmateWin = (Madmate.madmate != null || Madmate2.madmate2 != null) && (gameOverReason == GameOverReason.ImpostorByVote || gameOverReason == GameOverReason.ImpostorByKill || gameOverReason == GameOverReason.ImpostorBySabotage);
+			bool kitsuneWin = Kitsune.kitsune != null && !Kitsune.kitsune.Data.IsDead && gameOverReason != (GameOverReason)CustomGameOverReason.MadScientistWin && gameOverReason != (GameOverReason)CustomGameOverReason.JesterWin;
 
             // Madmate win
             if(madmateWin){
@@ -159,6 +162,14 @@ namespace TheOtherRoles.Patches {
                 TempData.winners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.MadScientistWin;
             }
+
+			// Kitsune win
+			else if (kitsuneWin){
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new WinningPlayerData(Kitsune.kitsune.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.KitsuneWin;
+			}
 
             // Lovers win conditions
             else if (loversWin) {
@@ -219,16 +230,20 @@ namespace TheOtherRoles.Patches {
             textRenderer.text = "";
 
             if (AdditionalTempData.winCondition == WinCondition.JesterWin) {
-                textRenderer.text = "Jester Wins";
+                textRenderer.text = "ジェスターの勝利";
                 textRenderer.color = Jester.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.ArsonistWin) {
-                textRenderer.text = "Arsonist Wins";
+                textRenderer.text = "放火魔の勝利";
                 textRenderer.color = Arsonist.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.MadScientistWin) {
-                textRenderer.text = "MadScientist Wins";
+                textRenderer.text = "マッドサイエンティストの勝利";
                 textRenderer.color = MadScientist.color;
+            }
+            else if (AdditionalTempData.winCondition == WinCondition.KitsuneWin) {
+                textRenderer.text = "狐の勝利";
+                textRenderer.color = Kitsune.color;
             }
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin) {
                 textRenderer.text = "Lovers And Crewmates Win";

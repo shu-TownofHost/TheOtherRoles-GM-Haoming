@@ -57,6 +57,7 @@ namespace TheOtherRoles
             Bait.clearAndReload();
             Madmate.clearAndReload();
             Madmate2.clearAndReload();
+            Kitsune.clearAndReload();
             Misimo.clearAndReload();
             Ballad.clearAndReload();
             Predator.clearAndReload();
@@ -592,6 +593,30 @@ namespace TheOtherRoles
 
         }
 
+        public static class Kitsune {
+            public static PlayerControl kitsune;
+            public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);
+            public static void kitsuneMsg(){
+                if(Kitsune.kitsune != null && !Kitsune.kitsune.Data.IsDead){
+                    string msg = "会議に狐が一匹紛れている";
+                    if (!string.IsNullOrWhiteSpace(msg))
+                    {   
+                        if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+                        {
+                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, msg);
+                        }
+                        if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            DestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
+                        }
+                    }
+                }
+            }
+
+            public static void clearAndReload() {
+                kitsune = null;
+            }
+        }
         public static class Madmate {
             public static PlayerControl madmate;
             public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);

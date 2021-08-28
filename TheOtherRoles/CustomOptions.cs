@@ -60,6 +60,7 @@ namespace TheOtherRoles {
         public static CustomOption jesterCanSabotage;
         public static CustomOption jesterArrow;
 
+        public static CustomOption kitsuneSpawnRate;
         public static CustomOption madmateSpawnRate;
         public static CustomOption madmate2SpawnRate;
         public static CustomOption madmateCanDieToSheriff;
@@ -368,6 +369,8 @@ namespace TheOtherRoles {
             madScientistDistance = CustomOption.Create(902, "感染距離", 2.5f, 0.5f, 5.0f, 0.25f, madScientistSpawnRate);
             madScientistDuration = CustomOption.Create(903, "感染に必要な時間", 3f, 1f, 10f, 1f, madScientistSpawnRate);
             madScientistSabotage = CustomOption.Create(904, "サボタージュを行える", false, madScientistSpawnRate);
+
+            kitsuneSpawnRate = CustomOption.Create(930, cs(FortuneTeller.color, "狐"), rates, null, true);
 
             arsonistSpawnRate = CustomOption.Create(290, cs(Arsonist.color, "放火魔"), rates, null, true);
             arsonistCooldown = CustomOption.Create(291, "ガソリンクールダウン", 12.5f, 2.5f, 60f, 2.5f, arsonistSpawnRate);
@@ -811,7 +814,7 @@ namespace TheOtherRoles {
                 gap = 24;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
-                gap = 33;
+                gap = 35;
                 index = hudString.TakeWhile(c => (gap -= (c == '\n' ? 1 : 0)) > 0).Count();
                 hudString = hudString.Insert(index + 1, "\n");
             } else if (counter == 2) {
