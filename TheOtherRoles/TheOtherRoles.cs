@@ -605,8 +605,14 @@ namespace TheOtherRoles
             public static PlayerControl kitsune;
             public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);
             public static void kitsuneMsg(){
-                if(Kitsune.kitsune != null && !Kitsune.kitsune.Data.IsDead){
-                    string msg = "会議に狐が一匹紛れている";
+                if(Kitsune.kitsune != null){
+                    string msg = "";
+                    if(Kitsune.kitsune.Data.IsDead){
+                        msg = "狐はいなくなった";
+                    }else{
+                        msg = "会議に狐が一匹紛れている";
+
+                    }
                     if (!string.IsNullOrWhiteSpace(msg))
                     {   
                         if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
