@@ -49,7 +49,7 @@ namespace TheOtherRoles
         BountyHunter,
         Madmate,
         Madmate2,
-		Kitsune,
+        Kitsune,
         Misimo,
         Ballad,
         Predator,
@@ -58,9 +58,9 @@ namespace TheOtherRoles
         Mifune,
         Kan,
         Nottori,
-		Motarike,
+        Motarike,
         Munou,
-		FortuneTeller,
+        FortuneTeller,
         MadScientist,
         Bait,
         Crewmate,
@@ -118,15 +118,15 @@ namespace TheOtherRoles
         BalladSetTarget,
         PredatorVisible,
         PredatorInvisible,
-		MotarikeVisible,
-		MotarikeInvisible,
+        MotarikeVisible,
+        MotarikeInvisible,
         BomberKill,
         TrapperKill,
-		MotarikeKill,
+        MotarikeKill,
         MadScientistWin,
         MadScientistSetInfected,
         RandomSpawn,
-		FortuneTellerShoot,
+        FortuneTellerShoot,
         GuesserShoot
     }
 
@@ -401,23 +401,23 @@ namespace TheOtherRoles
             }
         }
         public static void misimoVisible() {
-			Misimo.visibility = true;
+            Misimo.visibility = true;
         }
         public static void misimoInvisible() {
-			Misimo.visibility = false;
+            Misimo.visibility = false;
         }
         public static void predatorVisible() {
-			Predator.visibility = true;
+            Predator.visibility = true;
         }
         public static void predatorInvisible() {
-			Predator.visibility = false;
+            Predator.visibility = false;
         }
         public static void motarikeVisible() {
-			Motarike.visibility = true;
+            Motarike.visibility = true;
         }
 
         public static void motarikeInvisible() {
-			Motarike.visibility = false;
+            Motarike.visibility = false;
         }
         public static void bomberKill(byte targetId){
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -924,6 +924,12 @@ namespace TheOtherRoles
             target.Exiled();
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(target.KillSfx, false, 0.8f);
             if (MeetingHud.Instance) {
+                foreach (PlayerVoteArea pva in MeetingHud.Instance.playerStates) {
+                    if (pva.TargetPlayerId == playerId) {
+                        pva.SetDead(pva.DidReport, true);
+                        pva.Overlay.gameObject.SetActive(true);
+                    }
+                }
                 if (AmongUsClient.Instance.AmHost) 
                     MeetingHud.Instance.CheckForEndVoting();
             }
