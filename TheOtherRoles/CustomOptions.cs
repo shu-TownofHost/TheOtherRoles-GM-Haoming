@@ -209,6 +209,8 @@ namespace TheOtherRoles {
         public static CustomOption securityGuardCamPrice;
         public static CustomOption securityGuardVentPrice;
         public static CustomOption munouSpawnRate;
+        public static CustomOption fortuneTellerSpawnRate;
+        public static CustomOption fortuneTellerNumTask;
 
         public static CustomOption baitSpawnRate;
         public static CustomOption baitHighlightAllVents;
@@ -456,6 +458,8 @@ namespace TheOtherRoles {
             baitHighlightAllVents = CustomOption.Create(331, "どれかのベント使用時に全てのベントをハイライトする", false, baitSpawnRate);
             baitReportDelay = CustomOption.Create(332, "レポートまでの遅延時間", 0f, 0f, 10f, 1f, baitSpawnRate);
             munouSpawnRate = CustomOption.Create(870, cs(Munou.color, "無能"), rates, null, true);
+            fortuneTellerSpawnRate = CustomOption.Create(920, cs(FortuneTeller.color, "占い師"), rates, null, true);
+            fortuneTellerNumTask = CustomOption.Create(921, "占いに必要なタスク数", 3f, 1f, 10f, 1f, baitSpawnRate);
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, "緊急会議上限回数 (市長のものはカウントしない)", 10, 0, 15, 1, null, true);

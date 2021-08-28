@@ -72,6 +72,7 @@ namespace TheOtherRoles
         public static RoleInfo madmate = new RoleInfo("マッドメイト", Madmate.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate);
         public static RoleInfo madmate2 = new RoleInfo("マッドメイト", Madmate2.color, "インポスターをサポートしろ", "インポスターをサポートしろ", RoleId.Madmate2);
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
+        public static RoleInfo fortuneTeller = new RoleInfo("占い師", FortuneTeller.color, "占いでインポスターを見つけろ", "タスクをして占え", RoleId.FortuneTeller);
         public static RoleInfo madScientist = new RoleInfo("マッドサイエンティスト", MadScientist.color, "全員を感染させろ", "全員を感染させろ", RoleId.MadScientist);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
@@ -99,6 +100,7 @@ namespace TheOtherRoles
             madmate,
             madmate2,
             munou,
+			fortuneTeller,
             madScientist,
             niceMini,
             evilMini,
@@ -146,6 +148,7 @@ namespace TheOtherRoles
             if (p == Madmate.madmate) infos.Add(madmate);
             if (p == Madmate2.madmate2) infos.Add(madmate2);
             if (p == Munou.munou) infos.Add(munou);
+            if (p == FortuneTeller.fortuneTeller) infos.Add(fortuneTeller);
             if (p == MadScientist.madScientist) infos.Add(madScientist);
             if (p == Jester.jester) infos.Add(jester);
             if (p == Mayor.mayor) infos.Add(mayor);

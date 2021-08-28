@@ -59,6 +59,7 @@ namespace TheOtherRoles
         Nottori,
 		Motarike,
         Munou,
+		FortuneTeller,
         MadScientist,
         Bait,
         Crewmate,
@@ -197,6 +198,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Munou:
                         Munou.munou = player;
+                        break;
+                    case RoleId.FortuneTeller:
+                        FortuneTeller.fortuneTeller = player;
                         break;
                     case RoleId.MadScientist:
                         MadScientist.madScientist = player;
@@ -600,6 +604,8 @@ namespace TheOtherRoles
                 Madmate2.madmate2 = oldShifter;
             if (Munou.munou != null && Munou.munou == player)
                 Munou.munou = oldShifter;
+            if (FortuneTeller.fortuneTeller != null && FortuneTeller.fortuneTeller == player)
+                FortuneTeller.fortuneTeller = oldShifter;
             if (Mayor.mayor != null && Mayor.mayor == player)
                 Mayor.mayor = oldShifter;
             if (Engineer.engineer != null && Engineer.engineer == player)
@@ -766,6 +772,7 @@ namespace TheOtherRoles
             if (player == Spy.spy) Spy.clearAndReload();
             if (player == SecurityGuard.securityGuard) SecurityGuard.clearAndReload();
             if (player == Munou.munou) Munou.clearAndReload();
+            if (player == FortuneTeller.fortuneTeller) FortuneTeller.clearAndReload();
             if (player == Bait.bait) Bait.clearAndReload();
 
             // Impostor roles

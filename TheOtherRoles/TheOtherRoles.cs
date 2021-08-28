@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using TheOtherRoles.Objects;
 
@@ -63,6 +64,7 @@ namespace TheOtherRoles
             Trapper.clearAndReload();
             Mifune.clearAndReload();
             Munou.clearAndReload();
+            FortuneTeller.clearAndReload();
             Motarike.clearAndReload();
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
@@ -237,6 +239,43 @@ namespace TheOtherRoles
             public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
             public static void clearAndReload(){
                 munou = null;
+            }
+        }
+
+        public static class FortuneTeller{
+            public static PlayerControl fortuneTeller;
+            public static int numUsed = 0;
+            public static float numTask = 3;
+            public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
+            private static Sprite targetSprite;
+            public static void clearAndReload(){
+                fortuneTeller = null;
+                numUsed = 0;
+                numTask = CustomOptionHolder.fortuneTellerNumTask.getFloat();
+            }
+            public static void divine(PlayerControl p){
+                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(fortuneTeller.Data);
+                if(1 > tasksCompleted - (numTask * numUsed)) return;
+                string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
+                roleNames = Regex.Replace(roleNames, "<[^>]*>", "");
+                string msg = $"{p.name}は{roleNames}";
+                if (!string.IsNullOrWhiteSpace(msg))
+                {   
+                    if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+                    {
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, msg);
+                    }
+                    if (msg.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        DestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
+                    }
+                }
+                numUsed += 1;
+            }
+            public static Sprite getTargetSprite() {
+                if (targetSprite) return targetSprite;
+                targetSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Uranai.png", 150f);
+                return targetSprite;
             }
         }
 

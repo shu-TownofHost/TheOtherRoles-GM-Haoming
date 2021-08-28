@@ -139,7 +139,7 @@ namespace TheOtherRoles.Patches {
                     playerVoteArea.ClearForResults();
                     int num2 = 0;
                     bool mayorFirstVoteDisplayed = false;
-					bool motarikeFirstVoteDisplayed = false;
+                    bool motarikeFirstVoteDisplayed = false;
                     for (int j = 0; j < states.Length; j++) {
                         MeetingHud.VoterState voterState = states[j];
                         GameData.PlayerInfo playerById = GameData.Instance.GetPlayerById(voterState.VoterId);
@@ -166,9 +166,9 @@ namespace TheOtherRoles.Patches {
                             j--;    
                         }
 
-						// Motarike vote
-						if (Motarike.motarike != null && voterState.VoterId ==(sbyte)Motarike.motarike.PlayerId && !motarikeFirstVoteDisplayed && Motarike.doubleVote) {
-							motarikeFirstVoteDisplayed = true;
+                        // Motarike vote
+                        if (Motarike.motarike != null && voterState.VoterId ==(sbyte)Motarike.motarike.PlayerId && !motarikeFirstVoteDisplayed && Motarike.doubleVote) {
+                            motarikeFirstVoteDisplayed = true;
                             j--;    
                         }
                     }
@@ -313,6 +313,14 @@ namespace TheOtherRoles.Patches {
             }
             container.transform.localScale *= 0.75f;
         }
+        static void fortuneTellerOnClick(int buttonTarget, MeetingHud __instance) {
+            if (guesserUI != null || !(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted)) return;
+            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                if(buttonTarget == p.PlayerId){
+                    FortuneTeller.divine(p);
+                }
+            }
+        }
 
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Select))]
         class PlayerVoteAreaSelectPatch {
@@ -367,6 +375,25 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => guesserOnClick(copiedIndex, __instance)));
+                }
+            }
+
+            // Add FortuneTeller Buttons
+            if (FortuneTeller.fortuneTeller != null && PlayerControl.LocalPlayer == FortuneTeller.fortuneTeller && !FortuneTeller.fortuneTeller.Data.IsDead) {
+                for (int i = 0; i < __instance.playerStates.Length; i++) {
+                    PlayerVoteArea playerVoteArea = __instance.playerStates[i];
+                    if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == FortuneTeller.fortuneTeller.PlayerId) continue;
+
+                    GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
+                    GameObject targetBox = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
+                    targetBox.name = "ShootButton";
+                    targetBox.transform.localPosition = new Vector3(-0.95f, 0.03f, -1f);
+                    SpriteRenderer renderer = targetBox.GetComponent<SpriteRenderer>();
+                    renderer.sprite = FortuneTeller.getTargetSprite();
+                    PassiveButton button = targetBox.GetComponent<PassiveButton>();
+                    button.OnClick.RemoveAllListeners();
+                    int copiedIndex = i;
+                    button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => fortuneTellerOnClick(copiedIndex, __instance)));
                 }
             }
         }
