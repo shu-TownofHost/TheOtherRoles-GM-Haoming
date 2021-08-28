@@ -112,6 +112,13 @@ namespace TheOtherRoles
             }
         }
         public static class Motarike{
+            public  enum Dice{
+                destruct = 0,
+                killCooldown = 1,
+                doubleVote = 2,
+                camouflage = 3,
+                toggleInvisible = 4
+            }
             public static PlayerControl motarike;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
@@ -120,6 +127,7 @@ namespace TheOtherRoles
             public static float cooldown;
             public static string text;
             public static bool button;
+            public static int counter;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
                 buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RiskyDice.png", 115f);
@@ -129,6 +137,7 @@ namespace TheOtherRoles
                 motarike = null;
                 visibility = true;
                 cooldown = CustomOptionHolder.motarikeCooldown.getFloat();
+                counter = 0;
                 getButtonSprite();
                 reset();
             }
@@ -161,28 +170,41 @@ namespace TheOtherRoles
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.camouflagerCamouflage();
             }
+
+            public static void insertToTable(List<Dice> table, Dice val, int num){
+                for(int i=0; i<num; i++){
+                    table.Add(val);
+                }
+            }
+
             public static void riskyDice(){
                 TheOtherRolesPlugin.Instance.Log.LogInfo("リスキーダイス");
-                int rndVal = rnd.Next(0,99);
-                TheOtherRolesPlugin.Instance.Log.LogInfo($"ダイス={rndVal}");
-                if(rndVal < 5){
+                List<Dice> table = new List<Dice>();
+                insertToTable(table, Dice.destruct, 5 + (counter*3));
+                insertToTable(table, Dice.killCooldown, 15 + counter);
+                insertToTable(table, Dice.doubleVote, 15 + counter);
+                insertToTable(table, Dice.camouflage, 30);
+                insertToTable(table, Dice.toggleInvisible, 35);
+                int rndVal = rnd.Next(0, table.Count);
+                if(table[rndVal] == ((int)Dice.destruct)){
                     text = "[大凶]自爆\n";
                     selfDestruct();
-                }else if(rndVal < 20){
+                }else if(table[rndVal] == Dice.killCooldown){
                     text = "[大吉]キルクールダウン解消\n";
                     button = false;
                     motarike.SetKillTimer(0);
-                }else if(rndVal < 35){
+                }else if(table[rndVal] == Dice.doubleVote){
                     doubleVote = true;
                     button = false;
                     text = "[大吉]次の投票が2票になる\n";
-                }else if(rndVal < 65){
+                }else if(table[rndVal] == Dice.camouflage){
                     text = "[大吉]カモフラージュ発動　再度ダイスを振れる\n";
                     camouflage();
-                }else if(rndVal < 100){
+                }else if(table[rndVal] == Dice.toggleInvisible){
                     text = "[大吉]透明、非透明が入れ替わる 再度ダイスを振れる\n";
                     toggleVisibility();
                 }
+                counter += 1;
             }
             public static void selfDestruct(){
                 doubleVote = false;
