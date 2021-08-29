@@ -380,6 +380,7 @@ namespace TheOtherRoles.Patches {
 
             // Add FortuneTeller Buttons
             if (FortuneTeller.fortuneTeller != null && PlayerControl.LocalPlayer == FortuneTeller.fortuneTeller && !FortuneTeller.fortuneTeller.Data.IsDead) {
+                List<GameObject> targetBoxs = new List<GameObject>();
                 for (int i = 0; i < __instance.playerStates.Length; i++) {
                     PlayerVoteArea playerVoteArea = __instance.playerStates[i];
                     if (playerVoteArea.AmDead || playerVoteArea.TargetPlayerId == FortuneTeller.fortuneTeller.PlayerId) continue;
@@ -394,7 +395,15 @@ namespace TheOtherRoles.Patches {
                     button.OnClick.RemoveAllListeners();
                     int copiedIndex = i;
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(() => fortuneTellerOnClick(copiedIndex, __instance)));
+                    targetBoxs.Add(targetBox);
                 }
+                HudManager.Instance.StartCoroutine(Effects.Lerp(15.0f, new Action<float>((p) => { // Delayed action
+                    if (p == 1f) {
+                        foreach(GameObject box in targetBoxs){
+                            box.SetActive(false);
+                        }
+                    }
+                })));
             }
         }
 

@@ -205,10 +205,16 @@ namespace TheOtherRoles.Patches {
                 roleCanCallEmergency = false;
                 statusText = "The Jester can't start an emergency meeting";
             }
-			if (Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
-				roleCanCallEmergency = false;
-				statusText = "無能はミーティングを開けない";
-			}
+
+            if (Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+                roleCanCallEmergency = false;
+                statusText = "無能はミーティングを開けない";
+            }
+
+            if (Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer){
+                roleCanCallEmergency = false;
+                statusText = "狐はミーティングを開けない";
+            }
 
             if (!roleCanCallEmergency) {
                 __instance.StatusText.text = statusText;
@@ -228,8 +234,8 @@ namespace TheOtherRoles.Patches {
                 __instance.ButtonActive = remaining > 0;
                 __instance.ClosedLid.gameObject.SetActive(!__instance.ButtonActive);
                 __instance.OpenLid.gameObject.SetActive(__instance.ButtonActive);
-				return;
-			}
+                return;
+            }
         }
     }
 
@@ -254,9 +260,12 @@ namespace TheOtherRoles.Patches {
             if (Swapper.swapper != null && Swapper.swapper == PlayerControl.LocalPlayer) {
                 __instance.Close();
             }
-			if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
-				__instance.Close();
-			}
+            if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+                __instance.Close();
+            }
+            if(Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer){
+                __instance.Close();
+            }
         }
     }
 
@@ -267,37 +276,44 @@ namespace TheOtherRoles.Patches {
             if (Swapper.swapper != null && Swapper.swapper == PlayerControl.LocalPlayer) {
                 __instance.Close();
             }
-			if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
-				__instance.Close();
-			}
+            if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+                __instance.Close();
+            }
+            if(Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer){
+                __instance.Close();
+            }
         }
     }
 
-	[HarmonyPatch]
-	class ReactorMiniGamePatch{
-		[HarmonyPatch(typeof(ReactorMinigame), nameof(ReactorMinigame.Begin))]
-		class ReactorMinigameStartPatch{
-			static void Postfix(ReactorMinigame __instance){
-				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
-					__instance.Close();
-				}
-			}
-		}
-	}
-	[HarmonyPatch]
-	class AdminMinigamePatch{
-		[HarmonyPatch(typeof(MapConsole), nameof(MapConsole.Use))]
-		class AdminMinigameStartPatch{
-			public static bool Prefix(MapConsole __instance){
-				if ((Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer)||
-				    (Seer.seer != null && Seer.seer == PlayerControl.LocalPlayer))
-				{
-					return false;	
-				}
-				return true;
-			}
-		}
-	}
+    [HarmonyPatch]
+    class ReactorMiniGamePatch{
+        [HarmonyPatch(typeof(ReactorMinigame), nameof(ReactorMinigame.Begin))]
+        class ReactorMinigameStartPatch{
+            static void Postfix(ReactorMinigame __instance){
+                if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+                    __instance.Close();
+                }
+                if(Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer){
+                    __instance.Close();
+                }
+            }
+        }
+    }
+    [HarmonyPatch]
+    class AdminMinigamePatch{
+        [HarmonyPatch(typeof(MapConsole), nameof(MapConsole.Use))]
+        class AdminMinigameStartPatch{
+            public static bool Prefix(MapConsole __instance){
+                if ((Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer)||
+                    (Seer.seer != null && Seer.seer == PlayerControl.LocalPlayer) ||
+                    (Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer))
+                {
+                    return false;	
+                }
+                return true;
+            }
+        }
+    }
 
     [HarmonyPatch]
     class VitalsMinigamePatch {
@@ -318,9 +334,12 @@ namespace TheOtherRoles.Patches {
                     
                     }
                 }
-				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
-					__instance.Close();
-				}
+                if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+                    __instance.Close();
+                }
+                if(Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer){
+                    __instance.Close();
+                }
             }
         }
 
@@ -509,9 +528,12 @@ namespace TheOtherRoles.Patches {
                         camera.targetTexture = temporary;
                     }
                 }
-				if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
-					__instance.Close();
-				}
+                if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer){
+                    __instance.Close();
+                }
+                if(Kitsune.kitsune != null && Kitsune.kitsune == PlayerControl.LocalPlayer){
+                    __instance.Close();
+                }
             }
         }
 

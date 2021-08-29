@@ -183,11 +183,11 @@ namespace TheOtherRoles
             public static void riskyDice(){
                 TheOtherRolesPlugin.Instance.Log.LogInfo("リスキーダイス");
                 List<Dice> table = new List<Dice>();
-                insertToTable(table, Dice.destruct, 5 + (counter*3));
-                insertToTable(table, Dice.killCooldown, 15 + counter);
-                insertToTable(table, Dice.doubleVote, 15 + counter);
-                insertToTable(table, Dice.camouflage, 30);
-                insertToTable(table, Dice.toggleInvisible, 35);
+                insertToTable(table, Dice.destruct, 5 + (counter*2));
+                insertToTable(table, Dice.killCooldown, 15);
+                insertToTable(table, Dice.doubleVote, 15);
+                insertToTable(table, Dice.camouflage, 30 - counter);
+                insertToTable(table, Dice.toggleInvisible, 35 - counter);
                 int rndVal = rnd.Next(0, table.Count);
                 if(table[rndVal] == ((int)Dice.destruct)){
                     text = "[大凶]自爆\n";
@@ -256,7 +256,8 @@ namespace TheOtherRoles
             }
             public static void divine(PlayerControl p){
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(fortuneTeller.Data);
-                if(1 > tasksCompleted - (numTask * numUsed)) return;
+				int divineNum = ((int)tasksCompleted - (3*numUsed))/(int)numTask;
+                if(divineNum <= 0) return;
                 string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
                 roleNames = Regex.Replace(roleNames, "<[^>]*>", "");
                 string msg = $"{p.name}は{roleNames}";
@@ -603,16 +604,18 @@ namespace TheOtherRoles
 
         public static class Kitsune {
             public static PlayerControl kitsune;
+			public static bool msgFlag = true;
             public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);
             public static void kitsuneMsg(){
-                if(Kitsune.kitsune != null){
+                if(Kitsune.kitsune != null && Kitsune.msgFlag){
                     string msg = "";
-                    if(Kitsune.kitsune.Data.IsDead){
-                        msg = "狐はいなくなった";
-                    }else{
-                        msg = "会議に狐が一匹紛れている";
+                    // if(Kitsune.kitsune.Data.IsDead){
+                    //     msg = "狐はいなくなった";
+                    // }else{
+                    //     msg = "会議に狐が一匹紛れている";
 
-                    }
+                    // }
+					msg = "狐が一匹紛れている";
                     if (!string.IsNullOrWhiteSpace(msg))
                     {   
                         if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
@@ -624,11 +627,13 @@ namespace TheOtherRoles
                             DestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
                         }
                     }
+					Kitsune.msgFlag = false;
                 }
             }
 
             public static void clearAndReload() {
                 kitsune = null;
+				msgFlag = true;
             }
         }
         public static class Madmate {
