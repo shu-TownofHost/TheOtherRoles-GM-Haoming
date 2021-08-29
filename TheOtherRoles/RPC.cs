@@ -120,6 +120,7 @@ namespace TheOtherRoles
         PredatorInvisible,
         MotarikeVisible,
         MotarikeInvisible,
+		MotarikeShuffle,
         BomberKill,
         TrapperKill,
         MotarikeKill,
@@ -418,6 +419,10 @@ namespace TheOtherRoles
 
         public static void motarikeInvisible() {
             Motarike.visibility = false;
+        }
+        public static void motarikeShuffle(byte targetId, float x, float y, float z) {
+			PlayerControl player = Helpers.playerById(targetId);
+			player.transform.position = new Vector3(x, y, z);
         }
         public static void bomberKill(byte targetId){
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -1101,6 +1106,16 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.MotarikeInvisible:
                     RPCProcedure.motarikeInvisible();
+                    break;
+                case (byte)CustomRPC.MotarikeShuffle:
+					byte shuffleTarget = reader.ReadByte();
+					byte[] bytesx =  reader.ReadBytes(4);
+					float shufflex = System.BitConverter.ToSingle(bytesx, 0);
+					byte[] bytesy=  reader.ReadBytes(4);
+					float shuffley = System.BitConverter.ToSingle(bytesy, 0);
+					byte[] bytesz=  reader.ReadBytes(4);
+					float shufflez = System.BitConverter.ToSingle(bytesz, 0);
+                    RPCProcedure.motarikeShuffle(shuffleTarget, shufflex, shuffley, shufflez);
                     break;
                 case (byte)CustomRPC.BomberKill:
                     RPCProcedure.bomberKill(reader.ReadByte());
