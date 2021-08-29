@@ -116,11 +116,12 @@ namespace TheOtherRoles
         }
         public static class Motarike{
             public  enum Dice{
-                destruct = 0,
-                killCooldown = 1,
-                doubleVote = 2,
-                camouflage = 3,
-                toggleInvisible = 4
+                Destruct = 0,
+                KillCooldown = 1,
+                DoubleVote = 2,
+                Camouflage = 3,
+                ToggleInvisible = 4,
+                ShufflePlayers = 5,
             }
             public static PlayerControl motarike;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
@@ -174,6 +175,73 @@ namespace TheOtherRoles
                 RPCProcedure.camouflagerCamouflage();
             }
 
+            public static void shufflePlayers(){
+
+                // PlayerControlの順番をシャッフル
+                Il2CppSystem.Collections.Generic.List<PlayerControl> pl = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+                List<int> rangeVal = Enumerable.Range(0, PlayerControl.AllPlayerControls.Count).ToList();
+                while(pl.Count != PlayerControl.AllPlayerControls.Count){
+                    int randVal = rnd.Next(0,rangeVal.Count);
+                    int pcNum = rangeVal[randVal];
+                    pl.Add(PlayerControl.AllPlayerControls[pcNum]);
+                    rangeVal.RemoveAt(randVal);
+                }
+
+
+                // 入れ替え先作成
+                rangeVal = Enumerable.Range(0, PlayerControl.AllPlayerControls.Count).ToList();
+                Dictionary<int ,Vector3> to = new Dictionary<int, Vector3>();
+
+                // 死亡しているプレイヤー数
+                int numDead = 0;
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p.Data.IsDead){
+                        numDead += 1;
+                    }
+                }
+
+                // 入れ替え先のターゲット決定
+                foreach(PlayerControl p in pl){
+                    if(p.Data.IsDead){
+                        // rangeVal.Remove(PlayerControl.AllPlayerControls.IndexOf(p));
+                        continue;
+                    }
+                    int randVal = rnd.Next(0,rangeVal.Count);
+                    while(true){
+                        if(PlayerControl.AllPlayerControls[rangeVal[randVal]].Data.IsDead || PlayerControl.AllPlayerControls[rangeVal[randVal]].PlayerId == p.PlayerId){
+                            // 残りが同じプレイヤーだけの場合はブレイクする
+                            if(rangeVal.Count == numDead + 1 && PlayerControl.AllPlayerControls[rangeVal[randVal]].PlayerId == p.PlayerId){
+                                break;
+                            }
+                            randVal = rnd.Next(0,rangeVal.Count);
+                            continue;
+                        } else{
+                            break;
+                        }
+                    }
+                    Vector3 pos = PlayerControl.AllPlayerControls[rangeVal[randVal]].transform.position;
+                    Vector3 toPos = new Vector3(pos.x, pos.y, pos.z);
+                    to[p.PlayerId] = toPos;
+                    rangeVal.RemoveAt(randVal);
+                }
+
+                // 入れ替え実行
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(p.Data.IsDead) continue;
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeShuffle, Hazel.SendOption.Reliable, -1);
+                    writer.Write(p.PlayerId);
+                    writer.Write(to[p.PlayerId].x);
+                    writer.Write(to[p.PlayerId].y);
+                    writer.Write(to[p.PlayerId].z);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.motarikeShuffle(p.PlayerId, to[p.PlayerId].x, to[p.PlayerId].y, to[p.PlayerId].z);
+                }
+            }
+            public static void lightOut(){
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.LightsOut, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.lightsOut();
+            }
             public static void insertToTable(List<Dice> table, Dice val, int num){
                 for(int i=0; i<num; i++){
                     table.Add(val);
@@ -183,30 +251,42 @@ namespace TheOtherRoles
             public static void riskyDice(){
                 TheOtherRolesPlugin.Instance.Log.LogInfo("リスキーダイス");
                 List<Dice> table = new List<Dice>();
-                insertToTable(table, Dice.destruct, 5 + (counter*2));
-                insertToTable(table, Dice.killCooldown, 15);
-                insertToTable(table, Dice.doubleVote, 15);
-                insertToTable(table, Dice.camouflage, 30 - counter);
-                insertToTable(table, Dice.toggleInvisible, 35 - counter);
+                insertToTable(table, Dice.Destruct, 5 + (counter*2));
+                insertToTable(table, Dice.KillCooldown, 15);
+                insertToTable(table, Dice.DoubleVote, 15);
+                insertToTable(table, Dice.ShufflePlayers, 15);
+                insertToTable(table, Dice.ShufflePlayers, 3000);
+                insertToTable(table, Dice.Camouflage, 25 - counter);
+                insertToTable(table, Dice.ToggleInvisible, 25 - counter);
                 int rndVal = rnd.Next(0, table.Count);
-                if(table[rndVal] == ((int)Dice.destruct)){
+                if(table[rndVal] == ((int)Dice.Destruct)){
                     text = "[大凶]自爆\n";
                     selfDestruct();
-                }else if(table[rndVal] == Dice.killCooldown){
+                }else if(table[rndVal] == Dice.KillCooldown){
                     text = "[大吉]キルクールダウン解消\n";
                     button = false;
                     motarike.SetKillTimer(0);
-                }else if(table[rndVal] == Dice.doubleVote){
+                }else if(table[rndVal] == Dice.DoubleVote){
                     doubleVote = true;
                     button = false;
                     text = "[大吉]次の投票が2票になる\n";
-                }else if(table[rndVal] == Dice.camouflage){
+                }else if(table[rndVal] == Dice.Camouflage){
                     text = "[大吉]カモフラージュ発動　再度ダイスを振れる\n";
                     camouflage();
-                }else if(table[rndVal] == Dice.toggleInvisible){
+                }else if(table[rndVal] == Dice.ToggleInvisible){
                     text = "[大吉]透明、非透明が入れ替わる 再度ダイスを振れる\n";
                     toggleVisibility();
+                }else if(table[rndVal] == Dice.ShufflePlayers){
+                    text = "[大吉]停電になって全員の位置が入れ替わる\n";
+                    lightOut();
+                    shufflePlayers();
+                    foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                        if(p.inVent){
+                            p.MyPhysics.RpcExitVent(p.PlayerId);
+                        }
+                    }
                 }
+                // new CustomMessage(text, 10.0f);
                 counter += 1;
             }
             public static void selfDestruct(){
@@ -256,7 +336,7 @@ namespace TheOtherRoles
             }
             public static void divine(PlayerControl p){
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(fortuneTeller.Data);
-				int divineNum = ((int)tasksCompleted - (3*numUsed))/(int)numTask;
+                int divineNum = ((int)tasksCompleted - (3*numUsed))/(int)numTask;
                 if(divineNum <= 0) return;
                 string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
                 roleNames = Regex.Replace(roleNames, "<[^>]*>", "");
@@ -604,7 +684,7 @@ namespace TheOtherRoles
 
         public static class Kitsune {
             public static PlayerControl kitsune;
-			public static bool msgFlag = true;
+            public static bool msgFlag = true;
             public static Color color = new Color(167f / 255f, 87f / 255f, 168f / 255f, 1);
             public static void kitsuneMsg(){
                 if(Kitsune.kitsune != null && Kitsune.msgFlag){
@@ -615,7 +695,7 @@ namespace TheOtherRoles
                     //     msg = "会議に狐が一匹紛れている";
 
                     // }
-					msg = "狐が一匹紛れている";
+                    msg = "狐が一匹紛れている";
                     if (!string.IsNullOrWhiteSpace(msg))
                     {   
                         if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
@@ -627,13 +707,13 @@ namespace TheOtherRoles
                             DestroyableSingleton<Assets.CoreScripts.Telemetry>.Instance.SendWho();
                         }
                     }
-					Kitsune.msgFlag = false;
+                    Kitsune.msgFlag = false;
                 }
             }
 
             public static void clearAndReload() {
                 kitsune = null;
-				msgFlag = true;
+                msgFlag = true;
             }
         }
         public static class Madmate {

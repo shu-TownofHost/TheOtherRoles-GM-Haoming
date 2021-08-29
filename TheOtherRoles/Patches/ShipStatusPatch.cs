@@ -30,7 +30,7 @@ namespace TheOtherRoles.Patches {
                 __result = __instance.MaxLightRadius * PlayerControl.GameOptions.ImpostorLightMod;
             else if (Lighter.lighter != null && Lighter.lighter.PlayerId == player.PlayerId && Lighter.lighterTimer > 0f) // if player is Lighter and Lighter has his ability active
                 __result = Mathf.Lerp(__instance.MaxLightRadius * Lighter.lighterModeLightsOffVision, __instance.MaxLightRadius * Lighter.lighterModeLightsOnVision, num);
-            else if (Trickster.trickster != null && Trickster.lightsOutTimer > 0f) {
+            else if ((Trickster.trickster != null || Motarike.motarike != null) && Trickster.lightsOutTimer > 0f) {
                 float lerpValue = 1f;
                 if (Trickster.lightsOutDuration - Trickster.lightsOutTimer < 0.5f) lerpValue = Mathf.Clamp01((Trickster.lightsOutDuration - Trickster.lightsOutTimer) * 2);
                 else if (Trickster.lightsOutTimer < 0.5) lerpValue = Mathf.Clamp01(Trickster.lightsOutTimer*2);
