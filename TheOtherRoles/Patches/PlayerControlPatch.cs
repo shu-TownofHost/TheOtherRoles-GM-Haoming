@@ -695,16 +695,13 @@ namespace TheOtherRoles.Patches {
         public static void meleoronButtonUpdate(){
             if(PlayerControl.LocalPlayer != Meleoron.meleoron) return;
             // ボタンが無い場合は生成する
-			TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成");
             if(Meleoron.buttons.Keys.Count == 0){
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成1");
                     KillButtonManager killButtonManager = UnityEngine.Object.Instantiate(HudManager.Instance.KillButton, HudManager.Instance.transform);
                     killButtonManager.renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoInvisibleButton.png", 115f);
                     killButtonManager.renderer.enabled = true;
                     killButtonManager.gameObject.SetActive(true);
                     killButtonManager.killText.enabled = false;
-					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成2");
                     var text = killButtonManager.GetComponentInChildren<TMPro.TextMeshPro>();
                     text.text = p.name;
                     text.fontSize = 3.0f;
@@ -712,7 +709,6 @@ namespace TheOtherRoles.Patches {
                     text.fontSizeMin = 3.0f;
                     text.alignment = TMPro.TextAlignmentOptions.Center;
                     // var label = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(HudManager.Instance.KillButton.killText, killButtonManager.killText.transform.parent);
-					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成3");
                     var button = killButtonManager.GetComponent<PassiveButton>();
                     button.OnClick = new Button.ButtonClickedEvent();
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
@@ -723,13 +719,11 @@ namespace TheOtherRoles.Patches {
                          AmongUsClient.Instance.FinishRpcImmediately(writer);
                          RPCProcedure.meleoronInvisible(Meleoron.target.PlayerId);
                     }));
-					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成4");
                     Meleoron.buttons.Add(p.PlayerId, killButtonManager);
                 }
             }
 
             // ボタンの表示位置
-			TheOtherRolesPlugin.Instance.Log.LogInfo("ボタンの表示位置移動");
             int counter = 0;
             foreach(var key in Meleoron.buttons.Keys){
 				var button = Meleoron.buttons[key];
@@ -741,7 +735,6 @@ namespace TheOtherRoles.Patches {
             }
 
             // ボタンの表示/非表示切り替え
-			TheOtherRolesPlugin.Instance.Log.LogInfo("ボタンの表示非表示切り替え");
             if(Meleoron.target != null){
                 foreach(var key in Meleoron.buttons.Keys){
                     if(key == Meleoron.target.PlayerId){
