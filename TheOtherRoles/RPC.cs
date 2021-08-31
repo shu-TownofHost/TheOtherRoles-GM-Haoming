@@ -128,6 +128,7 @@ namespace TheOtherRoles
         MotarikeKill,
         MadScientistWin,
         MadScientistSetInfected,
+        MadScientistUpdateProgress,
         RandomSpawn,
         FortuneTellerShoot,
         GuesserShoot
@@ -386,6 +387,9 @@ namespace TheOtherRoles
                 }
             }
         }
+        public static void updateProgress(byte targetId, float progress){
+			MadScientist.progress[targetId] = progress;
+        }
         public static void misimoKill(byte targetId) {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
@@ -431,10 +435,9 @@ namespace TheOtherRoles
         }
 
         public static void meleoronInvisible(byte targetId){
-            if(PlayerControl.LocalPlayer.PlayerId == targetId) return;
             PlayerControl player = Helpers.playerById(targetId);
             Meleoron.target = player;
-            if(Meleoron.target == PlayerControl.LocalPlayer && Meleoron.target.Data.IsImpostor){
+            if(Meleoron.target.PlayerId == PlayerControl.LocalPlayer.PlayerId && Meleoron.target.Data.IsImpostor){
                 new CustomMessage("透明になった", 10f);
             }
         }
@@ -1234,6 +1237,12 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.MadScientistSetInfected:
                     RPCProcedure.setInfected(reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.MadScientistUpdateProgress:
+					byte progressTarget = reader.ReadByte();
+					byte[] progressByte =  reader.ReadBytes(4);
+					float progress = System.BitConverter.ToSingle(progressByte, 0);
+                    RPCProcedure.updateProgress(progressTarget, progress);
                     break;
                 case (byte)CustomRPC.GuesserShoot:
                     RPCProcedure.guesserShoot(reader.ReadByte());

@@ -547,7 +547,7 @@ namespace TheOtherRoles.Patches {
                     // text += p.Data.PlayerName + "(" + roleNames + ")" + $" {dist} {arrow}" + "\n";
                     text += p.Data.PlayerName + ":" + $" {dist} {arrow}" + "\n";
                 }
-                if(Meleoron.target == PlayerControl.LocalPlayer){
+                if(Meleoron.target != null && Meleoron.target.PlayerId == PlayerControl.LocalPlayer.PlayerId){
                     text += "メレオロンに透明にされている\n";
                 }
 				if(Motarike.motarike != null && Motarike.motarike == PlayerControl.LocalPlayer){
@@ -575,6 +575,13 @@ namespace TheOtherRoles.Patches {
 
                         if(distance <= CustomOptionHolder.madScientistDistance.getFloat() && !anythingBetween){
                             MadScientist.progress[p1.Data.PlayerId] += Time.fixedDeltaTime;
+
+							// 他のクライアントに進行状況を通知する
+							MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistUpdateProgress, Hazel.SendOption.Reliable, -1);
+							writer.Write(p1.PlayerId);
+							writer.Write(MadScientist.progress[p1.Data.PlayerId]);
+							AmongUsClient.Instance.FinishRpcImmediately(writer);
+
                             // 既定値を超えたら感染扱いにする
                             if(MadScientist.progress[p1.Data.PlayerId] >= CustomOptionHolder.madScientistDuration.getFloat()){
                                 newInfected.Add(p1);
@@ -609,7 +616,8 @@ namespace TheOtherRoles.Patches {
         }
 
         public static void madScientistTextUpdate(){
-            if(MadScientist.madScientist != null && PlayerControl.LocalPlayer == MadScientist.madScientist){
+			if(PlayerControl.LocalPlayer.Data.IsImpostor) return;
+            if(MadScientist.madScientist != null && (PlayerControl.LocalPlayer == MadScientist.madScientist || PlayerControl.LocalPlayer.Data.IsDead)){
                 if(MadScientist.text == null){
                     var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
                     var obj = UnityEngine.Object.Instantiate(HudManager._instance.GameSettings);
@@ -687,13 +695,16 @@ namespace TheOtherRoles.Patches {
         public static void meleoronButtonUpdate(){
             if(PlayerControl.LocalPlayer != Meleoron.meleoron) return;
             // ボタンが無い場合は生成する
+			TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成");
             if(Meleoron.buttons.Keys.Count == 0){
                 foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成1");
                     KillButtonManager killButtonManager = UnityEngine.Object.Instantiate(HudManager.Instance.KillButton, HudManager.Instance.transform);
                     killButtonManager.renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoInvisibleButton.png", 115f);
                     killButtonManager.renderer.enabled = true;
                     killButtonManager.gameObject.SetActive(true);
                     killButtonManager.killText.enabled = false;
+					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成2");
                     var text = killButtonManager.GetComponentInChildren<TMPro.TextMeshPro>();
                     text.text = p.name;
                     text.fontSize = 3.0f;
@@ -701,6 +712,7 @@ namespace TheOtherRoles.Patches {
                     text.fontSizeMin = 3.0f;
                     text.alignment = TMPro.TextAlignmentOptions.Center;
                     // var label = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(HudManager.Instance.KillButton.killText, killButtonManager.killText.transform.parent);
+					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成3");
                     var button = killButtonManager.GetComponent<PassiveButton>();
                     button.OnClick = new Button.ButtonClickedEvent();
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
@@ -711,13 +723,16 @@ namespace TheOtherRoles.Patches {
                          AmongUsClient.Instance.FinishRpcImmediately(writer);
                          RPCProcedure.meleoronInvisible(Meleoron.target.PlayerId);
                     }));
-                    Morphling.buttons[p.PlayerId] = killButtonManager;
+					TheOtherRolesPlugin.Instance.Log.LogInfo("ボタン生成4");
+                    Meleoron.buttons.Add(p.PlayerId, killButtonManager);
                 }
             }
 
             // ボタンの表示位置
+			TheOtherRolesPlugin.Instance.Log.LogInfo("ボタンの表示位置移動");
             int counter = 0;
-            foreach(var button in Morphling.buttons){
+            foreach(var key in Meleoron.buttons.Keys){
+				var button = Meleoron.buttons[key];
                 int x = counter / 2;
                 int y = counter % 2;
                 button.transform.localPosition =  HudManager.Instance.KillButton.transform.localPosition + new Vector3(- 1.3f - (0.5f * x), y * 0.5f, 0);
@@ -726,6 +741,7 @@ namespace TheOtherRoles.Patches {
             }
 
             // ボタンの表示/非表示切り替え
+			TheOtherRolesPlugin.Instance.Log.LogInfo("ボタンの表示非表示切り替え");
             if(Meleoron.target != null){
                 foreach(var key in Meleoron.buttons.Keys){
                     if(key == Meleoron.target.PlayerId){
@@ -802,7 +818,7 @@ namespace TheOtherRoles.Patches {
             }
             
             // Meleoronに姿を消される
-            if(Meleoron.target != null && !Meleoron.target.inVent){
+            if(Meleoron.target != null && !Meleoron.target.inVent && Meleoron.target != PlayerControl.LocalPlayer){
                 if(Meleoron.target == __instance && PlayerControl.LocalPlayer != __instance){
                     Meleoron.target.Visible = false;
                 } else if(Meleoron.target != null && !Meleoron.target.Data.IsDead && Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
@@ -1101,6 +1117,7 @@ namespace TheOtherRoles.Patches {
                 updatePlayerInfoNottori();
                 impostorTextUpdate();
                 MorphButtonUpdate();
+				meleoronButtonUpdate();
 
                 // Mad Scientist
                 madScientistUpdate();

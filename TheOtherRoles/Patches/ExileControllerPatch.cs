@@ -101,6 +101,7 @@ namespace TheOtherRoles.Patches {
 
             // Meleoron reset invisible
             if (Meleoron.target != null){
+				if(!Meleoron.target.Data.IsDead) Meleoron.target.Visible = true;
                 Meleoron.target = null;
             }
 

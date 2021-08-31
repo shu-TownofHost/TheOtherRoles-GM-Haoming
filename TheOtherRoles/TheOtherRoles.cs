@@ -67,6 +67,7 @@ namespace TheOtherRoles
             Munou.clearAndReload();
             FortuneTeller.clearAndReload();
             Motarike.clearAndReload();
+            Meleoron.clearAndReload();
             SoulPlayer.clearAndReload();
             ImpostorPlayer.clearAndReload();
             MadmateAndJester.clearAndReload();
@@ -783,6 +784,9 @@ namespace TheOtherRoles
                 triggerMadScientistWin = false;
                 infected = new Dictionary<int, PlayerControl>();
                 progress = new Dictionary<int, float>();
+				foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+					progress[p.Data.PlayerId] = 0;
+				}
                 text = null;
                 meetingFlag = false;
                 canSabotage = CustomOptionHolder.madScientistSabotage.getBool();

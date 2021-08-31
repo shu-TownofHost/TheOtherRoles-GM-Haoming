@@ -479,7 +479,13 @@ namespace TheOtherRoles
             );
 
             madScientistSyringeButton = new CustomButton(
-                () => {/*ボタンが押されたとき*/ MadScientist.infected.Add(MadScientist.currentTarget.Data.PlayerId, MadScientist.currentTarget); MadScientist.syringeFlag = true;},
+                () => {/*ボタンが押されたとき*/ 
+                    byte targetId = MadScientist.currentTarget.Data.PlayerId;
+					MadScientist.syringeFlag = true;
+                    MessageWriter killWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MadScientistSetInfected, Hazel.SendOption.Reliable, -1); killWriter.Write(targetId);
+                    AmongUsClient.Instance.FinishRpcImmediately(killWriter);
+                    RPCProcedure.setInfected(targetId);
+				},
                 () => {/*ボタンが有効になる条件*/ return MadScientist.madScientist != null && MadScientist.madScientist == PlayerControl.LocalPlayer && !MadScientist.syringeFlag && !MadScientist.madScientist.Data.IsDead; },
                 () => {/*ボタンが使える条件*/ return MadScientist.currentTarget != null && !MadScientist.syringeFlag && PlayerControl.LocalPlayer.CanMove;},
                 () => {/*ミーティング終了時*/ },
