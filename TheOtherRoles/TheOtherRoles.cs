@@ -298,6 +298,17 @@ namespace TheOtherRoles
             }
             
         }
+        public static class Meleoron{
+            public static PlayerControl meleoron;
+            public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
+            public static Dictionary<byte, KillButtonManager> buttons;
+            public static PlayerControl target;
+            public static void clearAndReload(){
+                meleoron = null;
+                target = null;
+                buttons = new Dictionary<byte, KillButtonManager>();
+            }
+        }
 
         public static class Nottori{
             public static PlayerControl nottori;

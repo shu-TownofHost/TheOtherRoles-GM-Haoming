@@ -99,6 +99,11 @@ namespace TheOtherRoles.Patches {
                 }
             })));
 
+            // Meleoron reset invisible
+            if (Meleoron.target != null){
+                Meleoron.target = null;
+            }
+
             // Mini exile lose condition
             if (exiled != null && Mini.mini != null && Mini.mini.PlayerId == exiled.PlayerId && !Mini.isGrownUp() && !Mini.mini.Data.IsImpostor) {
                 Mini.triggerMiniLose = true;

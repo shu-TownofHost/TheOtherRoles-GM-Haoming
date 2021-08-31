@@ -59,6 +59,7 @@ namespace TheOtherRoles
         Kan,
         Nottori,
         Motarike,
+        Meleoron,
         Munou,
         FortuneTeller,
         MadScientist,
@@ -121,6 +122,7 @@ namespace TheOtherRoles
         MotarikeVisible,
         MotarikeInvisible,
 		MotarikeShuffle,
+        MeleoronInvisible,
         BomberKill,
         TrapperKill,
         MotarikeKill,
@@ -171,6 +173,9 @@ namespace TheOtherRoles
                     switch((RoleId)roleId) {
                     case RoleId.Mifune:
                         Mifune.mifune = player;
+                        break;
+                    case RoleId.Meleoron:
+                        Meleoron.meleoron = player;
                         break;
                     case RoleId.Motarike:
                         Motarike.motarike = player;
@@ -423,6 +428,15 @@ namespace TheOtherRoles
         public static void motarikeShuffle(byte targetId, float x, float y, float z) {
 			PlayerControl player = Helpers.playerById(targetId);
 			player.transform.position = new Vector3(x, y, z);
+        }
+
+        public static void meleoronInvisible(byte targetId){
+            if(PlayerControl.LocalPlayer.PlayerId == targetId) return;
+            PlayerControl player = Helpers.playerById(targetId);
+            Meleoron.target = player;
+            if(Meleoron.target == PlayerControl.LocalPlayer && Meleoron.target.Data.IsImpostor){
+                new CustomMessage("透明になった", 10f);
+            }
         }
         public static void bomberKill(byte targetId){
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -809,6 +823,7 @@ namespace TheOtherRoles
             if (player == Kan.kan) Kan.clearAndReload();
             if (player == Nottori.nottori) Nottori.clearAndReload();
             if (player == Motarike.motarike) Motarike.clearAndReload();
+            if (player == Meleoron.meleoron) Meleoron.clearAndReload();
         
             // Other roles
             if (player == Jester.jester) Jester.clearAndReload();
@@ -1116,6 +1131,9 @@ namespace TheOtherRoles
 					byte[] bytesz=  reader.ReadBytes(4);
 					float shufflez = System.BitConverter.ToSingle(bytesz, 0);
                     RPCProcedure.motarikeShuffle(shuffleTarget, shufflex, shuffley, shufflez);
+                    break;
+                case (byte)CustomRPC.MeleoronInvisible:
+                    RPCProcedure.meleoronInvisible(reader.ReadByte());
                     break;
                 case (byte)CustomRPC.BomberKill:
                     RPCProcedure.bomberKill(reader.ReadByte());
