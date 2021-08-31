@@ -249,6 +249,40 @@ namespace TheOtherRoles.Patches {
                 Predator.predator.SetColor(Predator.predator.Data.ColorId);
             }
         }
+
+        static void MeleoronActions(){
+            if(!PlayerControl.LocalPlayer.Data.IsImpostor) return;
+
+            if(Meleoron.target != null && Meleoron.target == PlayerControl.LocalPlayer){
+                // カモフラージュ状態にする
+                Meleoron.target.nameText.text = "";
+                Meleoron.target.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+                Meleoron.target.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+                Meleoron.target.HatRenderer.SetHat(0, 0);
+                Helpers.setSkinWithAnim(Meleoron.target.MyPhysics, 0);
+                bool spawnPet = false;
+                if (Meleoron.target.CurrentPet == null) spawnPet = true;
+                else if (Meleoron.target.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+                    UnityEngine.Object.Destroy(Meleoron.target.CurrentPet.gameObject);
+                    spawnPet = true;
+                }
+                if (spawnPet) {
+                    Meleoron.target.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+                    Meleoron.target.CurrentPet.transform.position = Meleoron.target.transform.position;
+                    Meleoron.target.CurrentPet.Source = Meleoron.target;
+                }
+            }
+
+            if(Meleoron.target == null){
+                // 見た目を元に戻す
+                Predator.predator.SetName(Predator.predator.Data.PlayerName);
+                Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
+                Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);
+                Predator.predator.SetPet(Predator.predator.Data.PetId);
+                Predator.predator.CurrentPet.Visible = Predator.predator.Visible;
+                Predator.predator.SetColor(Predator.predator.Data.ColorId);
+            }
+        }
         static void MotarikeActions(){
 
             // 見た目をカモフラージュ状態に
@@ -455,6 +489,8 @@ namespace TheOtherRoles.Patches {
             timerUpdate();
             // Predator
             PredatorActions();
+            // MeleoronActions
+            // MeleoronActions();
 			// Motarike
 			MotarikeActions();
             // Misimo

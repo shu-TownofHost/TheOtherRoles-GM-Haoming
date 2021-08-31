@@ -547,6 +547,9 @@ namespace TheOtherRoles.Patches {
                     // text += p.Data.PlayerName + "(" + roleNames + ")" + $" {dist} {arrow}" + "\n";
                     text += p.Data.PlayerName + ":" + $" {dist} {arrow}" + "\n";
                 }
+                if(Meleoron.target == PlayerControl.LocalPlayer){
+                    text += "メレオロンに透明にされている\n";
+                }
 				if(Motarike.motarike != null && Motarike.motarike == PlayerControl.LocalPlayer){
 					text += Motarike.text;
 				}
@@ -681,6 +684,62 @@ namespace TheOtherRoles.Patches {
                 counter += 1;
             }
         }
+        public static void meleoronButtonUpdate(){
+            if(PlayerControl.LocalPlayer != Meleoron.meleoron) return;
+            // ボタンが無い場合は生成する
+            if(Meleoron.buttons.Keys.Count == 0){
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    KillButtonManager killButtonManager = UnityEngine.Object.Instantiate(HudManager.Instance.KillButton, HudManager.Instance.transform);
+                    killButtonManager.renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MisimoInvisibleButton.png", 115f);
+                    killButtonManager.renderer.enabled = true;
+                    killButtonManager.gameObject.SetActive(true);
+                    killButtonManager.killText.enabled = false;
+                    var text = killButtonManager.GetComponentInChildren<TMPro.TextMeshPro>();
+                    text.text = p.name;
+                    text.fontSize = 3.0f;
+                    text.fontSizeMax = 3.0f;
+                    text.fontSizeMin = 3.0f;
+                    text.alignment = TMPro.TextAlignmentOptions.Center;
+                    // var label = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(HudManager.Instance.KillButton.killText, killButtonManager.killText.transform.parent);
+                    var button = killButtonManager.GetComponent<PassiveButton>();
+                    button.OnClick = new Button.ButtonClickedEvent();
+                    button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
+                         TheOtherRolesPlugin.Instance.Log.LogInfo($"{p.name} button is clicked");
+                         Meleoron.target = p;
+                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeleoronInvisible, Hazel.SendOption.Reliable, -1);
+                         writer.Write(Meleoron.target.PlayerId);
+                         AmongUsClient.Instance.FinishRpcImmediately(writer);
+                         RPCProcedure.meleoronInvisible(Meleoron.target.PlayerId);
+                    }));
+                    Morphling.buttons[p.PlayerId] = killButtonManager;
+                }
+            }
+
+            // ボタンの表示位置
+            int counter = 0;
+            foreach(var button in Morphling.buttons){
+                int x = counter / 2;
+                int y = counter % 2;
+                button.transform.localPosition =  HudManager.Instance.KillButton.transform.localPosition + new Vector3(- 1.3f - (0.5f * x), y * 0.5f, 0);
+                button.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                counter += 1;
+            }
+
+            // ボタンの表示/非表示切り替え
+            if(Meleoron.target != null){
+                foreach(var key in Meleoron.buttons.Keys){
+                    if(key == Meleoron.target.PlayerId){
+                        Meleoron.buttons[key].gameObject.SetActive(true);
+                    }else{
+                        Meleoron.buttons[key].gameObject.SetActive(false);
+                    }
+                }
+            }else{
+                foreach(var key in Meleoron.buttons.Keys){
+                    Meleoron.buttons[key].gameObject.SetActive(true);
+                }
+            }
+        }
 
         public static void securityGuardSetTarget() {
             if (SecurityGuard.securityGuard == null || SecurityGuard.securityGuard != PlayerControl.LocalPlayer || ShipStatus.Instance == null || ShipStatus.Instance.AllVents == null) return;
@@ -739,6 +798,17 @@ namespace TheOtherRoles.Patches {
                     Motarike.motarike.Visible = true;
                 } else if(Motarike.motarike != null && PlayerControl.LocalPlayer.Data.IsDead){
                     Motarike.motarike.Visible = true;
+                }
+            }
+            
+            // Meleoronに姿を消される
+            if(Meleoron.target != null && !Meleoron.target.inVent){
+                if(Meleoron.target == __instance && PlayerControl.LocalPlayer != __instance){
+                    Meleoron.target.Visible = false;
+                } else if(Meleoron.target != null && !Meleoron.target.Data.IsDead && Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter){
+                    Meleoron.target.Visible = true;
+                } else if(Meleoron.target != null && PlayerControl.LocalPlayer.Data.IsDead){
+                    Meleoron.target.Visible = true;
                 }
             }
 
