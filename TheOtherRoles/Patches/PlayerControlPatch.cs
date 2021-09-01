@@ -935,11 +935,18 @@ namespace TheOtherRoles.Patches {
                         }
                     }
                 }
+                // メレオロンで透明にされているユーザーには常に矢印を表示する
+                if(Meleoron.target != null && !players.Contains(Meleoron.target)){
+                    players.Add(Meleoron.target);
+                }
+
                 // ユーザーの位置を示すArrorwを描画
                 foreach(PlayerControl p in players){
                     Arrow arrow;
                     if(p.Data.IsImpostor){
                         arrow = new Arrow(Color.yellow);
+                    }else if(p == Meleoron.target){
+                        arrow = new Arrow(Color.cyan);
                     }else{
                         arrow = new Arrow(Color.green);
                     }
