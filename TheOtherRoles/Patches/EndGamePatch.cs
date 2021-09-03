@@ -76,11 +76,13 @@ namespace TheOtherRoles.Patches {
             }
 
             // 狐の勝利条件を満たしたか確認する
-            if(gameOverReason != (GameOverReason)CustomGameOverReason.MadScientistWin &&
-               gameOverReason != (GameOverReason)CustomGameOverReason.ArsonistWin &&
-               gameOverReason != (GameOverReason)CustomGameOverReason.JesterWin &&
-               !Kitsune.kitsune.Data.IsDead){
-                   gameOverReason = (GameOverReason)CustomGameOverReason.KitsuneWin;
+            if(Kitsune.kitsune != null){
+                if(gameOverReason != (GameOverReason)CustomGameOverReason.MadScientistWin &&
+                gameOverReason != (GameOverReason)CustomGameOverReason.ArsonistWin &&
+                gameOverReason != (GameOverReason)CustomGameOverReason.JesterWin &&
+                !Kitsune.kitsune.Data.IsDead){
+                    gameOverReason = (GameOverReason)CustomGameOverReason.KitsuneWin;
+                }
             }
         }
 
