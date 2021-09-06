@@ -668,6 +668,7 @@ namespace TheOtherRoles.Patches {
                     var button = killButtonManager.GetComponent<PassiveButton>();
                     button.OnClick = new Button.ButtonClickedEvent();
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
+                         if(!PlayerControl.LocalPlayer.CanMove) return;
                          TheOtherRolesPlugin.Instance.Log.LogInfo($"{p.name} button is clicked");
                          Morphling.sampledTarget = p;
                          MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
@@ -713,6 +714,7 @@ namespace TheOtherRoles.Patches {
                     button.OnClick = new Button.ButtonClickedEvent();
                     button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
                          if(Meleoron.meleoron != null && Meleoron.meleoron.Data.IsDead) return;
+                         if(!PlayerControl.LocalPlayer.CanMove) return;
                          TheOtherRolesPlugin.Instance.Log.LogInfo($"{p.name} button is clicked");
                          Meleoron.target = p;
                          MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeleoronInvisible, Hazel.SendOption.Reliable, -1);
