@@ -359,11 +359,12 @@ namespace TheOtherRoles
             }
             public static void divine(PlayerControl p){
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(fortuneTeller.Data);
-                int divineNum = ((int)tasksCompleted - (3*numUsed))/(int)numTask;
+                int divineNum = ((int)tasksCompleted - ((int)CustomOptionHolder.fortuneTellerNumTask.getFloat()*numUsed))/(int)numTask;
                 if(divineNum <= 0) return;
                 string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
                 roleNames = Regex.Replace(roleNames, "<[^>]*>", "");
                 string msg = $"{p.name}は{roleNames}";
+                if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(MeetingHud.Instance.VoteSound, false, 0.8f);
                 if (!string.IsNullOrWhiteSpace(msg))
                 {   
                     if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)

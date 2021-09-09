@@ -80,6 +80,7 @@ namespace TheOtherRoles.Patches {
                 if(gameOverReason != (GameOverReason)CustomGameOverReason.MadScientistWin &&
                 gameOverReason != (GameOverReason)CustomGameOverReason.ArsonistWin &&
                 gameOverReason != (GameOverReason)CustomGameOverReason.JesterWin &&
+                gameOverReason != GameOverReason.HumansByTask &&
                 !Kitsune.kitsune.Data.IsDead){
                     gameOverReason = (GameOverReason)CustomGameOverReason.KitsuneWin;
                 }

@@ -87,7 +87,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.Jester, CustomOptionHolder.jesterSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Madmate, CustomOptionHolder.madmateSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Madmate2, CustomOptionHolder.madmate2SpawnRate.getSelection());
-            neutralSettings.Add((byte)RoleId.Kitsune, CustomOptionHolder.kitsuneSpawnRate.getSelection());
+            // neutralSettings.Add((byte)RoleId.Kitsune, CustomOptionHolder.kitsuneSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.MadScientist, CustomOptionHolder.madScientistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Arsonist, CustomOptionHolder.arsonistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Jackal, CustomOptionHolder.jackalSpawnRate.getSelection());
@@ -106,7 +106,7 @@ namespace TheOtherRoles.Patches {
             crewSettings.Add((byte)RoleId.Tracker, CustomOptionHolder.trackerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Snitch, CustomOptionHolder.snitchSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Munou, CustomOptionHolder.munouSpawnRate.getSelection());
-            crewSettings.Add((byte)RoleId.FortuneTeller, CustomOptionHolder.fortuneTellerSpawnRate.getSelection());
+            // crewSettings.Add((byte)RoleId.FortuneTeller, CustomOptionHolder.fortuneTellerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Bait, CustomOptionHolder.baitSpawnRate.getSelection());
             if (impostors.Count > 1) {
                 // Only add Spy if more than 1 impostor as the spy role is otherwise useless
@@ -157,6 +157,17 @@ namespace TheOtherRoles.Patches {
                 setRoleToRandomPlayer((byte)RoleId.Mafioso, data.impostors);
                 data.maxImpostorRoles -= 3;
             }
+
+            // Assign FortuneTeller and Kitsune
+            if (data.maxCrewmateRoles >= 1 && (rnd.Next(1,101) <= CustomOptionHolder.fortuneTellerSpawnRate.getSelection() * 10)){
+                setRoleToRandomPlayer((byte)RoleId.FortuneTeller, data.crewmates);
+                data.maxCrewmateRoles -= 1;
+                if (data.maxNeutralRoles >= 1 && (rnd.Next(1,101) <= CustomOptionHolder.kitsuneSpawnRate.getSelection() * 10)){
+                    setRoleToRandomPlayer((byte)RoleId.Kitsune, data.crewmates);
+                    data.maxNeutralRoles -= 1;
+                }
+            }
+
         }
 
         private static void selectFactionForFactionIndependentRoles(RoleAssignmentData data) {
