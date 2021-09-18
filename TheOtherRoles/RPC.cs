@@ -122,6 +122,9 @@ namespace TheOtherRoles
         MotarikeVisible,
         MotarikeInvisible,
 		MotarikeShuffle,
+		MotarikeSetShuffleColor,
+		MotarikeActiveShuffleColor,
+		MotarikeResetShuffleColor,
         MeleoronInvisible,
         BomberKill,
         TrapperKill,
@@ -432,6 +435,16 @@ namespace TheOtherRoles
         public static void motarikeShuffle(byte targetId, float x, float y, float z) {
 			PlayerControl player = Helpers.playerById(targetId);
 			player.transform.position = new Vector3(x, y, z);
+        }
+        public static void motarikeSetShuffleColor(byte targetId1, byte targetId2) {
+            Motarike.shuffleColorPairs.Add(targetId1, targetId2);
+        }
+        public static void motarikeActiveShuffleColor() {
+            Motarike.shuffleColor = true;
+        }
+        public static void motarikeResetShuffleColor() {
+            Motarike.shuffleColor = false;
+            Motarike.shuffleColorPairs = new Dictionary<byte, byte>();
         }
 
         public static void meleoronInvisible(byte targetId){
@@ -1134,6 +1147,17 @@ namespace TheOtherRoles
 					byte[] bytesz=  reader.ReadBytes(4);
 					float shufflez = System.BitConverter.ToSingle(bytesz, 0);
                     RPCProcedure.motarikeShuffle(shuffleTarget, shufflex, shuffley, shufflez);
+                    break;
+                case (byte)CustomRPC.MotarikeSetShuffleColor:
+                    byte target1 = reader.ReadByte();
+                    byte target2 = reader.ReadByte();
+                    RPCProcedure.motarikeSetShuffleColor(target1, target2);
+                    break;
+                case (byte)CustomRPC.MotarikeActiveShuffleColor:
+                    RPCProcedure.motarikeActiveShuffleColor();
+                    break;
+                case (byte)CustomRPC.MotarikeResetShuffleColor:
+                    RPCProcedure.motarikeResetShuffleColor();
                     break;
                 case (byte)CustomRPC.MeleoronInvisible:
                     RPCProcedure.meleoronInvisible(reader.ReadByte());

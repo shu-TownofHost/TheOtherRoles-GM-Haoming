@@ -362,6 +362,33 @@ namespace TheOtherRoles.Patches {
             }
 
         }
+        static void motarikeActions() {
+            if(!Motarike.shuffleColor) return;
+            foreach(byte key in Motarike.shuffleColorPairs.Keys){
+                PlayerControl target = Helpers.playerById(key);
+                PlayerControl to = Helpers.playerById(Motarike.shuffleColorPairs[key]);
+                if(target.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                target.nameText.text = hidePlayerName(PlayerControl.LocalPlayer, target) ? "" : to.Data.PlayerName;
+                target.myRend.material.SetColor("_BackColor", Palette.ShadowColors[to.Data.ColorId]);
+                target.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[to.Data.ColorId]);
+                target.HatRenderer.SetHat(to.Data.HatId, to.Data.ColorId);
+                target.nameText.transform.localPosition = new Vector3(0f, ((to.Data.HatId == 0U) ? 0.7f : 1.05f) * 2f, -0.5f);
+
+                if (target.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance.AllSkins[(int)to.Data.SkinId].ProdId) {
+                    Helpers.setSkinWithAnim(target.MyPhysics, to.Data.SkinId);
+                }
+                if (target.CurrentPet == null || target.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[(int)to.Data.PetId].ProdId) {
+                    if (target.CurrentPet) UnityEngine.Object.Destroy(target.CurrentPet.gameObject);
+                    target.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[(int)to.Data.PetId]);
+                    target.CurrentPet.transform.position = target.transform.position;
+                    target.CurrentPet.Source = target;
+                    target.CurrentPet.Visible = target.Visible;
+                    PlayerControl.SetPlayerMaterialColors(to.Data.ColorId, target.CurrentPet.rend);
+                } else if (target.CurrentPet) {
+                    PlayerControl.SetPlayerMaterialColors(to.Data.ColorId, target.CurrentPet.rend);
+                }
+            }
+        }
         static void camouflageAndMorphActions() {
             float oldCamouflageTimer = Camouflager.camouflageTimer;
             float oldMorphTimer = Morphling.morphTimer;
@@ -492,7 +519,8 @@ namespace TheOtherRoles.Patches {
             // MeleoronActions
             // MeleoronActions();
 			// Motarike
-			MotarikeActions();
+			//MotarikeActions();
+			motarikeActions();
             // Misimo
             MisimoActions();
             // Camouflager and Morphling

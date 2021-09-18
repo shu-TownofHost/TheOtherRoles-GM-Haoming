@@ -123,11 +123,14 @@ namespace TheOtherRoles
                 Camouflage = 3,
                 ToggleInvisible = 4,
                 ShufflePlayers = 5,
+                ShufflePlayersColor = 6,
             }
             public static PlayerControl motarike;
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
             public static bool doubleVote;
+            public static bool shuffleColor;
+            public static Dictionary<byte,byte> shuffleColorPairs;
             public static bool visibility = true;
             public static float cooldown;
             public static string text;
@@ -142,6 +145,8 @@ namespace TheOtherRoles
                 motarike = null;
                 visibility = true;
                 cooldown = CustomOptionHolder.motarikeCooldown.getFloat();
+                shuffleColorPairs = new Dictionary<byte,byte>();
+                shuffleColor = false;
                 counter = 0;
                 getButtonSprite();
                 reset();
@@ -166,6 +171,7 @@ namespace TheOtherRoles
             }
             public static void reset(){
                 visible();
+                resetShufflePlayersColor();
                 button = true;
                 doubleVote = false;
                 text = "";
@@ -174,6 +180,65 @@ namespace TheOtherRoles
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CamouflagerCamouflage, Hazel.SendOption.Reliable, -1);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 RPCProcedure.camouflagerCamouflage();
+            }
+            public static void shufflePlayersColor(){
+                // リセット
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeResetShuffleColor, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.motarikeResetShuffleColor();
+                // 生きているプレイヤーのみのリストを作成
+                Il2CppSystem.Collections.Generic.List<PlayerControl> pl = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+                Il2CppSystem.Collections.Generic.List<PlayerControl> pl2 = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                    if(!p.Data.IsDead) pl.Add(p);
+                    if(!p.Data.IsDead) pl2.Add(p);
+                }
+
+                // 入れ替え先のリスト作成
+                Dictionary<byte,byte> pairs = new Dictionary<byte,byte>();
+                foreach(PlayerControl p in pl){
+                    PlayerControl p2;
+                    while(true){
+                        int randVal = rnd.Next(0, pl2.Count);
+                        p2 = pl2[randVal];
+                        if(p.PlayerId != p2.PlayerId) break;
+                        if(pl2.Count == 1 && pl2[0].PlayerId == p.PlayerId) break;
+                    }
+                    if(p.PlayerId != p2.PlayerId){
+                        pairs.Add(p.PlayerId, p2.PlayerId);
+                        pl2.Remove(p2);
+                    }else{
+                        List<byte> keys = pairs.Keys.ToList();
+                        byte one = keys[rnd.Next(0,keys.Count)];
+                        pairs.Add(p.PlayerId, pairs[one]);
+                        pairs[one] = p.PlayerId;
+                    }
+                }
+
+                // 入れ替え実行
+                foreach(byte key in pairs.Keys){
+                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeSetShuffleColor, Hazel.SendOption.Reliable, -1);
+                    writer.Write(key);
+                    writer.Write(pairs[key]);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.motarikeSetShuffleColor(key, pairs[key]);
+                }
+                writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MotarikeActiveShuffleColor, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.motarikeActiveShuffleColor();
+            }
+            public static void resetShufflePlayersColor() {
+                shuffleColor = false;
+                foreach(byte key in shuffleColorPairs.Keys){
+                    PlayerControl target = Helpers.playerById(key);
+                    target.SetName(target.Data.PlayerName);
+                    target.SetHat(target.Data.HatId, (int)target.Data.ColorId);
+                    Helpers.setSkinWithAnim(target.MyPhysics, target.Data.SkinId);
+                    target.SetPet(target.Data.PetId);
+                    target.CurrentPet.Visible = target.Visible;
+                    target.SetColor(target.Data.ColorId);
+                }
+                shuffleColorPairs = new Dictionary<byte, byte>();
             }
 
             public static void shufflePlayers(){
@@ -267,24 +332,24 @@ namespace TheOtherRoles
                 insertToTable(table, Dice.Destruct, 5 + (counter*2));
                 insertToTable(table, Dice.KillCooldown, 15);
                 insertToTable(table, Dice.DoubleVote, 15);
-                insertToTable(table, Dice.ShufflePlayers, 15);
-                insertToTable(table, Dice.Camouflage, 25 - counter);
+                insertToTable(table, Dice.ShufflePlayersColor, 15);
+                insertToTable(table, Dice.ShufflePlayers, 25 - counter);
                 insertToTable(table, Dice.ToggleInvisible, 25 - counter);
                 int rndVal = rnd.Next(0, table.Count);
                 if(table[rndVal] == ((int)Dice.Destruct)){
                     text = "[大凶]自爆\n";
                     selfDestruct();
                 }else if(table[rndVal] == Dice.KillCooldown){
-                    text = "[大吉]キルクールダウン解消\n";
-                    button = false;
+                    text = "[大吉]キルクールダウン解消 再度ダイスを振れる\n";
+                    // button = false;
                     motarike.SetKillTimer(0);
                 }else if(table[rndVal] == Dice.DoubleVote){
                     doubleVote = true;
-                    button = false;
-                    text = "[大吉]次の投票が2票になる\n";
-                }else if(table[rndVal] == Dice.Camouflage){
-                    text = "[大吉]カモフラージュ発動　再度ダイスを振れる\n";
-                    camouflage();
+                    // button = false;
+                    text = "[大吉]次の投票が2票になる 再度ダイスを振れる\n";
+                }else if(table[rndVal] == Dice.ShufflePlayersColor){
+                    text = "[大吉]見た目シャッフル発動　再度ダイスを振れる\n";
+                    shufflePlayersColor();
                 }else if(table[rndVal] == Dice.ToggleInvisible){
                     text = "[大吉]透明、非透明が入れ替わる 再度ダイスを振れる\n";
                     toggleVisibility();

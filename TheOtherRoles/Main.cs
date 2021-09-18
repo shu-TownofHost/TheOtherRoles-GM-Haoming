@@ -65,12 +65,12 @@ namespace TheOtherRoles
             StreamerModeReplacementColor = Config.Bind("Custom", "Streamer Mode Replacement Text Hex Color", "#87AAF5FF");
             
 
-            Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
-            Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
-            defaultRegions = ServerManager.DefaultRegions;
-
-            UpdateRegions();
-
+//             Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
+//             Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
+//             defaultRegions = ServerManager.DefaultRegions;
+// 
+//             UpdateRegions();
+// 
             GameOptionsData.RecommendedImpostors = GameOptionsData.MaxImpostors = Enumerable.Repeat(3, 16).ToArray(); // Max Imp = Recommended Imp = 3
             GameOptionsData.MinPlayers = Enumerable.Repeat(4, 15).ToArray(); // Min Players = 4
 
