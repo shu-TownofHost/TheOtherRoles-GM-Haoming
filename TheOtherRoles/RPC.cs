@@ -440,10 +440,32 @@ namespace TheOtherRoles
             Motarike.shuffleColorPairs.Add(targetId1, targetId2);
         }
         public static void motarikeActiveShuffleColor() {
-            Motarike.shuffleColor = true;
+            foreach(byte key in Motarike.shuffleColorPairs.Keys){
+                PlayerControl target = Helpers.playerById(key);
+                PlayerControl to = Helpers.playerById(Motarike.shuffleColorPairs[key]);
+                if(target.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                target.nameText.text = HudManagerUpdatePatch.hidePlayerName(PlayerControl.LocalPlayer, target) ? "" : to.Data.PlayerName;
+                target.myRend.material.SetColor("_BackColor", Palette.ShadowColors[to.Data.ColorId]);
+                target.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[to.Data.ColorId]);
+                target.HatRenderer.SetHat(to.Data.HatId, to.Data.ColorId);
+                target.nameText.transform.localPosition = new Vector3(0f, ((to.Data.HatId == 0U) ? 0.7f : 1.05f) * 2f, -0.5f);
+
+                if (target.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance.AllSkins[(int)to.Data.SkinId].ProdId) {
+                    Helpers.setSkinWithAnim(target.MyPhysics, to.Data.SkinId);
+                }
+                if (target.CurrentPet == null || target.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[(int)to.Data.PetId].ProdId) {
+                    if (target.CurrentPet) UnityEngine.Object.Destroy(target.CurrentPet.gameObject);
+                    target.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[(int)to.Data.PetId]);
+                    target.CurrentPet.transform.position = target.transform.position;
+                    target.CurrentPet.Source = target;
+                    target.CurrentPet.Visible = target.Visible;
+                    PlayerControl.SetPlayerMaterialColors(to.Data.ColorId, target.CurrentPet.rend);
+                } else if (target.CurrentPet) {
+                    PlayerControl.SetPlayerMaterialColors(to.Data.ColorId, target.CurrentPet.rend);
+                }
+            }
         }
         public static void motarikeResetShuffleColor() {
-            Motarike.shuffleColor = false;
             Motarike.shuffleColorPairs = new Dictionary<byte, byte>();
         }
 
