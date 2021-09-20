@@ -129,6 +129,7 @@ namespace TheOtherRoles
             public static Color color = new Color(255f / 255f, 00f / 255f, 00f / 255f, 1);
             private static Sprite buttonSprite;
             public static bool doubleVote;
+            public static bool shuffleColor;
             public static Dictionary<byte,byte> shuffleColorPairs;
             public static bool visibility = true;
             public static float cooldown;
@@ -145,6 +146,7 @@ namespace TheOtherRoles
                 visibility = true;
                 cooldown = CustomOptionHolder.motarikeCooldown.getFloat();
                 shuffleColorPairs = new Dictionary<byte,byte>();
+                shuffleColor = false;
                 counter = 0;
                 getButtonSprite();
                 reset();
@@ -226,6 +228,7 @@ namespace TheOtherRoles
                 RPCProcedure.motarikeActiveShuffleColor();
             }
             public static void resetShufflePlayersColor() {
+                shuffleColor = false;
                 foreach(byte key in shuffleColorPairs.Keys){
                     PlayerControl target = Helpers.playerById(key);
                     target.SetName(target.Data.PlayerName);
