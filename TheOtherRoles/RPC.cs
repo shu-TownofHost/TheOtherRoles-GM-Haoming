@@ -701,6 +701,7 @@ namespace TheOtherRoles
 
             Morphling.morphTimer = Morphling.duration;
             Morphling.morphTarget = target;
+            Morphling.morphFlag = false;
         }
 
         public static void camouflagerCamouflage() {

@@ -1187,6 +1187,29 @@ namespace TheOtherRoles.Patches {
             } 
         }
     }
+    
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.StartClimb))]
+    class PlayerPhysicsStartClimb{
+        public static void Postfix(PlayerPhysics __instance){
+            TheOtherRolesPlugin.Instance.Log.LogInfo("StartClimb Postfix");
+            Morphling.ladderFlag = true;
+            // HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => 
+            // {
+            //     if(p==1f){
+            //         Morphling.ladderFlag = false;
+            //         Morphling.morphFlag = false;
+            //     }
+            // })));
+        }
+    }
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ResetAnimState))]
+    class PlayerPhysicsResetAnimState{
+        public static void Postfix(PlayerPhysics __instance){
+            TheOtherRolesPlugin.Instance.Log.LogInfo("ResetAnimState Prefix");
+            Morphling.ladderFlag = false;
+            Morphling.morphFlag = false;
+        }
+    }
 
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.WalkPlayerTo))]
     class PlayerPhysicsWalkPlayerToPatch {

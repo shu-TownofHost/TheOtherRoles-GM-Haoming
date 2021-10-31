@@ -406,8 +406,33 @@ namespace TheOtherRoles
         public static class Munou{
             public static PlayerControl munou;
             public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
+            public static bool camouflageFlag = false;
             public static void clearAndReload(){
                 munou = null;
+                camouflageFlag = false;
+            }
+            public static void setCamouflage(){
+				foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+					if(p == Munou.munou) continue;
+					p.nameText.text = "";
+					p.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+					p.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+					p.HatRenderer.SetHat(0, 0);
+					Helpers.setSkinWithAnim(p.MyPhysics, 0);
+					bool spawnPet = false;
+					if (p.CurrentPet == null) spawnPet = true;
+					else if (p.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+						UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
+						spawnPet = true;
+					}
+					if (spawnPet) {
+						p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+						p.CurrentPet.transform.position = p.transform.position;
+						p.CurrentPet.Source = p;
+					}
+
+				}
+                camouflageFlag = true;
             }
         }
 
@@ -1212,11 +1237,50 @@ namespace TheOtherRoles
         public static PlayerControl currentTarget;
         public static PlayerControl sampledTarget;
         public static PlayerControl morphTarget;
+        public static bool morphFlag = false;
+        public static bool ladderFlag = false;
         public static float morphTimer = 0f;
+
+
+        public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
+            if (!MapOptions.hidePlayerNames) return false; // All names are visible
+            else if (source == null || target == null) return true;
+            else if (source == target) return false; // Player sees his own name
+            else if (source.Data.IsImpostor && (target.Data.IsImpostor || target == Spy.spy)) return false; // Members of team Impostors see the names of Impostors/Spies
+            else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
+            else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
+            return true;
+        }
+        public static void setMorph(){
+            TheOtherRolesPlugin.Instance.Log.LogInfo("setMorph");
+            Morphling.morphling.nameText.text =  hidePlayerName(PlayerControl.LocalPlayer, Morphling.morphling) ? "" : Morphling.morphTarget.Data.PlayerName;
+            Morphling.morphling.myRend.material.SetColor("_BackColor", Palette.ShadowColors[Morphling.morphTarget.Data.ColorId]);
+            Morphling.morphling.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[Morphling.morphTarget.Data.ColorId]);
+            if(!ladderFlag){
+                Morphling.morphling.HatRenderer.SetHat(Morphling.morphTarget.Data.HatId, Morphling.morphTarget.Data.ColorId);
+            }
+            Morphling.morphling.nameText.transform.localPosition = new Vector3(0f, ((Morphling.morphTarget.Data.HatId == 0U) ? 0.7f : 1.05f) * 2f, -0.5f);
+
+            if (Morphling.morphling.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance.AllSkins[(int)Morphling.morphTarget.Data.SkinId].ProdId) {
+                Helpers.setSkinWithAnim(Morphling.morphling.MyPhysics, Morphling.morphTarget.Data.SkinId);
+            }
+            if (Morphling.morphling.CurrentPet == null || Morphling.morphling.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[(int)Morphling.morphTarget.Data.PetId].ProdId) {
+                if (Morphling.morphling.CurrentPet) UnityEngine.Object.Destroy(Morphling.morphling.CurrentPet.gameObject);
+                Morphling.morphling.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[(int)Morphling.morphTarget.Data.PetId]);
+                Morphling.morphling.CurrentPet.transform.position = Morphling.morphling.transform.position;
+                Morphling.morphling.CurrentPet.Source = Morphling.morphling;
+                Morphling.morphling.CurrentPet.Visible = Morphling.morphling.Visible;
+                PlayerControl.SetPlayerMaterialColors(Morphling.morphTarget.Data.ColorId, Morphling.morphling.CurrentPet.rend);
+            } else if (Morphling.morphling.CurrentPet) {
+                PlayerControl.SetPlayerMaterialColors(Morphling.morphTarget.Data.ColorId, Morphling.morphling.CurrentPet.rend);
+            }
+            morphFlag = true;
+        }
 
         public static void resetMorph() {
             morphTarget = null;
             morphTimer = 0f;
+            morphFlag = false;
             if (morphling == null) return;
             morphling.SetName(morphling.Data.PlayerName);
             morphling.SetHat(morphling.Data.HatId, (int)morphling.Data.ColorId);
@@ -1261,6 +1325,7 @@ namespace TheOtherRoles
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
+        public static bool camouflageFlag = false;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -1269,8 +1334,31 @@ namespace TheOtherRoles
             return buttonSprite;
         }
 
+        public static void setCamouflage(){
+            TheOtherRolesPlugin.Instance.Log.LogInfo("setCamouflage");
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
+                p.nameText.text = "";
+                p.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
+                p.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
+                p.HatRenderer.SetHat(0, 0);
+                Helpers.setSkinWithAnim(p.MyPhysics, 0);
+                bool spawnPet = false;
+                if (p.CurrentPet == null) spawnPet = true;
+                else if (p.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
+                    UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
+                    spawnPet = true;
+                }
+                if (spawnPet) {
+                    p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
+                    p.CurrentPet.transform.position = p.transform.position;
+                    p.CurrentPet.Source = p;
+                }
+            }
+            camouflageFlag = true;
+        }
         public static void resetCamouflage() {
             camouflageTimer = 0f;
+            camouflageFlag = false;
             foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
                 if (p == null) continue;
                 if (Morphling.morphling == null || Morphling.morphling != p) {
