@@ -441,6 +441,7 @@ namespace TheOtherRoles
         }
         public static void motarikeActiveShuffleColor() {
             Motarike.shuffleColor = true;
+            Motarike.shufflePlayersColorFlag = false;
         }
         public static void motarikeResetShuffleColor() {
             Motarike.shuffleColor = false;

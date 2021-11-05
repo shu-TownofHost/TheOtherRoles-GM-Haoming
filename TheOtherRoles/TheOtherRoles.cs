@@ -136,6 +136,8 @@ namespace TheOtherRoles
             public static string text;
             public static bool button;
             public static int counter;
+            public static bool shufflePlayersColorFlag = false;
+            public static bool ladderFlag = false;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
                 buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RiskyDice.png", 115f);
@@ -147,6 +149,7 @@ namespace TheOtherRoles
                 cooldown = CustomOptionHolder.motarikeCooldown.getFloat();
                 shuffleColorPairs = new Dictionary<byte,byte>();
                 shuffleColor = false;
+                shufflePlayersColorFlag = false;
                 counter = 0;
                 getButtonSprite();
                 reset();
@@ -442,10 +445,12 @@ namespace TheOtherRoles
             public static float numTask = 3;
             public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
             private static Sprite targetSprite;
+            public static List<GameObject> targetBoxes;
             public static void clearAndReload(){
                 fortuneTeller = null;
                 numUsed = 0;
                 numTask = CustomOptionHolder.fortuneTellerNumTask.getFloat();
+                targetBoxes = new List<GameObject>();
             }
             public static void divine(PlayerControl p){
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(fortuneTeller.Data);
