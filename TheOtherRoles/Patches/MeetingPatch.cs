@@ -314,7 +314,6 @@ namespace TheOtherRoles.Patches {
             container.transform.localScale *= 0.75f;
         }
         static void fortuneTellerOnClick(int buttonTarget, MeetingHud __instance) {
-            if (guesserUI != null || !(__instance.state == MeetingHud.VoteStates.Voted || __instance.state == MeetingHud.VoteStates.NotVoted)) return;
             foreach(PlayerControl p in PlayerControl.AllPlayerControls){
                 if(buttonTarget == p.PlayerId){
                     FortuneTeller.divine(p);
@@ -387,7 +386,7 @@ namespace TheOtherRoles.Patches {
 
                     GameObject template = playerVoteArea.Buttons.transform.Find("CancelButton").gameObject;
                     GameObject targetBox = UnityEngine.Object.Instantiate(template, playerVoteArea.transform);
-                    targetBox.name = "ShootButton";
+                    targetBox.name = "DivineButton";
                     targetBox.transform.localPosition = new Vector3(-0.95f, 0.03f, -1f);
                     SpriteRenderer renderer = targetBox.GetComponent<SpriteRenderer>();
                     renderer.sprite = FortuneTeller.getTargetSprite();
@@ -446,7 +445,10 @@ namespace TheOtherRoles.Patches {
                     __instance.SkipVoteButton.gameObject.SetActive(false);
                 
                 // Deactivate FortuneTeller Button
-                if(__instance.state == MeetingHud.VoteStates.Discussion){
+                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(FortuneTeller.fortuneTeller.Data);
+                int divineNum = ((int)tasksCompleted - ((int)CustomOptionHolder.fortuneTellerNumTask.getFloat()*FortuneTeller.numUsed))/(int)FortuneTeller.numTask;
+                bool isActive = divineNum > 0;
+                if(isActive && __instance.state == MeetingHud.VoteStates.Discussion){
                     foreach(GameObject box in FortuneTeller.targetBoxes){
                         box.SetActive(true);
                     }
