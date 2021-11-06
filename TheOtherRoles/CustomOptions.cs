@@ -466,7 +466,7 @@ namespace TheOtherRoles {
             baitReportDelay = CustomOption.Create(332, "レポートまでの遅延時間", 0f, 0f, 10f, 1f, baitSpawnRate);
             munouSpawnRate = CustomOption.Create(870, cs(Munou.color, "無能"), rates, null, true);
             fortuneTellerSpawnRate = CustomOption.Create(920, cs(FortuneTeller.color, "占い師"), rates, null, true);
-            fortuneTellerNumTask = CustomOption.Create(921, "占いに必要なタスク数", 3f, 1f, 10f, 1f, baitSpawnRate);
+            fortuneTellerNumTask = CustomOption.Create(921, "占いに必要なタスク数", 3f, 1f, 10f, 1f, fortuneTellerSpawnRate);
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, "緊急会議上限回数 (市長のものはカウントしない)", 10, 0, 15, 1, null, true);

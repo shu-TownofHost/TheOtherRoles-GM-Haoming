@@ -446,7 +446,7 @@ namespace TheOtherRoles.Patches {
                 
                 // Deactivate FortuneTeller Button
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(FortuneTeller.fortuneTeller.Data);
-                int divineNum = ((int)tasksCompleted - ((int)CustomOptionHolder.fortuneTellerNumTask.getFloat()*FortuneTeller.numUsed))/(int)FortuneTeller.numTask;
+                int divineNum = ((int)tasksCompleted - ((int)FortuneTeller.numTask*FortuneTeller.numUsed))/(int)FortuneTeller.numTask;
                 bool isActive = divineNum > 0;
                 if(isActive && __instance.state == MeetingHud.VoteStates.Discussion){
                     foreach(GameObject box in FortuneTeller.targetBoxes){
