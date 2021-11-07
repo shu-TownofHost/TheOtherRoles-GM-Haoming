@@ -54,6 +54,7 @@ namespace TheOtherRoles {
         public static CustomOption guesserSpawnRate;
         public static CustomOption guesserIsImpGuesserRate;
         public static CustomOption guesserNumberOfShots;
+        public static CustomOption guesserHasMultipleShotsPerMeeting;
 
         public static CustomOption jesterSpawnRate;
         public static CustomOption jesterCanCallEmergency;
@@ -123,6 +124,7 @@ namespace TheOtherRoles {
         public static CustomOption jackalPromotedFromSidekickCanCreateSidekick;
         public static CustomOption jackalCanCreateSidekickFromImpostor;
         public static CustomOption jackalAndSidekickHaveImpostorVision;
+        public static CustomOption jackalCanSeeEngineerVent;
 
         public static CustomOption bountyHunterSpawnRate;
         public static CustomOption bountyHunterBountyDuration;
@@ -218,6 +220,17 @@ namespace TheOtherRoles {
         public static CustomOption baitSpawnRate;
         public static CustomOption baitHighlightAllVents;
         public static CustomOption baitReportDelay;
+
+        public static CustomOption vultureSpawnRate;
+        public static CustomOption vultureCooldown;
+        public static CustomOption vultureNumberToWin;
+        public static CustomOption vultureCanUseVents;
+        public static CustomOption vultureShowArrows;
+
+        public static CustomOption mediumSpawnRate;
+        public static CustomOption mediumCooldown;
+        public static CustomOption mediumDuration;
+        public static CustomOption mediumOneTimeUse;
 
         public static CustomOption maxNumberOfMeetings;
         public static CustomOption blockSkippingInEmergencyMeetings;
@@ -358,6 +371,7 @@ namespace TheOtherRoles {
             guesserSpawnRate = CustomOption.Create(310, cs(Guesser.color, "ゲッサー"), rates, null, true);
             guesserIsImpGuesserRate = CustomOption.Create(311, "ゲッサーがインポスターになる確率", rates, guesserSpawnRate);
             guesserNumberOfShots = CustomOption.Create(312, "推測できる回数", 2f, 1f, 15f, 1f, guesserSpawnRate);
+            guesserHasMultipleShotsPerMeeting = CustomOption.Create(313, "Guesser Can Shoot Multiple Times Per Meeting", false, guesserSpawnRate);
 
             jesterSpawnRate = CustomOption.Create(60, cs(Jester.color, "ジェスター"), rates, null, true);
             jesterCanCallEmergency = CustomOption.Create(61, "ジェスターが緊急会議を起こせる", true, jesterSpawnRate);
@@ -391,6 +405,7 @@ namespace TheOtherRoles {
             jackalPromotedFromSidekickCanCreateSidekick = CustomOption.Create(228, "ジャッカルに昇格したサイドキックがサイドキックを作ることができる", true, jackalSpawnRate);
             jackalCanCreateSidekickFromImpostor = CustomOption.Create(229, "ジャッカルがインポスターをサイドキックにすることができる", true, jackalSpawnRate);
             jackalAndSidekickHaveImpostorVision = CustomOption.Create(430, "ジャッカルとサイドキックがインポスターと同じ視界範囲を持つ", false, jackalSpawnRate);
+            jackalCanSeeEngineerVent = CustomOption.Create(431, "Jackal Can See If Engineer Is In A Vent", false, jackalSpawnRate);
 
             shifterSpawnRate = CustomOption.Create(70, cs(Shifter.color, "シフター"), rates, null, true);
             shifterShiftsModifiers = CustomOption.Create(71, "シフト時にシールド等の追加効果も移動する", false, shifterSpawnRate);
@@ -435,6 +450,13 @@ namespace TheOtherRoles {
             seerMode = CustomOption.Create(161, "霊能力者　モード", new string[]{ "Show Death Flash + Souls", "Show Death Flash", "Show Souls"}, seerSpawnRate);
             seerLimitSoulDuration = CustomOption.Create(163, "魂の表示時間を制限する", false, seerSpawnRate);
             seerSoulDuration = CustomOption.Create(162, "魂の表示時間", 15f, 0f, 60f, 5f, seerLimitSoulDuration);
+
+            vultureSpawnRate = CustomOption.Create(340, cs(Vulture.color, "Vulture"), rates, null, true);
+            vultureCooldown = CustomOption.Create(341, "Vulture Cooldown", 15f, 10f, 60f, 2.5f, vultureSpawnRate);
+            vultureNumberToWin = CustomOption.Create(342, "Number Of Corpses Needed To Be Eaten", 4f, 0f, 10f, 1f, vultureSpawnRate);
+            vultureCanUseVents = CustomOption.Create(343, "Vulture Can Use Vents", true, vultureSpawnRate);
+            vultureShowArrows = CustomOption.Create(344, "Show Arrows Pointing Towards The Corpes", true, vultureSpawnRate);
+
         
             hackerSpawnRate = CustomOption.Create(170, cs(Hacker.color, "ハッカー"), rates, null, true);
             hackerCooldown = CustomOption.Create(171, "ハッカークールダウン", 30f, 0f, 60f, 5f, hackerSpawnRate);
@@ -467,6 +489,11 @@ namespace TheOtherRoles {
             munouSpawnRate = CustomOption.Create(870, cs(Munou.color, "無能"), rates, null, true);
             fortuneTellerSpawnRate = CustomOption.Create(920, cs(FortuneTeller.color, "占い師"), rates, null, true);
             fortuneTellerNumTask = CustomOption.Create(921, "占いに必要なタスク数", 3f, 1f, 10f, 1f, fortuneTellerSpawnRate);
+
+            mediumSpawnRate = CustomOption.Create(360, cs(Medium.color, "Medium"), rates, null, true);
+            mediumCooldown = CustomOption.Create(361, "Medium Questioning Cooldown", 30f, 5f, 120f, 5f, mediumSpawnRate);
+            mediumDuration = CustomOption.Create(362, "Medium Questioning Duration", 3f, 0f, 15f, 1f, mediumSpawnRate);
+            mediumOneTimeUse = CustomOption.Create(363, "Each Soul Can Only Be Questioned Once", false, mediumSpawnRate);
 
             // Other options
             maxNumberOfMeetings = CustomOption.Create(3, "緊急会議上限回数 (市長のものはカウントしない)", 10, 0, 15, 1, null, true);

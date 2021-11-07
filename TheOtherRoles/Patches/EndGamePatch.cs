@@ -18,8 +18,9 @@ namespace TheOtherRoles.Patches {
         MiniLose = 12,
         JesterWin = 13,
         ArsonistWin = 14,
-        MadScientistWin = 15,
-        KitsuneWin = 16
+        VultureWin = 15,
+        MadScientistWin = 16,
+        KitsuneWin = 17
     }
 
     enum WinCondition {
@@ -31,7 +32,8 @@ namespace TheOtherRoles.Patches {
         MiniLose,
         ArsonistWin,
         MadScientistWin,
-        KitsuneWin
+        KitsuneWin,
+        VultureWin
     }
 
     static class AdditionalTempData {
@@ -96,7 +98,7 @@ namespace TheOtherRoles.Patches {
                 AdditionalTempData.playerRoles.Add(new AdditionalTempData.PlayerRoleInfo() { PlayerName = playerControl.Data.PlayerName, Roles = roles, TasksTotal = tasksTotal, TasksCompleted = tasksCompleted });
             }
 
-            // Remove Jester, Arsonist, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
+            // Remove Jester, Arsonist, Vulture, Jackal, former Jackals and Sidekick from winners (if they win, they'll be readded)
             List<PlayerControl> notWinners = new List<PlayerControl>();
             if (Jester.jester != null) notWinners.Add(Jester.jester);
             if (Sidekick.sidekick != null) notWinners.Add(Sidekick.sidekick);
@@ -106,6 +108,7 @@ namespace TheOtherRoles.Patches {
             if (Madmate2.madmate2 != null) notWinners.Add(Madmate2.madmate2);
             if (Kitsune.kitsune != null) notWinners.Add(Kitsune.kitsune);
             if (MadScientist.madScientist != null) notWinners.Add(MadScientist.madScientist);
+            if (Vulture.vulture != null) notWinners.Add(Vulture.vulture);
             notWinners.AddRange(Jackal.formerJackals);
 
             List<WinningPlayerData> winnersToRemove = new List<WinningPlayerData>();
@@ -141,6 +144,7 @@ namespace TheOtherRoles.Patches {
                     }
                 }
             }
+            bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
 
             // Mini lose
             if (miniLose) {
@@ -181,6 +185,14 @@ namespace TheOtherRoles.Patches {
                 WinningPlayerData wpd = new WinningPlayerData(Kitsune.kitsune.Data);
                 TempData.winners.Add(wpd);
                 AdditionalTempData.winCondition = WinCondition.KitsuneWin;
+            }
+
+            // Vulture win
+            else if (vultureWin) {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                WinningPlayerData wpd = new WinningPlayerData(Vulture.vulture.Data);
+                TempData.winners.Add(wpd);
+                AdditionalTempData.winCondition = WinCondition.VultureWin;
             }
 
             // Lovers win conditions
@@ -257,6 +269,10 @@ namespace TheOtherRoles.Patches {
                 textRenderer.text = "狐の勝利";
                 textRenderer.color = Kitsune.color;
             }
+            else if (AdditionalTempData.winCondition == WinCondition.VultureWin) {
+                textRenderer.text = "Vulture Wins";
+                textRenderer.color = Vulture.color;
+            }
             else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin) {
                 textRenderer.text = "Lovers And Crewmates Win";
                 textRenderer.color = Lovers.color;
@@ -315,6 +331,7 @@ namespace TheOtherRoles.Patches {
             if (CheckAndEndGameForJesterWin(__instance)) return false;
             if (CheckAndEndGameForArsonistWin(__instance)) return false;
             if (CheckAndEndGameForMadScientistWin(__instance)) return false;
+            if (CheckAndEndGameForVultureWin(__instance)) return false;
             if (CheckAndEndGameForSabotageWin(__instance)) return false;
             if (CheckAndEndGameForTaskWin(__instance)) return false;
             if (CheckAndEndGameForLoverWin(__instance, statistics)) return false;
@@ -355,6 +372,15 @@ namespace TheOtherRoles.Patches {
             if (MadScientist.triggerMadScientistWin) {
                 __instance.enabled = false;
                 ShipStatus.RpcEndGame((GameOverReason)CustomGameOverReason.MadScientistWin, false);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool CheckAndEndGameForVultureWin(ShipStatus __instance) {
+            if (Vulture.triggerVultureWin) {
+                __instance.enabled = false;
+                ShipStatus.RpcEndGame((GameOverReason)CustomGameOverReason.VultureWin, false);
                 return true;
             }
             return false;

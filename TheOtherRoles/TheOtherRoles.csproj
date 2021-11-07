@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+<<<<<<< HEAD
         <Version>2.8.25</Version>
+=======
+        <Version>2.9.1</Version>
+>>>>>>> origin
         <Description>TheOtherRoles</Description>
         <Authors>Eisbison</Authors>
     </PropertyGroup>
@@ -18,8 +22,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="$(AmongUs)/BepInEx/core/*.dll"/>
-        <Reference Include="$(AmongUs)/BepInEx/unhollowed/*.dll"/>
+        <Reference Include="$(AmongUs)/BepInEx/core/*.dll" />
+        <Reference Include="$(AmongUs)/BepInEx/unhollowed/*.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\MediumButton.png" />
+      <None Remove="Resources\VultureButton.png" />
     </ItemGroup>
 
     <Target Name="CopyCustomContent" AfterTargets="AfterBuild">

@@ -12,21 +12,11 @@ namespace TheOtherRoles.Patches {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     class HudManagerUpdatePatch
     {
-        public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
-            if (!MapOptions.hidePlayerNames) return false; // All names are visible
-            else if (source == null || target == null) return true;
-            else if (source == target) return false; // Player sees his own name
-            else if (source.Data.IsImpostor && (target.Data.IsImpostor || target == Spy.spy)) return false; // Members of team Impostors see the names of Impostors/Spies
-            else if ((source == Lovers.lover1 || source == Lovers.lover2) && (target == Lovers.lover1 || target == Lovers.lover2)) return false; // Members of team Lovers see the names of each other
-            else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
-            return true;
-        }
-
         static void resetNameTagsAndColors() {
             Dictionary<byte, PlayerControl> playersById = Helpers.allPlayersById();
 
             foreach (PlayerControl player in PlayerControl.AllPlayerControls) {
-                player.nameText.text = hidePlayerName(PlayerControl.LocalPlayer, player) ? "" : player.Data.PlayerName;
+                player.nameText.text = Helpers.hidePlayerName(PlayerControl.LocalPlayer, player) ? "" : player.Data.PlayerName;
                 if (PlayerControl.LocalPlayer.Data.IsImpostor && player.Data.IsImpostor) {
                     player.nameText.color = Palette.ImpostorRed;
                 } else {
@@ -126,6 +116,10 @@ namespace TheOtherRoles.Patches {
                 setPlayerNameColor(Guesser.guesser, Guesser.guesser.Data.IsImpostor ? Palette.ImpostorRed : Guesser.color);
             } else if (Bait.bait != null && Bait.bait == PlayerControl.LocalPlayer) {
                 setPlayerNameColor(Bait.bait, Bait.color);
+            } else if (Vulture.vulture != null && Vulture.vulture == PlayerControl.LocalPlayer) {
+                setPlayerNameColor(Vulture.vulture, Vulture.color);
+            } else if (Medium.medium != null && Medium.medium == PlayerControl.LocalPlayer) {
+                setPlayerNameColor(Medium.medium, Medium.color);
             }
 
             // No else if here, as a Lover of team Jackal needs the colors
@@ -193,220 +187,7 @@ namespace TheOtherRoles.Patches {
             Trickster.lightsOutTimer -= Time.deltaTime;
         }
 
-		static void MunouActions(){
-			if(Munou.munou != null && Munou.munou == PlayerControl.LocalPlayer && !Munou.camouflageFlag){
-                Munou.setCamouflage();
-			}
-		}
-        static void PredatorActions(){
 
-            // 見た目をカモフラージュ状態に
-            if(Predator.predator !=null && !Predator.visibility && !Predator.predator.Data.IsDead){
-                Predator.predator.nameText.text = "";
-                Predator.predator.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
-                Predator.predator.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
-                Predator.predator.HatRenderer.SetHat(0, 0);
-                Helpers.setSkinWithAnim(Predator.predator.MyPhysics, 0);
-                bool spawnPet = false;
-                if (Predator.predator.CurrentPet == null) spawnPet = true;
-                else if (Predator.predator.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
-                    UnityEngine.Object.Destroy(Predator.predator.CurrentPet.gameObject);
-                    spawnPet = true;
-                }
-                if (spawnPet) {
-                    Predator.predator.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
-                    Predator.predator.CurrentPet.transform.position = Predator.predator.transform.position;
-                    Predator.predator.CurrentPet.Source = Predator.predator;
-                }
-            }
-
-            // 見た目を元に戻す
-            if(Predator.predator !=null && Predator.visibility && !Predator.predator.Data.IsDead){
-                Predator.predator.SetName(Predator.predator.Data.PlayerName);
-                Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
-                Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);
-                Predator.predator.SetPet(Predator.predator.Data.PetId);
-                Predator.predator.CurrentPet.Visible = Predator.predator.Visible;
-                Predator.predator.SetColor(Predator.predator.Data.ColorId);
-            }
-        }
-
-        static void MeleoronActions(){
-            if(!PlayerControl.LocalPlayer.Data.IsImpostor) return;
-
-            if(Meleoron.target != null && Meleoron.target == PlayerControl.LocalPlayer){
-                // カモフラージュ状態にする
-                Meleoron.target.nameText.text = "";
-                Meleoron.target.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
-                Meleoron.target.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
-                Meleoron.target.HatRenderer.SetHat(0, 0);
-                Helpers.setSkinWithAnim(Meleoron.target.MyPhysics, 0);
-                bool spawnPet = false;
-                if (Meleoron.target.CurrentPet == null) spawnPet = true;
-                else if (Meleoron.target.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
-                    UnityEngine.Object.Destroy(Meleoron.target.CurrentPet.gameObject);
-                    spawnPet = true;
-                }
-                if (spawnPet) {
-                    Meleoron.target.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
-                    Meleoron.target.CurrentPet.transform.position = Meleoron.target.transform.position;
-                    Meleoron.target.CurrentPet.Source = Meleoron.target;
-                }
-            }
-
-            if(Meleoron.target == null){
-                // 見た目を元に戻す
-                Predator.predator.SetName(Predator.predator.Data.PlayerName);
-                Predator.predator.SetHat(Predator.predator.Data.HatId, (int)Predator.predator.Data.ColorId);
-                Helpers.setSkinWithAnim(Predator.predator.MyPhysics, Predator.predator.Data.SkinId);
-                Predator.predator.SetPet(Predator.predator.Data.PetId);
-                Predator.predator.CurrentPet.Visible = Predator.predator.Visible;
-                Predator.predator.SetColor(Predator.predator.Data.ColorId);
-            }
-        }
-        static void MotarikeActions(){
-
-            // 見た目をカモフラージュ状態に
-            if(Motarike.motarike !=null && !Motarike.visibility && !Motarike.motarike.Data.IsDead){
-                Motarike.motarike.nameText.text = "";
-                Motarike.motarike.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
-                Motarike.motarike.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
-                Motarike.motarike.HatRenderer.SetHat(0, 0);
-                Helpers.setSkinWithAnim(Motarike.motarike.MyPhysics, 0);
-                bool spawnPet = false;
-                if (Motarike.motarike.CurrentPet == null) spawnPet = true;
-                else if (Motarike.motarike.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
-                    UnityEngine.Object.Destroy(Motarike.motarike.CurrentPet.gameObject);
-                    spawnPet = true;
-                }
-                if (spawnPet) {
-                    Motarike.motarike.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
-                    Motarike.motarike.CurrentPet.transform.position = Motarike.motarike.transform.position;
-                    Motarike.motarike.CurrentPet.Source = Motarike.motarike;
-                }
-            }
-
-            // 見た目を元に戻す
-            if(Motarike.motarike !=null && Motarike.visibility && !Motarike.motarike.Data.IsDead){
-                Motarike.motarike.SetName(Motarike.motarike.Data.PlayerName);
-                Motarike.motarike.SetHat(Motarike.motarike.Data.HatId, (int)Motarike.motarike.Data.ColorId);
-                Helpers.setSkinWithAnim(Motarike.motarike.MyPhysics, Motarike.motarike.Data.SkinId);
-                Motarike.motarike.SetPet(Motarike.motarike.Data.PetId);
-                Motarike.motarike.CurrentPet.Visible = Motarike.motarike.Visible;
-                Motarike.motarike.SetColor(Motarike.motarike.Data.ColorId);
-            }
-        }
-        static void MisimoActions(){
-            // 見た目をカモフラージュ状態に
-            if(Misimo.misimo !=null && !Misimo.visibility && !Misimo.misimo.Data.IsDead){
-                Misimo.misimo.nameText.text = "";
-                Misimo.misimo.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
-                Misimo.misimo.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
-                Misimo.misimo.HatRenderer.SetHat(0, 0);
-                Helpers.setSkinWithAnim(Misimo.misimo.MyPhysics, 0);
-                bool spawnPet = false;
-                if (Misimo.misimo.CurrentPet == null) spawnPet = true;
-                else if (Misimo.misimo.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
-                    UnityEngine.Object.Destroy(Misimo.misimo.CurrentPet.gameObject);
-                    spawnPet = true;
-                }
-                if (spawnPet) {
-                    Misimo.misimo.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
-                    Misimo.misimo.CurrentPet.transform.position = Misimo.misimo.transform.position;
-                    Misimo.misimo.CurrentPet.Source = Misimo.misimo;
-                }
-            }
-
-            // 見た目を元に戻す
-            if(Misimo.misimo !=null && Misimo.visibility && !Misimo.misimo.Data.IsDead){
-                Misimo.misimo.SetName(Misimo.misimo.Data.PlayerName);
-                Misimo.misimo.SetHat(Misimo.misimo.Data.HatId, (int)Misimo.misimo.Data.ColorId);
-                Helpers.setSkinWithAnim(Misimo.misimo.MyPhysics, Misimo.misimo.Data.SkinId);
-                Misimo.misimo.SetPet(Misimo.misimo.Data.PetId);
-                Misimo.misimo.CurrentPet.Visible = Misimo.misimo.Visible;
-                Misimo.misimo.SetColor(Misimo.misimo.Data.ColorId);
-            }
-        }
-
-        static void lighterActions(){
-            // LightOn中はCamouflageとMorphを看破できる
-            if (Lighter.lighter != null && PlayerControl.LocalPlayer == Lighter.lighter && Lighter.lighterTimer > 0f){
-                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-                    if(p == null) continue;
-                    p.SetName(p.Data.PlayerName);
-                    p.SetHat(p.Data.HatId, p.Data.ColorId);
-                    Helpers.setSkinWithAnim(p.MyPhysics, p.Data.SkinId);
-                    p.SetPet(p.Data.PetId);
-                    p.CurrentPet.Visible = p.Visible;
-                    p.SetColor(p.Data.ColorId);
-                }
-            }
-
-        }
-        static void motarikeActions() {
-            if(Motarike.shuffleColor){
-                if(!Motarike.ladderFlag || !Motarike.shufflePlayersColorFlag){
-                    foreach(byte key in Motarike.shuffleColorPairs.Keys){
-                        PlayerControl target = Helpers.playerById(key);
-                        PlayerControl to = Helpers.playerById(Motarike.shuffleColorPairs[key]);
-                        if(target.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                        target.nameText.text = hidePlayerName(PlayerControl.LocalPlayer, target) ? "" : to.Data.PlayerName;
-                        target.myRend.material.SetColor("_BackColor", Palette.ShadowColors[to.Data.ColorId]);
-                        target.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[to.Data.ColorId]);
-                        target.HatRenderer.SetHat(to.Data.HatId, to.Data.ColorId);
-                        target.nameText.transform.localPosition = new Vector3(0f, ((to.Data.HatId == 0U) ? 0.7f : 1.05f) * 2f, -0.5f);
-
-                        if (target.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance.AllSkins[(int)to.Data.SkinId].ProdId) {
-                            Helpers.setSkinWithAnim(target.MyPhysics, to.Data.SkinId);
-                        }
-                        if (target.CurrentPet == null || target.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[(int)to.Data.PetId].ProdId) {
-                            if (target.CurrentPet) UnityEngine.Object.Destroy(target.CurrentPet.gameObject);
-                            target.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[(int)to.Data.PetId]);
-                            target.CurrentPet.transform.position = target.transform.position;
-                            target.CurrentPet.Source = target;
-                            target.CurrentPet.Visible = target.Visible;
-                            PlayerControl.SetPlayerMaterialColors(to.Data.ColorId, target.CurrentPet.rend);
-                        } else if (target.CurrentPet) {
-                            PlayerControl.SetPlayerMaterialColors(to.Data.ColorId, target.CurrentPet.rend);
-                        }
-                    }
-                    Motarike.shufflePlayersColorFlag = true;
-                }
-
-            }
-        }
-        static void camouflageAndMorphActions() {
-            float oldCamouflageTimer = Camouflager.camouflageTimer;
-            float oldMorphTimer = Morphling.morphTimer;
-
-            Camouflager.camouflageTimer -= Time.deltaTime;
-            Morphling.morphTimer -= Time.deltaTime;
-
-            // Morphling player size not done here
-
-            // Set morphling morphed look
-            if (Morphling.morphTimer > 0f && Camouflager.camouflageTimer <= 0f) {
-                if (Morphling.morphling != null && Morphling.morphTarget != null && (!Morphling.morphFlag || Morphling.ladderFlag)) {
-                    Morphling.setMorph();
-                }
-            }
-
-            // Set camouflaged look (overrides morphling morphed look if existent)
-            if (Camouflager.camouflageTimer > 0f && !Camouflager.camouflageFlag) {
-                Camouflager.setCamouflage();
-            } 
-
-            
-            // Everyone but morphling reset
-            if (oldCamouflageTimer > 0f && Camouflager.camouflageTimer <= 0f) {
-                Camouflager.resetCamouflage();
-            }
-
-            // Morphling reset
-            if ((oldMorphTimer > 0f || oldCamouflageTimer > 0f) && Camouflager.camouflageTimer <= 0f && Morphling.morphTimer <= 0f && Morphling.morphling != null) {
-                Morphling.resetMorph();
-            }
-        }
 
         public static void miniUpdate() {
             if (Mini.mini == null || Camouflager.camouflageTimer > 0f) return;
@@ -463,23 +244,8 @@ namespace TheOtherRoles.Patches {
             updateImpostorKillButton(__instance);
             // Timer updates
             timerUpdate();
-            // Predator
-            PredatorActions();
-            // MeleoronActions
-            // MeleoronActions();
-			// Motarike
-			//MotarikeActions();
-			motarikeActions();
-            // Misimo
-            MisimoActions();
-            // Camouflager and Morphling
-            camouflageAndMorphActions();
-            // lighterActions
-            lighterActions();
             // Mini
             miniUpdate();
-			// Munou
-			MunouActions();
         }
     }
 }

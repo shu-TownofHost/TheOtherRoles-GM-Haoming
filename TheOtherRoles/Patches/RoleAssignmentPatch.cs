@@ -91,6 +91,7 @@ namespace TheOtherRoles.Patches {
             neutralSettings.Add((byte)RoleId.MadScientist, CustomOptionHolder.madScientistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Arsonist, CustomOptionHolder.arsonistSpawnRate.getSelection());
             neutralSettings.Add((byte)RoleId.Jackal, CustomOptionHolder.jackalSpawnRate.getSelection());
+            neutralSettings.Add((byte)RoleId.Vulture, CustomOptionHolder.vultureSpawnRate.getSelection());
 
             crewSettings.Add((byte)RoleId.Mayor, CustomOptionHolder.mayorSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Engineer, CustomOptionHolder.engineerSpawnRate.getSelection());
@@ -108,6 +109,7 @@ namespace TheOtherRoles.Patches {
             crewSettings.Add((byte)RoleId.Munou, CustomOptionHolder.munouSpawnRate.getSelection());
             // crewSettings.Add((byte)RoleId.FortuneTeller, CustomOptionHolder.fortuneTellerSpawnRate.getSelection());
             crewSettings.Add((byte)RoleId.Bait, CustomOptionHolder.baitSpawnRate.getSelection());
+            crewSettings.Add((byte)RoleId.Medium, CustomOptionHolder.mediumSpawnRate.getSelection());
             if (impostors.Count > 1) {
                 // Only add Spy if more than 1 impostor as the spy role is otherwise useless
                 crewSettings.Add((byte)RoleId.Spy, CustomOptionHolder.spySpawnRate.getSelection());

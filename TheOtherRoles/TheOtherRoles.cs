@@ -72,6 +72,8 @@ namespace TheOtherRoles
             ImpostorPlayer.clearAndReload();
             MadmateAndJester.clearAndReload();
             MadScientist.clearAndReload();
+            Vulture.clearAndReload();
+            Medium.clearAndReload();
         }
         public static class ImpostorPlayer{
             public static List<Arrow> arrows = new List<Arrow>();
@@ -136,7 +138,6 @@ namespace TheOtherRoles
             public static string text;
             public static bool button;
             public static int counter;
-            public static bool shufflePlayersColorFlag = false;
             public static bool ladderFlag = false;
             public static Sprite getButtonSprite() {
                 if (buttonSprite) return buttonSprite;
@@ -149,7 +150,6 @@ namespace TheOtherRoles
                 cooldown = CustomOptionHolder.motarikeCooldown.getFloat();
                 shuffleColorPairs = new Dictionary<byte,byte>();
                 shuffleColor = false;
-                shufflePlayersColorFlag = false;
                 counter = 0;
                 getButtonSprite();
                 reset();
@@ -234,12 +234,7 @@ namespace TheOtherRoles
                 shuffleColor = false;
                 foreach(byte key in shuffleColorPairs.Keys){
                     PlayerControl target = Helpers.playerById(key);
-                    target.SetName(target.Data.PlayerName);
-                    target.SetHat(target.Data.HatId, (int)target.Data.ColorId);
-                    Helpers.setSkinWithAnim(target.MyPhysics, target.Data.SkinId);
-                    target.SetPet(target.Data.PetId);
-                    target.CurrentPet.Visible = target.Visible;
-                    target.SetColor(target.Data.ColorId);
+                    target.setDefaultLook();
                 }
                 shuffleColorPairs = new Dictionary<byte, byte>();
             }
@@ -409,34 +404,10 @@ namespace TheOtherRoles
         public static class Munou{
             public static PlayerControl munou;
             public static Color color = new Color(255f/255f, 255f/255f, 255f/255f, 1);
-            public static bool camouflageFlag = false;
             public static void clearAndReload(){
                 munou = null;
-                camouflageFlag = false;
             }
-            public static void setCamouflage(){
-				foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-					if(p == Munou.munou) continue;
-					p.nameText.text = "";
-					p.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
-					p.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
-					p.HatRenderer.SetHat(0, 0);
-					Helpers.setSkinWithAnim(p.MyPhysics, 0);
-					bool spawnPet = false;
-					if (p.CurrentPet == null) spawnPet = true;
-					else if (p.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
-						UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
-						spawnPet = true;
-					}
-					if (spawnPet) {
-						p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
-						p.CurrentPet.transform.position = p.transform.position;
-						p.CurrentPet.Source = p;
-					}
 
-				}
-                camouflageFlag = true;
-            }
         }
 
         public static class FortuneTeller{
@@ -1242,7 +1213,6 @@ namespace TheOtherRoles
         public static PlayerControl currentTarget;
         public static PlayerControl sampledTarget;
         public static PlayerControl morphTarget;
-        public static bool morphFlag = false;
         public static bool ladderFlag = false;
         public static float morphTimer = 0f;
 
@@ -1256,43 +1226,12 @@ namespace TheOtherRoles
             else if ((source == Jackal.jackal || source == Sidekick.sidekick) && (target == Jackal.jackal || target == Sidekick.sidekick || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
             return true;
         }
-        public static void setMorph(){
-            TheOtherRolesPlugin.Instance.Log.LogInfo("setMorph");
-            Morphling.morphling.nameText.text =  hidePlayerName(PlayerControl.LocalPlayer, Morphling.morphling) ? "" : Morphling.morphTarget.Data.PlayerName;
-            Morphling.morphling.myRend.material.SetColor("_BackColor", Palette.ShadowColors[Morphling.morphTarget.Data.ColorId]);
-            Morphling.morphling.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[Morphling.morphTarget.Data.ColorId]);
-            if(!ladderFlag){
-                Morphling.morphling.HatRenderer.SetHat(Morphling.morphTarget.Data.HatId, Morphling.morphTarget.Data.ColorId);
-            }
-            Morphling.morphling.nameText.transform.localPosition = new Vector3(0f, ((Morphling.morphTarget.Data.HatId == 0U) ? 0.7f : 1.05f) * 2f, -0.5f);
-
-            if (Morphling.morphling.MyPhysics.Skin.skin.ProdId != DestroyableSingleton<HatManager>.Instance.AllSkins[(int)Morphling.morphTarget.Data.SkinId].ProdId) {
-                Helpers.setSkinWithAnim(Morphling.morphling.MyPhysics, Morphling.morphTarget.Data.SkinId);
-            }
-            if (Morphling.morphling.CurrentPet == null || Morphling.morphling.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[(int)Morphling.morphTarget.Data.PetId].ProdId) {
-                if (Morphling.morphling.CurrentPet) UnityEngine.Object.Destroy(Morphling.morphling.CurrentPet.gameObject);
-                Morphling.morphling.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[(int)Morphling.morphTarget.Data.PetId]);
-                Morphling.morphling.CurrentPet.transform.position = Morphling.morphling.transform.position;
-                Morphling.morphling.CurrentPet.Source = Morphling.morphling;
-                Morphling.morphling.CurrentPet.Visible = Morphling.morphling.Visible;
-                PlayerControl.SetPlayerMaterialColors(Morphling.morphTarget.Data.ColorId, Morphling.morphling.CurrentPet.rend);
-            } else if (Morphling.morphling.CurrentPet) {
-                PlayerControl.SetPlayerMaterialColors(Morphling.morphTarget.Data.ColorId, Morphling.morphling.CurrentPet.rend);
-            }
-            morphFlag = true;
-        }
 
         public static void resetMorph() {
             morphTarget = null;
             morphTimer = 0f;
-            morphFlag = false;
             if (morphling == null) return;
-            morphling.SetName(morphling.Data.PlayerName);
-            morphling.SetHat(morphling.Data.HatId, (int)morphling.Data.ColorId);
-            Helpers.setSkinWithAnim(morphling.MyPhysics, morphling.Data.SkinId);
-            morphling.SetPet(morphling.Data.PetId);
-            morphling.CurrentPet.Visible = morphling.Visible;
-            morphling.SetColor(morphling.Data.ColorId);
+            morphling.setDefaultLook();
         }
 
         public static void clearAndReload() {
@@ -1330,7 +1269,6 @@ namespace TheOtherRoles
         public static float cooldown = 30f;
         public static float duration = 10f;
         public static float camouflageTimer = 0f;
-        public static bool camouflageFlag = false;
 
         private static Sprite buttonSprite;
         public static Sprite getButtonSprite() {
@@ -1339,42 +1277,10 @@ namespace TheOtherRoles
             return buttonSprite;
         }
 
-        public static void setCamouflage(){
-            TheOtherRolesPlugin.Instance.Log.LogInfo("setCamouflage");
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
-                p.nameText.text = "";
-                p.myRend.material.SetColor("_BackColor", Palette.PlayerColors[6]);
-                p.myRend.material.SetColor("_BodyColor", Palette.PlayerColors[6]);
-                p.HatRenderer.SetHat(0, 0);
-                Helpers.setSkinWithAnim(p.MyPhysics, 0);
-                bool spawnPet = false;
-                if (p.CurrentPet == null) spawnPet = true;
-                else if (p.CurrentPet.ProdId != DestroyableSingleton<HatManager>.Instance.AllPets[0].ProdId) {
-                    UnityEngine.Object.Destroy(p.CurrentPet.gameObject);
-                    spawnPet = true;
-                }
-                if (spawnPet) {
-                    p.CurrentPet = UnityEngine.Object.Instantiate<PetBehaviour>(DestroyableSingleton<HatManager>.Instance.AllPets[0]);
-                    p.CurrentPet.transform.position = p.transform.position;
-                    p.CurrentPet.Source = p;
-                }
-            }
-            camouflageFlag = true;
-        }
         public static void resetCamouflage() {
             camouflageTimer = 0f;
-            camouflageFlag = false;
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls) {
-                if (p == null) continue;
-                if (Morphling.morphling == null || Morphling.morphling != p) {
-                    p.SetName(p.Data.PlayerName);
-                    p.SetHat(p.Data.HatId, (int)p.Data.ColorId);
-                    Helpers.setSkinWithAnim(p.MyPhysics, p.Data.SkinId);
-                    p.SetPet(p.Data.PetId);
-                    p.CurrentPet.Visible = p.Visible;
-                    p.SetColor(p.Data.ColorId);
-                }
-            }
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                p.setDefaultLook();
         }
 
         public static void clearAndReload() {
@@ -1557,6 +1463,7 @@ namespace TheOtherRoles
         public static bool jackalPromotedFromSidekickCanCreateSidekick = true;
         public static bool canCreateSidekickFromImpostor = true;
         public static bool hasImpostorVision = false;
+        public static bool canSeeEngineerVent = false;
 
         public static Sprite getSidekickButtonSprite() {
             if (buttonSprite) return buttonSprite;
@@ -1585,6 +1492,7 @@ namespace TheOtherRoles
             canCreateSidekickFromImpostor = CustomOptionHolder.jackalCanCreateSidekickFromImpostor.getBool();
             formerJackals.Clear();
             hasImpostorVision = CustomOptionHolder.jackalAndSidekickHaveImpostorVision.getBool();
+            canSeeEngineerVent = CustomOptionHolder.jackalCanSeeEngineerVent.getBool();
         }
         
     }
@@ -1863,6 +1771,7 @@ namespace TheOtherRoles
         private static Sprite targetSprite;
 
         public static int remainingShots = 2;
+        public static bool hasMultipleShotsPerMeeting = false;
 
         public static Sprite getTargetSprite() {
             if (targetSprite) return targetSprite;
@@ -1874,6 +1783,7 @@ namespace TheOtherRoles
             guesser = null;
             
             remainingShots = Mathf.RoundToInt(CustomOptionHolder.guesserNumberOfShots.getFloat());
+            hasMultipleShotsPerMeeting = CustomOptionHolder.guesserHasMultipleShotsPerMeeting.getBool();
         }
     }
 
@@ -1930,6 +1840,83 @@ namespace TheOtherRoles
             reported = false;
             highlightAllVents = CustomOptionHolder.baitHighlightAllVents.getBool();
             reportDelay = CustomOptionHolder.baitReportDelay.getFloat();
+        }
+    }
+
+    public static class Vulture {
+        public static PlayerControl vulture;
+        public static Color color = new Color32(139, 69, 19, byte.MaxValue);
+        public static List<Arrow> localArrows = new List<Arrow>();
+        public static float cooldown = 30f;
+        public static int vultureNumberToWin = 4;
+        public static int eatenBodies = 0;
+        public static bool triggerVultureWin = false;
+        public static bool canUseVents = true;
+        public static bool showArrows = true;
+        private static Sprite buttonSprite;
+        public static Sprite getButtonSprite() {
+            if (buttonSprite) return buttonSprite;
+            buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.VultureButton.png", 115f);
+            return buttonSprite;
+        }
+
+        public static void clearAndReload() {
+            vulture = null;
+            vultureNumberToWin = Mathf.RoundToInt(CustomOptionHolder.vultureNumberToWin.getFloat());
+            eatenBodies = 0;
+            cooldown = CustomOptionHolder.vultureCooldown.getFloat();
+            triggerVultureWin = false;
+            canUseVents = CustomOptionHolder.vultureCanUseVents.getBool();
+            showArrows = CustomOptionHolder.vultureShowArrows.getBool();
+            if (localArrows != null) {
+                foreach (Arrow arrow in localArrows)
+                    if (arrow?.arrow != null)
+                        UnityEngine.Object.Destroy(arrow.arrow);
+            }
+            localArrows = new List<Arrow>();
+        }
+    }
+
+
+    public static class Medium {
+        public static PlayerControl medium;
+        public static DeadPlayer target;
+        public static DeadPlayer soulTarget;
+        public static Color color = new Color32(98, 120, 115, byte.MaxValue);
+        public static List<Tuple<DeadPlayer, Vector3>> deadBodies = new List<Tuple<DeadPlayer, Vector3>>();
+        public static List<Tuple<DeadPlayer, Vector3>> featureDeadBodies = new List<Tuple<DeadPlayer, Vector3>>();
+        public static List<SpriteRenderer> souls = new List<SpriteRenderer>();
+        public static DateTime meetingStartTime = DateTime.UtcNow;
+
+        public static float cooldown = 30f;
+        public static float duration = 3f;
+        public static bool oneTimeUse = false;
+
+        private static Sprite soulSprite;
+        public static Sprite getSoulSprite() {
+            if (soulSprite) return soulSprite;
+            soulSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Soul.png", 500f);
+            return soulSprite;
+        }
+
+        private static Sprite question;
+        public static Sprite getQuestionSprite() {
+            if (question) return question;
+            question = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MediumButton.png", 115f);
+            return question;
+        }
+
+        public static void clearAndReload() {
+            medium = null;
+            target = null;
+            soulTarget = null;
+            deadBodies = new List<Tuple<DeadPlayer, Vector3>>();
+            featureDeadBodies = new List<Tuple<DeadPlayer, Vector3>>();
+            souls = new List<SpriteRenderer>();
+            meetingStartTime = DateTime.UtcNow;
+            cooldown = CustomOptionHolder.mediumCooldown.getFloat();
+            duration = CustomOptionHolder.mediumDuration.getFloat();
+            oneTimeUse = CustomOptionHolder.mediumOneTimeUse.getBool();
         }
     }
 }

@@ -76,6 +76,8 @@ namespace TheOtherRoles
         public static RoleInfo munou = new RoleInfo("無能", Munou.color, "???????????", "???????????", RoleId.Munou);
         public static RoleInfo fortuneTeller = new RoleInfo("占い師", FortuneTeller.color, "占いでインポスターを見つけろ", "タスクをして占え", RoleId.FortuneTeller);
         public static RoleInfo madScientist = new RoleInfo("マッドサイエンティスト", MadScientist.color, "全員を感染させろ", "全員を感染させろ", RoleId.MadScientist);
+        public static RoleInfo vulture = new RoleInfo("Vulture", Vulture.color, "Eat Corpses to win", "Eat dead bodies", RoleId.Vulture);
+        public static RoleInfo medium = new RoleInfo("Medium", Medium.color, "Question the souls of the dead to gain informations", "Question the souls", RoleId.Medium);
 
         public static List<RoleInfo> allRoleInfos = new List<RoleInfo>() {
             impostor,
@@ -114,6 +116,7 @@ namespace TheOtherRoles
             arsonist,
             jackal,
             sidekick,
+            vulture,
             crewmate,
             shifter,
             mayor,
@@ -130,8 +133,8 @@ namespace TheOtherRoles
             snitch,
             spy,
             securityGuard,
-            bountyHunter,
-            bait
+            bait,
+            medium
         };
 
         public static List<RoleInfo> getRoleInfoForPlayer(PlayerControl p) {
@@ -188,6 +191,8 @@ namespace TheOtherRoles
             if (p == Guesser.guesser) infos.Add(p.Data.IsImpostor ? badGuesser : goodGuesser);
             if (p == BountyHunter.bountyHunter) infos.Add(bountyHunter);
             if (p == Bait.bait) infos.Add(bait);
+            if (p == Vulture.vulture) infos.Add(vulture);
+            if (p == Medium.medium) infos.Add(medium);
 
             // Default roles
             if (infos.Count == 0 && p.Data.IsImpostor) infos.Add(impostor); // Just Impostor
@@ -197,6 +202,13 @@ namespace TheOtherRoles
             if (p == Lovers.lover1|| p == Lovers.lover2) infos.Add(lover);
 
             return infos;
+        }
+
+        public static String GetRole(PlayerControl p) {
+            string roleName;
+            roleName = String.Join("", getRoleInfoForPlayer(p).Select(x => x.name).ToArray());
+            if (roleName.Contains("Lover")) roleName.Replace("Lover", "");
+            return roleName;
         }
     }
 }

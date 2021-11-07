@@ -64,6 +64,8 @@ namespace TheOtherRoles
         FortuneTeller,
         MadScientist,
         Bait,
+        Vulture,
+        Medium,
         Crewmate,
         Impostor
     }
@@ -134,7 +136,8 @@ namespace TheOtherRoles
         MadScientistUpdateProgress,
         RandomSpawn,
         FortuneTellerShoot,
-        GuesserShoot
+        GuesserShoot,
+        VultureWin
     }
 
     public static class RPCProcedure {
@@ -323,6 +326,12 @@ namespace TheOtherRoles
                     case RoleId.Bait:
                         Bait.bait = player;
                         break;
+                    case RoleId.Vulture:
+                        Vulture.vulture = player;
+                        break;
+                    case RoleId.Medium:
+                        Medium.medium = player;
+                        break;
                     }
                 }
         }
@@ -379,8 +388,9 @@ namespace TheOtherRoles
         public static void cleanBody(byte playerId) {
             DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
             for (int i = 0; i < array.Length; i++) {
-                if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == playerId)
+                if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == playerId) {
                     UnityEngine.Object.Destroy(array[i].gameObject);
+                }     
             }
         }
         public static void setInfected(byte targetId){
@@ -415,15 +425,19 @@ namespace TheOtherRoles
         }
         public static void misimoVisible() {
             Misimo.visibility = true;
+            Misimo.misimo.setDefaultLook();
         }
         public static void misimoInvisible() {
             Misimo.visibility = false;
+            Misimo.misimo.setLook("", 6, 0, 0, 0);
         }
         public static void predatorVisible() {
             Predator.visibility = true;
+            Predator.predator.setDefaultLook();
         }
         public static void predatorInvisible() {
             Predator.visibility = false;
+            Predator.predator.setLook("", 6, 0, 0, 0);
         }
         public static void motarikeVisible() {
             Motarike.visibility = true;
@@ -441,16 +455,26 @@ namespace TheOtherRoles
         }
         public static void motarikeActiveShuffleColor() {
             Motarike.shuffleColor = true;
-            Motarike.shufflePlayersColorFlag = false;
+            foreach(byte key in Motarike.shuffleColorPairs.Keys){
+                PlayerControl target = Helpers.playerById(key);
+                PlayerControl to = Helpers.playerById(Motarike.shuffleColorPairs[key]);
+                if(target.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                target.setLook(to.Data.PlayerName, to.Data.ColorId, to.Data.HatId, to.Data.SkinId, to.Data.PetId);
+            }
         }
+
         public static void motarikeResetShuffleColor() {
             Motarike.shuffleColor = false;
             Motarike.shuffleColorPairs = new Dictionary<byte, byte>();
+            foreach(PlayerControl p in PlayerControl.AllPlayerControls){
+                p.setDefaultLook();
+            }
         }
 
         public static void meleoronInvisible(byte targetId){
             PlayerControl player = Helpers.playerById(targetId);
             Meleoron.target = player;
+            Meleoron.target.setLook("", 6, 0, 0, 0);
             if(Meleoron.target.PlayerId == PlayerControl.LocalPlayer.PlayerId && Meleoron.target.Data.IsImpostor){
                 new CustomMessage("透明になった", 10f);
             }
@@ -616,7 +640,7 @@ namespace TheOtherRoles
             Shifter.clearAndReload();
 
             // Suicide (exile) when impostor or impostor variants
-            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2 || player == MadScientist.madScientist || player == Kitsune.kitsune) {
+            if (player.Data.IsImpostor || player == Jackal.jackal || player == Sidekick.sidekick || Jackal.formerJackals.Contains(player) || player == Jester.jester || player == Arsonist.arsonist || player == Madmate.madmate|| player == Madmate2.madmate2 || player == MadScientist.madScientist || player == Kitsune.kitsune || player == Vulture.vulture) {
                 oldShifter.Exiled();
                 return;
             }
@@ -681,9 +705,14 @@ namespace TheOtherRoles
                 SecurityGuard.securityGuard = oldShifter;
             if (Guesser.guesser != null && Guesser.guesser == player)
                 Guesser.guesser = oldShifter;
-            if (Bait.bait != null && Bait.bait == player)
+            if (Bait.bait != null && Bait.bait == player) {
                 Bait.bait = oldShifter;
-            
+                if (Bait.bait.Data.IsDead) Bait.reported = true;
+            }
+                
+            if (Medium.medium != null && Medium.medium == player)
+                Medium.medium = oldShifter;
+
             // Set cooldowns to max for both players
             if (PlayerControl.LocalPlayer == oldShifter || PlayerControl.LocalPlayer == player)
                 CustomButton.ResetAllCooldowns();
@@ -702,13 +731,16 @@ namespace TheOtherRoles
 
             Morphling.morphTimer = Morphling.duration;
             Morphling.morphTarget = target;
-            Morphling.morphFlag = false;
+            if (Camouflager.camouflageTimer <= 0f)
+                Morphling.morphling.setLook(target.Data.PlayerName, target.Data.ColorId, target.Data.HatId, target.Data.SkinId, target.Data.PetId);
         }
 
         public static void camouflagerCamouflage() {
             if (Camouflager.camouflager == null && Motarike.motarike == null) return;
 
             Camouflager.camouflageTimer = Camouflager.duration;
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                player.setLook("", 6, 0, 0, 0);
         }
 
         public static void vampireSetBitten(byte targetId, byte reset) {
@@ -818,6 +850,7 @@ namespace TheOtherRoles
             if (player == Munou.munou) Munou.clearAndReload();
             if (player == FortuneTeller.fortuneTeller) FortuneTeller.clearAndReload();
             if (player == Bait.bait) Bait.clearAndReload();
+            if (player == Medium.medium) Medium.clearAndReload();
 
             // Impostor roles
             if (player == Morphling.morphling) Morphling.clearAndReload();
@@ -861,6 +894,7 @@ namespace TheOtherRoles
             }
             if (player == Sidekick.sidekick) Sidekick.clearAndReload();
             if (player == BountyHunter.bountyHunter) BountyHunter.clearAndReload();
+            if (player == Vulture.vulture) Vulture.clearAndReload();
         }
 
         public static void setFutureErased(byte playerId) {
@@ -974,6 +1008,10 @@ namespace TheOtherRoles
             if (HudManager.Instance != null && FortuneTeller.fortuneTeller != null)
                 if (PlayerControl.LocalPlayer == target) 
                     HudManager.Instance.KillOverlay.ShowKillAnimation(FortuneTeller.fortuneTeller.Data, target.Data);
+        }
+
+        public static void vultureWin() {
+            Vulture.triggerVultureWin = true;
         }
 
         public static void guesserShoot(byte playerId) {
@@ -1280,6 +1318,9 @@ namespace TheOtherRoles
                     byte pId = reader.ReadByte();
                     byte locId = reader.ReadByte();
                     RPCProcedure.randomSpawn(pId, locId);
+                    break;
+                case (byte)CustomRPC.VultureWin:
+                    RPCProcedure.vultureWin();
                     break;
             }
         }

@@ -63,7 +63,7 @@ namespace TheOtherRoles.Patches {
     class IntroPatch {
         public static void setupIntroTeam(IntroCutscene __instance, ref  Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam) {
             // Intro solo teams
-            if (PlayerControl.LocalPlayer == Jester.jester || PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Arsonist.arsonist || PlayerControl.LocalPlayer == Madmate.madmate || PlayerControl.LocalPlayer == Madmate2.madmate2 || PlayerControl.LocalPlayer == MadScientist.madScientist || PlayerControl.LocalPlayer == Kitsune.kitsune) {
+            if (PlayerControl.LocalPlayer == Jester.jester || PlayerControl.LocalPlayer == Jackal.jackal || PlayerControl.LocalPlayer == Arsonist.arsonist || PlayerControl.LocalPlayer == Madmate.madmate || PlayerControl.LocalPlayer == Madmate2.madmate2 || PlayerControl.LocalPlayer == MadScientist.madScientist || PlayerControl.LocalPlayer == Kitsune.kitsune || PlayerControl.LocalPlayer == Vulture.vulture) {
                 var soloTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
                 soloTeam.Add(PlayerControl.LocalPlayer);
                 yourTeam = soloTeam;
