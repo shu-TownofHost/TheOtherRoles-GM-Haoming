@@ -1270,18 +1270,22 @@ namespace TheOtherRoles.Patches {
         }
     }
     
-    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.StartClimb))]
-    class PlayerPhysicsStartClimb{
-        public static void Postfix(PlayerPhysics __instance){
-            TheOtherRolesPlugin.Instance.Log.LogInfo("StartClimb Postfix");
-            Morphling.ladderFlag = true;
-            Motarike.ladderFlag = true;
-        }
-    }
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ResetAnimState))]
     class PlayerPhysicsResetAnimState{
         public static void Postfix(PlayerPhysics __instance){
-            TheOtherRolesPlugin.Instance.Log.LogInfo("ResetAnimState Prefix");
+            TheOtherRolesPlugin.Instance.Log.LogInfo("ResetAnimState Postfix");
+            if(Morphling.morphTarget != null){
+                PlayerControl target = Morphling.morphTarget;
+                Morphling.morphling.setLook(target.Data.PlayerName, target.Data.ColorId, target.Data.HatId, target.Data.SkinId, target.Data.PetId);
+            }
+            if(Motarike.shuffleColorPairs != null && Motarike.shuffleColorPairs.Count != 0){
+                foreach(byte key in Motarike.shuffleColorPairs.Keys){
+                    PlayerControl target = Helpers.playerById(key);
+                    PlayerControl to = Helpers.playerById(Motarike.shuffleColorPairs[key]);
+                    if(target.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    target.setLook(to.Data.PlayerName, to.Data.ColorId, to.Data.HatId, to.Data.SkinId, to.Data.PetId);
+                }
+            }
         }
     }
 

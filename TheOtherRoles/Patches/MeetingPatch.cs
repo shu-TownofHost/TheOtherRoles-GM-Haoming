@@ -452,19 +452,20 @@ namespace TheOtherRoles.Patches {
                     __instance.SkipVoteButton.gameObject.SetActive(false);
                 
                 // Deactivate FortuneTeller Button
-                var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(FortuneTeller.fortuneTeller.Data);
-                int divineNum = ((int)tasksCompleted - ((int)FortuneTeller.numTask*FortuneTeller.numUsed))/(int)FortuneTeller.numTask;
-                bool isActive = divineNum > 0;
-                if(isActive && __instance.state == MeetingHud.VoteStates.Discussion){
-                    foreach(GameObject box in FortuneTeller.targetBoxes){
-                        box.SetActive(true);
-                    }
-                } else{
-                    foreach(GameObject box in FortuneTeller.targetBoxes){
-                        box.SetActive(false);
+                if (PlayerControl.LocalPlayer == FortuneTeller.fortuneTeller){
+                    var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(FortuneTeller.fortuneTeller.Data);
+                    int divineNum = ((int)tasksCompleted - ((int)FortuneTeller.numTask*FortuneTeller.numUsed))/(int)FortuneTeller.numTask;
+                    bool isActive = divineNum > 0;
+                    if(isActive && __instance.state == MeetingHud.VoteStates.Discussion){
+                        foreach(GameObject box in FortuneTeller.targetBoxes){
+                            box.SetActive(true);
+                        }
+                    } else{
+                        foreach(GameObject box in FortuneTeller.targetBoxes){
+                            box.SetActive(false);
+                        }
                     }
                 }
-                
             }
         }
 
