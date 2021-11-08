@@ -527,6 +527,7 @@ namespace TheOtherRoles
             {
                 return () =>
                 {
+                    if (!MapOptions.playerIcons.ContainsKey(index)) return false;
                     if (Morphling.morphling != null && PlayerControl.LocalPlayer == Morphling.morphling) return true;
                     return false;
                 };
@@ -548,7 +549,7 @@ namespace TheOtherRoles
                         morphlingButtons[index].PositionOffset = pos;
                         morphlingButtons[index].LocalScale = scale;
                         MapOptions.playerIcons[index].transform.localPosition = iconBase + pos;
-                        //TheOtherRolesPlugin.Instance.Log.LogInfo($"Updated {index}: {pos.x}, {pos.y}, {pos.z}");
+                        TheOtherRolesPlugin.Instance.Log.LogInfo($"Updated {index}: {pos.x}, {pos.y}, {pos.z}");
                     }
 
                     //MapOptions.playerIcons[index].gameObject.SetActive(PlayerControl.LocalPlayer.CanMove);
