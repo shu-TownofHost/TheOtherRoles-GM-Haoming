@@ -31,6 +31,7 @@ namespace TheOtherRoles
         private static CustomButton medicShieldButton;
         private static CustomButton shifterShiftButton;
         public static CustomButton morphlingButton;
+        private static List<CustomButton> morphlingButtons;
         private static CustomButton camouflagerButton;
         private static CustomButton hackerButton;
         private static CustomButton trackerButton;
@@ -502,6 +503,88 @@ namespace TheOtherRoles
                 0.0f, /* Effect Duration */
                 () => {}
             );
+
+            // モーフィングボタン
+            morphlingButtons = new List<CustomButton>();
+
+            Vector3 morphlingCalcPos(byte index)
+            {
+                return new Vector3(-0.25f, -0.25f, 0) + Vector3.right * index * 0.55f;
+            }
+
+            Action morphlingButtonOnClick(byte index)
+            {
+                return () =>
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
+                    writer.Write(index);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.morphlingMorph(index);
+                };
+            };
+
+            Func<bool> morphlingHasButton(byte index)
+            {
+                return () =>
+                {
+                    if (Morphling.morphling != null && PlayerControl.LocalPlayer == Morphling.morphling) return true;
+                    return false;
+                };
+            }
+
+
+            Func<bool> morphlingCouldUse(byte index)
+            {
+                return () =>
+                {
+                    if (!MapOptions.playerIcons.ContainsKey(index)) return false;
+                    Vector3 pos = morphlingCalcPos(index);
+                    Vector3 scale = new Vector3(0.4f, 0.8f, 1.0f);
+
+                    Vector3 iconBase = __instance.UseButton.transform.localPosition;
+                    iconBase.x *= -1;
+                    if (morphlingButtons[index].PositionOffset != pos)
+                    {
+                        morphlingButtons[index].PositionOffset = pos;
+                        morphlingButtons[index].LocalScale = scale;
+                        MapOptions.playerIcons[index].transform.localPosition = iconBase + pos;
+                        //TheOtherRolesPlugin.Instance.Log.LogInfo($"Updated {index}: {pos.x}, {pos.y}, {pos.z}");
+                    }
+
+                    //MapOptions.playerIcons[index].gameObject.SetActive(PlayerControl.LocalPlayer.CanMove);
+                    return PlayerControl.LocalPlayer.CanMove;
+                };
+            }
+
+
+            for (byte i = 0; i < 15; i++)
+            {
+                //TheOtherRolesPlugin.Instance.Log.LogInfo($"Added {i}");
+                // if(i >= PlayerControl.AllPlayerControls.Count) break;
+
+                CustomButton morphlingButton = new CustomButton(
+                    // Action OnClick
+                    morphlingButtonOnClick(i),
+                    // bool HasButton
+                    morphlingHasButton(i),
+                    // bool CouldUse
+                    morphlingCouldUse(i),
+                    // Action OnMeetingEnds
+                    () => { },
+                    // sprite
+                    null,
+                    // position
+                    Vector3.zero,
+                    // hudmanager
+                    __instance,
+                    // keyboard shortcut
+                    null,
+                    true
+                );
+                morphlingButton.Timer = 0.0f;
+                morphlingButton.MaxTimer = 0.0f;
+                morphlingButtons.Add(morphlingButton);
+            }
 
             // Time Master Rewind Time
             timeMasterShieldButton = new CustomButton(

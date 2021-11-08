@@ -649,50 +649,6 @@ namespace TheOtherRoles.Patches {
         }
         
         
-        public static void MorphButtonUpdate(){
-            if(PlayerControl.LocalPlayer != Morphling.morphling) return;
-            if(Morphling.buttons.Count == 0){
-                foreach(PlayerControl p in PlayerControl.AllPlayerControls){
-                    KillButtonManager killButtonManager = UnityEngine.Object.Instantiate(HudManager.Instance.KillButton, HudManager.Instance.transform);
-                    killButtonManager.renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.MorphButton.png", 115f);
-                    killButtonManager.renderer.enabled = true;
-                    killButtonManager.gameObject.SetActive(true);
-                    killButtonManager.killText.enabled = false;
-                    var text = killButtonManager.GetComponentInChildren<TMPro.TextMeshPro>();
-                    text.text = p.name;
-                    text.fontSize = 3.0f;
-                    text.fontSizeMax = 3.0f;
-                    text.fontSizeMin = 3.0f;
-                    text.alignment = TMPro.TextAlignmentOptions.Center;
-                    // var label = UnityEngine.Object.Instantiate<TMPro.TMP_Text>(HudManager.Instance.KillButton.killText, killButtonManager.killText.transform.parent);
-                    var button = killButtonManager.GetComponent<PassiveButton>();
-                    button.OnClick = new Button.ButtonClickedEvent();
-                    button.OnClick.AddListener((UnityEngine.Events.UnityAction)(()=>{
-                         if(!PlayerControl.LocalPlayer.CanMove) return;
-                         TheOtherRolesPlugin.Instance.Log.LogInfo($"{p.name} button is clicked");
-                         Morphling.sampledTarget = p;
-                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MorphlingMorph, Hazel.SendOption.Reliable, -1);
-                         writer.Write(Morphling.sampledTarget.PlayerId);
-                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                         RPCProcedure.morphlingMorph(Morphling.sampledTarget.PlayerId);
-                         Morphling.sampledTarget = null;
-                         // HudManagerStartPatch.morphlingButton.EffectDuration = Morphling.duration;
-                         HudManagerStartPatch.morphlingButton.Timer = Morphling.duration;
-                         // HudManagerStartPatch.morphlingButton.isEffectActive = true;
-                    }));
-                    Morphling.buttons.Add(killButtonManager);
-                }
-            }
-
-            int counter = 0;
-            foreach(var button in Morphling.buttons){
-                int x = counter / 2;
-                int y = counter % 2;
-                button.transform.localPosition =  HudManager.Instance.KillButton.transform.localPosition + new Vector3(- 1.3f - (0.5f * x), y * 0.5f, 0);
-                button.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-                counter += 1;
-            }
-        }
         public static void meleoronButtonUpdate(){
             if(PlayerControl.LocalPlayer != Meleoron.meleoron) return;
             // ボタンが無い場合は生成する
@@ -1148,7 +1104,8 @@ namespace TheOtherRoles.Patches {
             float oldCamouflageTimer = Camouflager.camouflageTimer;
             float oldMorphTimer = Morphling.morphTimer;
             Camouflager.camouflageTimer = Mathf.Max(0f, Camouflager.camouflageTimer - Time.fixedDeltaTime);
-            Morphling.morphTimer = Mathf.Max(0f, Morphling.morphTimer - Time.fixedDeltaTime);
+            // Morphlingの時間制限を無くす
+            // Morphling.morphTimer = Mathf.Max(0f, Morphling.morphTimer - Time.fixedDeltaTime);
 
             
             // Camouflage reset and set Morphling look if necessary
@@ -1193,7 +1150,6 @@ namespace TheOtherRoles.Patches {
                 updatePlayerInfo();
                 updatePlayerInfoNottori();
                 impostorTextUpdate();
-                MorphButtonUpdate();
 				meleoronButtonUpdate();
 
                 // Mad Scientist

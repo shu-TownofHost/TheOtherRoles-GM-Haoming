@@ -11,6 +11,7 @@ namespace TheOtherRoles.Objects {
         public static List<CustomButton> buttons = new List<CustomButton>();
         public KillButtonManager killButtonManager;
         public Vector3 PositionOffset;
+        public Vector3 LocalScale = Vector3.one;
         public float MaxTimer = float.MaxValue;
         public float Timer = 0f;
         private Action OnClick;
@@ -142,6 +143,7 @@ namespace TheOtherRoles.Objects {
                 Vector3 pos = hudManager.UseButton.transform.localPosition;
                 if (mirror) pos = new Vector3(-pos.x, pos.y, pos.z);
                 killButtonManager.transform.localPosition = pos + PositionOffset;
+                killButtonManager.transform.localScale = LocalScale;
                 if (hudManager.KillButton != null) hudManager.KillButton.transform.localPosition = hudManager.UseButton.transform.localPosition - new Vector3(1.3f, 0, 0); // Align the kill button (because it's on another position depending on the screen resolution)
             }
             if (CouldUse()) {

@@ -25,7 +25,7 @@ namespace TheOtherRoles.Patches {
                     player.SetFlipX(true);
                     MapOptions.playerIcons[p.PlayerId] = player;
 
-                    if ((PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist) || (PlayerControl.LocalPlayer == Ballad.ballad && p != Ballad.ballad) || (PlayerControl.LocalPlayer == Bomber.bomber && p!= Bomber.bomber) ) {
+                    if ((PlayerControl.LocalPlayer == Arsonist.arsonist && p != Arsonist.arsonist) || (PlayerControl.LocalPlayer == Ballad.ballad && p != Ballad.ballad) || (PlayerControl.LocalPlayer == Bomber.bomber && p!= Bomber.bomber)) {
                         player.transform.localPosition = bottomLeft + new Vector3(-0.25f, -0.25f, 0) + Vector3.right * playerCounter++ * 0.35f;
                         player.transform.localScale = Vector3.one * 0.2f;
                         player.setSemiTransparent(true);
@@ -34,6 +34,11 @@ namespace TheOtherRoles.Patches {
                         player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
                         player.transform.localScale = Vector3.one * 0.4f;
                         player.gameObject.SetActive(false);
+                    } else if (PlayerControl.LocalPlayer == Morphling.morphling) {
+                        player.transform.localPosition = Vector3.zero;
+                        player.transform.localScale = Vector3.one * 0.3f;
+                        player.setSemiTransparent(false);
+                        player.gameObject.SetActive(true);
                     } else {
                         player.gameObject.SetActive(false);
                     }
