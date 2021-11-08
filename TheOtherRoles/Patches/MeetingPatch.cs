@@ -494,7 +494,6 @@ namespace TheOtherRoles.Patches {
                 // Morphlingを元に戻す
                 TheOtherRolesPlugin.Instance.Log.LogInfo("reset Morph");
                 Morphling.resetMorph();
-                HudManagerStartPatch.morphlingButton.Timer = 0f;
 
                 if(PlayerControl.GameOptions.MapId == 2 && CustomOptionHolder.polusRandomSpawn.getBool()){
                     if(AmongUsClient.Instance.AmHost){
