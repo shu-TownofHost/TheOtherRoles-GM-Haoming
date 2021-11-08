@@ -34,7 +34,7 @@ namespace TheOtherRoles.Patches {
                         player.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
                         player.transform.localScale = Vector3.one * 0.4f;
                         player.gameObject.SetActive(false);
-                    } else if (PlayerControl.LocalPlayer == Morphling.morphling) {
+                    } else if (PlayerControl.LocalPlayer == Morphling.morphling || PlayerControl.LocalPlayer == Meleoron.meleoron) {
                         player.transform.localPosition = Vector3.zero;
                         player.transform.localScale = Vector3.one * 0.3f;
                         player.setSemiTransparent(false);

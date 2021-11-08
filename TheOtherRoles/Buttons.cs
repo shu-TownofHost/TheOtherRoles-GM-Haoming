@@ -31,6 +31,7 @@ namespace TheOtherRoles
         private static CustomButton medicShieldButton;
         private static CustomButton shifterShiftButton;
         private static List<CustomButton> morphlingButtons;
+        private static List<CustomButton> meleoronButtons;
         private static CustomButton camouflagerButton;
         private static CustomButton hackerButton;
         private static CustomButton trackerButton;
@@ -582,6 +583,92 @@ namespace TheOtherRoles
                 morphlingButton.Timer = 0.0f;
                 morphlingButton.MaxTimer = 0.0f;
                 morphlingButtons.Add(morphlingButton);
+            }
+            // メレオロンボタン
+            meleoronButtons = new List<CustomButton>();
+
+            Vector3 meleoronCalcPos(byte index)
+            {
+                return new Vector3(-0.25f, -0.25f, 0) + Vector3.right * index * 0.55f;
+            }
+
+            Action meleoronButtonOnClick(byte index)
+            {
+                return () =>
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeleoronInvisible, Hazel.SendOption.Reliable, -1);
+                    writer.Write(index);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.meleoronInvisible(index);
+                    foreach(byte key in MapOptions.playerIcons.Keys){
+                        if(index == key) MapOptions.playerIcons[key].setSemiTransparent(false);
+                        else MapOptions.playerIcons[key].setSemiTransparent(true);
+                    }
+                };
+            };
+
+            Func<bool> meleoronHasButton(byte index)
+            {
+                return () =>
+                {
+                    if (!MapOptions.playerIcons.ContainsKey(index)) return false;
+                    if (Meleoron.meleoron != null && PlayerControl.LocalPlayer == Meleoron.meleoron) return true;
+                    return false;
+                };
+            }
+
+
+            Func<bool> meleoronCouldUse(byte index)
+            {
+                return () =>
+                {
+                    if (!MapOptions.playerIcons.ContainsKey(index)) return false;
+                    Vector3 pos = meleoronCalcPos(index);
+                    Vector3 scale = new Vector3(0.4f, 0.8f, 1.0f);
+
+                    Vector3 iconBase = __instance.UseButton.transform.localPosition;
+                    iconBase.x *= -1;
+                    if (meleoronButtons[index].PositionOffset != pos)
+                    {
+                        meleoronButtons[index].PositionOffset = pos;
+                        meleoronButtons[index].LocalScale = scale;
+                        MapOptions.playerIcons[index].transform.localPosition = iconBase + pos;
+                        TheOtherRolesPlugin.Instance.Log.LogInfo($"Updated {index}: {pos.x}, {pos.y}, {pos.z}");
+                    }
+
+                    //MapOptions.playerIcons[index].gameObject.SetActive(PlayerControl.LocalPlayer.CanMove);
+                    return PlayerControl.LocalPlayer.CanMove && Meleoron.target == null;
+                };
+            }
+
+
+            for (byte i = 0; i < 15; i++)
+            {
+                //TheOtherRolesPlugin.Instance.Log.LogInfo($"Added {i}");
+                // if(i >= PlayerControl.AllPlayerControls.Count) break;
+
+                CustomButton meleoronButton = new CustomButton(
+                    // Action OnClick
+                    meleoronButtonOnClick(i),
+                    // bool HasButton
+                    meleoronHasButton(i),
+                    // bool CouldUse
+                    meleoronCouldUse(i),
+                    // Action OnMeetingEnds
+                    () => { },
+                    // sprite
+                    null,
+                    // position
+                    Vector3.zero,
+                    // hudmanager
+                    __instance,
+                    // keyboard shortcut
+                    null,
+                    true
+                );
+                meleoronButton.Timer = 0.0f;
+                meleoronButton.MaxTimer = 0.0f;
+                meleoronButtons.Add(meleoronButton);
             }
 
             // Time Master Rewind Time

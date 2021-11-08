@@ -474,8 +474,9 @@ namespace TheOtherRoles
         public static void meleoronInvisible(byte targetId){
             PlayerControl player = Helpers.playerById(targetId);
             Meleoron.target = player;
-            Meleoron.target.setLook("", 6, 0, 0, 0);
+            if(PlayerControl.LocalPlayer != Meleoron.target) Meleoron.target.setLook("", 6, 0, 0, 0);
             if(Meleoron.target.PlayerId == PlayerControl.LocalPlayer.PlayerId && Meleoron.target.Data.IsImpostor){
+                Meleoron.target.setLook("", 6, 0, 0,0);
                 new CustomMessage("透明になった", 10f);
             }
         }
