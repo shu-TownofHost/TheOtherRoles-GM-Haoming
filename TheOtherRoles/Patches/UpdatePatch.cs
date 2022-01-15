@@ -154,6 +154,14 @@ namespace TheOtherRoles.Patches {
             {
                 setPlayerNameColor(PlayerControl.LocalPlayer, PlagueDoctor.color);
             }
+            else if (PlayerControl.LocalPlayer.isRole(RoleId.Fox))
+            {
+                setPlayerNameColor(PlayerControl.LocalPlayer, Fox.color);
+            }
+            else if (PlayerControl.LocalPlayer.isRole(RoleId.FortuneTeller))
+            {
+                setPlayerNameColor(PlayerControl.LocalPlayer, FortuneTeller.color);
+            }
 
             if (GM.gm != null) {
                 setPlayerNameColor(GM.gm, GM.color);

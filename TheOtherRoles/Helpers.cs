@@ -231,6 +231,7 @@ namespace TheOtherRoles {
                     player.isRole(RoleId.Jester) ||
                     player.isRole(RoleId.Opportunist) ||
                     player.isRole(RoleId.PlagueDoctor) ||
+                    player.isRole(RoleId.Fox) ||
                     player.isRole(RoleId.Vulture) ||
                     player.isRole(RoleId.Lawyer) ||
                     player.isRole(RoleId.Pursuer) ||
@@ -255,7 +256,7 @@ namespace TheOtherRoles {
 
         public static bool neutralHasTasks(this PlayerControl player)
         {
-            return player.isNeutral() && (player.isRole(RoleId.Lawyer) || player.isRole(RoleId.Pursuer) || player.isRole(RoleId.Shifter));
+            return player.isNeutral() && (player.isRole(RoleId.Lawyer) || player.isRole(RoleId.Pursuer) || player.isRole(RoleId.Shifter)) || player.isRole(RoleId.Fox);
         }
 
         public static bool isGM(this PlayerControl player)
@@ -331,6 +332,7 @@ namespace TheOtherRoles {
         public static bool hidePlayerName(PlayerControl source, PlayerControl target) {
             if (Camouflager.camouflageTimer > 0f) return true; // No names are visible
             else if (!source.Data.Role.IsImpostor && !source.Data.IsDead && Ninja.isStealthed(target)) return true; // Hide ninja nametags from non-impostors
+            else if (!source.isRole(RoleId.Fox) && !source.Data.IsDead && Fox.isStealthed(target)) return true;
             else if (!MapOptions.hidePlayerNames) return false; // All names are visible
             else if (source == null || target == null) return true;
             else if (source == target) return false; // Player sees his own name
@@ -455,6 +457,20 @@ namespace TheOtherRoles {
                 }
                 return MurderAttemptResult.SuppressKill;
             }
+
+            // Block Fox kill
+            // else if (Fox.exists && Fox.cantKillFox){
+            //     if(Fox.cantKillFoxExceptions==0 && target.isRole(RoleId.Fox)){
+            //         return MurderAttemptResult.SuppressKill;
+            //     }
+            //     else if (Fox.cantKillFoxExceptions==1 && !killer.isRole(RoleId.Sheriff) && target.isRole(RoleId.Fox)){
+            //         return MurderAttemptResult.SuppressKill;
+            //     }
+            //     else if (Fox.cantKillFoxExceptions==2 && killer.Data.Role.IsImpostor && target.isRole(RoleId.Fox)){
+            //         return MurderAttemptResult.SuppressKill;
+            //     }
+            // }
+
             return MurderAttemptResult.PerformKill;
         }
 
@@ -495,6 +511,26 @@ namespace TheOtherRoles {
             }
             
             return team;
+        }
+
+        public static void shuffle<T>(this IList<T> self, int startAt = 0)
+        {
+            for (int i = startAt; i < self.Count - 1; i++) {
+                T value = self[i];
+                int index = UnityEngine.Random.Range(i, self.Count);
+                self[i] = self[index];
+                self[index] = value;
+            }
+        }
+
+        public static void shuffle<T>(this System.Random r, IList<T> self)
+        {
+            for (int i = 0; i < self.Count; i++) {
+                T value = self[i];
+                int index = r.Next(self.Count);
+                self[i] = self[index];
+                self[index] = value;
+            }
         }
     }
 }

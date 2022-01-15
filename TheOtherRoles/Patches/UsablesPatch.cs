@@ -35,6 +35,11 @@ namespace TheOtherRoles.Patches
             {
                 return true;
             }
+            
+            if (pc.isRole(RoleId.Fox) && (isLights || isComms || isReactor || isO2))
+            {
+                return true;
+            }
 
             return false;
         }

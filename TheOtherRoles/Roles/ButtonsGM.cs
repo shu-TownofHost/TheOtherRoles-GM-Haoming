@@ -49,6 +49,8 @@ namespace TheOtherRoles
             PlagueDoctor.MakeButtons(hm);
             Lighter.MakeButtons(hm);
             SerialKiller.MakeButtons(hm);
+            Fox.MakeButtons(hm);
+            SoulPlayer.MakeButtons(hm);
 
             gmButtons = new List<CustomButton>();
             gmKillButtons = new List<CustomButton>();

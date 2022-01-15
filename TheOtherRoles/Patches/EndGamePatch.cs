@@ -23,7 +23,8 @@ namespace TheOtherRoles.Patches
         ArsonistWin = 14,
         VultureWin = 15,
         LawyerSoloWin = 16,
-        PlagueDoctorWin = 17
+        PlagueDoctorWin = 17,
+        FoxWin = 18
     }
 
     enum WinCondition
@@ -41,7 +42,8 @@ namespace TheOtherRoles.Patches
         AdditionalLawyerBonusWin,
         AdditionalLawyerStolenWin,
         AdditionalAlivePursuerWin,
-        PlagueDoctorWin
+        PlagueDoctorWin,
+        FoxWin
     }
 
     enum FinalStatus
@@ -103,15 +105,51 @@ namespace TheOtherRoles.Patches
 
             AdditionalTempData.gameOverReason = endGameResult.GameOverReason;
             if ((int)endGameResult.GameOverReason >= 10) endGameResult.GameOverReason = GameOverReason.ImpostorByKill;
+
         }
 
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ref EndGameResult endGameResult)
         {
             var gameOverReason = AdditionalTempData.gameOverReason;
-            var hideRoles = new RoleId[] { RoleId.Lovers };
+            // 狐の勝利条件を満たしたか確認する
+            Boolean isFoxAlive = false;
+            foreach(var fox in Fox.allPlayers){ // 狐が1匹でも生きていること
+                if(!fox.Data.IsDead)
+                {
+                    isFoxAlive = true;
+                    break;
+                }
+            }
+
+            Boolean isFoxCompletedTasks = true; // すべての狐がタスクを終えていること
+            foreach(var fox in Fox.allPlayers){
+                if(!Fox.isCompletedTasks(fox))
+                {
+                    isFoxCompletedTasks = false;
+                    break;
+                }
+            }
+            if(isFoxAlive && (isFoxCompletedTasks || !Fox.mustCompleteTasks)){
+                // タスク勝利の場合はオプションの設定次第
+                if(gameOverReason == GameOverReason.HumansByTask && !Fox.crewWinsByTasks)
+                {
+                    gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
+                }
+                // 第三陣営の勝利以外の場合に狐が生存していたら狐の勝ち
+                else if(gameOverReason != (GameOverReason)CustomGameOverReason.PlagueDoctorWin &&
+                gameOverReason != (GameOverReason)CustomGameOverReason.ArsonistWin &&
+                gameOverReason != (GameOverReason)CustomGameOverReason.JesterWin &&
+                gameOverReason != (GameOverReason)CustomGameOverReason.VultureWin &&
+                gameOverReason != (GameOverReason)GameOverReason.HumansByTask)
+                {
+                    gameOverReason = (GameOverReason)CustomGameOverReason.FoxWin;
+                }
+            }
             AdditionalTempData.clear();
 
+
             //foreach (var pc in PlayerControl.AllPlayerControls)
+            var hideRoles = new RoleId[] { RoleId.Lovers };
             foreach (var p in GameData.Instance.AllPlayers)
             {
                 //var p = pc.Data;
@@ -155,6 +193,7 @@ namespace TheOtherRoles.Patches
             notWinners.AddRange(Madmate.allPlayers);
             notWinners.AddRange(Opportunist.allPlayers);
             notWinners.AddRange(PlagueDoctor.allPlayers);
+            notWinners.AddRange(Fox.allPlayers);
 
             // Neutral shifter can't win
             if (Shifter.shifter != null && Shifter.isNeutral) notWinners.Add(Shifter.shifter);
@@ -188,6 +227,7 @@ namespace TheOtherRoles.Patches
             bool vultureWin = Vulture.vulture != null && gameOverReason == (GameOverReason)CustomGameOverReason.VultureWin;
             bool lawyerSoloWin = Lawyer.lawyer != null && gameOverReason == (GameOverReason)CustomGameOverReason.LawyerSoloWin;
             bool plagueDoctorWin = PlagueDoctor.exists && gameOverReason == (GameOverReason)CustomGameOverReason.PlagueDoctorWin;
+            bool foxWin = Fox.exists && gameOverReason == (GameOverReason)CustomGameOverReason.FoxWin;
 
 
             // Mini lose
@@ -293,6 +333,16 @@ namespace TheOtherRoles.Patches
                     WinningPlayerData wpd = new WinningPlayerData(pd.player.Data);
                     TempData.winners.Add(wpd);
                     AdditionalTempData.winCondition = WinCondition.PlagueDoctorWin;
+                }
+            }
+            else if (foxWin)
+            {
+                foreach (var fox in Fox.players)
+                {
+                    TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                    WinningPlayerData wpd = new WinningPlayerData(fox.player.Data);
+                    TempData.winners.Add(wpd);
+                    AdditionalTempData.winCondition = WinCondition.FoxWin;
                 }
             }
 
@@ -479,6 +529,12 @@ namespace TheOtherRoles.Patches
                         bonusText = "plagueDoctorWin";
                         textRenderer.color = PlagueDoctor.color;
                         __instance.BackgroundBar.material.SetColor("_Color", PlagueDoctor.color);
+                    }
+                    else if (AdditionalTempData.winCondition == WinCondition.FoxWin)
+                    {
+                        bonusText = "foxWin";
+                        textRenderer.color = Fox.color;
+                        __instance.BackgroundBar.material.SetColor("_Color", Fox.color);
                     }
                     else if (AdditionalTempData.winCondition == WinCondition.LoversTeamWin)
                     {
