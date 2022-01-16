@@ -15,6 +15,7 @@ namespace TheOtherRoles
     {
         public static Color color = new Color32(167, 87, 168, byte.MaxValue);
         private static CustomButton foxButton;
+        private static CustomButton foxRepairButton;
         public static List<Arrow> arrows = new List<Arrow>();
         public static float updateTimer = 0f;
         // public static bool cantKillFox {get { return CustomOptionHolder.foxCantKillFox.getBool();}}
@@ -36,6 +37,8 @@ namespace TheOtherRoles
         public bool stealthed = false;
         public DateTime stealthedAt = DateTime.UtcNow;
         public static float fadeTime = 1f;
+        public static int optNumRepair {get {return (int)CustomOptionHolder.foxNumRepair.getFloat();}}
+        public static int numRepair = 0;
 
 
         public Fox()
@@ -43,6 +46,7 @@ namespace TheOtherRoles
             stealthed = false;
             stealthedAt = DateTime.UtcNow;
             RoleType = roleId = RoleId.Fox;
+            numRepair = optNumRepair;
         }
 
         public override void OnMeetingStart() { }
@@ -66,13 +70,20 @@ namespace TheOtherRoles
         }
 
         private static Sprite buttonSprite;
+        private static Sprite repairButtonSprite;
          public static Sprite getButtonSprite()
         {
             if (buttonSprite) return buttonSprite;
             buttonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.NinjaButton.png", 115f);
             return buttonSprite;
         }
-            public static float stealthFade(PlayerControl player)
+         public static Sprite getRepairButtonSprite()
+        {
+            if (repairButtonSprite) return repairButtonSprite;
+            repairButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RepairButton.png", 115f);
+            return repairButtonSprite;
+        }
+        public static float stealthFade(PlayerControl player)
         {
             if (isRole(player) && fadeTime > 0f && player.isAlive())
             {
@@ -101,6 +112,7 @@ namespace TheOtherRoles
                 n.stealthedAt = DateTime.UtcNow;
             }
         }
+
 
         public static void MakeButtons(HudManager hm)
         {
@@ -152,6 +164,67 @@ namespace TheOtherRoles
             );
             foxButton.buttonText = ModTranslation.getString("NinjaText");
             foxButton.effectCancellable = true;
+
+            foxRepairButton = new CustomButton(
+                () =>
+                {
+                    bool sabotageActive = false;
+                    foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks)
+                        if (task.TaskType == TaskTypes.FixLights || task.TaskType == TaskTypes.RestoreOxy || task.TaskType == TaskTypes.ResetReactor || task.TaskType == TaskTypes.ResetSeismic || task.TaskType == TaskTypes.FixComms || task.TaskType == TaskTypes.StopCharles)
+                            sabotageActive = true;
+                    if(!sabotageActive) return;
+
+                    foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks)
+                    {
+                        if (task.TaskType == TaskTypes.FixLights)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EngineerFixLights, Hazel.SendOption.Reliable, -1);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.engineerFixLights();
+                        }
+                        else if (task.TaskType == TaskTypes.RestoreOxy)
+                        {
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.LifeSupp, 0 | 64);
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.LifeSupp, 1 | 64);
+                        }
+                        else if (task.TaskType == TaskTypes.ResetReactor)
+                        {
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16);
+                        }
+                        else if (task.TaskType == TaskTypes.ResetSeismic)
+                        {
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Laboratory, 16);
+                        }
+                        else if (task.TaskType == TaskTypes.FixComms)
+                        {
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 0);
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
+                        }
+                        else if (task.TaskType == TaskTypes.StopCharles)
+                        {
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 0 | 16);
+                            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 1 | 16);
+                        }
+                    }
+                    numRepair -= 1;
+                },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.Fox)  && PlayerControl.LocalPlayer.isAlive() && numRepair > 0; },
+                () =>
+                {
+                    bool sabotageActive = false;
+                    foreach (PlayerTask task in PlayerControl.LocalPlayer.myTasks)
+                        if (task.TaskType == TaskTypes.FixLights || task.TaskType == TaskTypes.RestoreOxy || task.TaskType == TaskTypes.ResetReactor || task.TaskType == TaskTypes.ResetSeismic || task.TaskType == TaskTypes.FixComms || task.TaskType == TaskTypes.StopCharles)
+                            sabotageActive = true;
+                    return sabotageActive && numRepair > 0 && PlayerControl.LocalPlayer.CanMove;
+                },
+                () => { },
+                Fox.getRepairButtonSprite(),
+                new Vector3(-2.7f, -0.06f, 0),
+                hm,
+                hm.AbilityButton,
+                KeyCode.G
+            );
+            foxRepairButton.buttonText = " ";
         }
 
         static void arrowUpdate(){
@@ -212,6 +285,11 @@ namespace TheOtherRoles
 
         public static bool isFoxCompletedTasks()
         {
+            // タスク完了が勝利条件に必要でない場合はtrueを返す
+            if(!mustCompleteTasks){
+                return true;
+            }
+
             // 生存中の狐が1匹でもタスクを終了しているかを確認
             bool isCompleted = false;
             foreach(var fox in allPlayers)
@@ -247,6 +325,8 @@ namespace TheOtherRoles
             if (playerById == null)
                 return;
             me.clearAllTasks();
+            if(!Fox.mustCompleteTasks) return;
+
             List<byte> list = new List<byte>(10);
             SetTasksToList(
                 ref list,

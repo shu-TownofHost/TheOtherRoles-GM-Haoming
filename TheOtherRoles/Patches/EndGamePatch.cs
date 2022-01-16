@@ -807,7 +807,7 @@ namespace TheOtherRoles.Patches
                     }
 
                     // 狐生存かつタスク完了時に生存中のクルーがタスクを全て終わらせたら勝ち
-                    // 死んだプレイヤーが意図的にタスクを終了させないのを防止させるため
+                    // 死んだプレイヤーが意図的にタスクを終了させないのを防止するため
                     bool isFoxAlive = Fox.isFoxAlive();
                     bool isFoxCompletedtasks= Fox.isFoxCompletedTasks();
                     int numDeadPlayerUncompletedTasks = 0;
@@ -822,7 +822,7 @@ namespace TheOtherRoles.Patches
                             }
                         }
                     }
-                    if (Fox.mustCompleteTasks && isFoxCompletedtasks && isFoxAlive && GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks + numDeadPlayerUncompletedTasks)
+                    if (isFoxCompletedtasks && isFoxAlive && GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks + numDeadPlayerUncompletedTasks)
                     {
                         __instance.enabled = false;
                         ShipStatus.RpcEndGame(GameOverReason.HumansByTask, false);
