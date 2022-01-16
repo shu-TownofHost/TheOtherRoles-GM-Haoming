@@ -29,7 +29,9 @@ namespace TheOtherRoles
             RoleType = roleId = RoleId.NoRole;
         }
 
-        public override void OnMeetingStart() { }
+        public override void OnMeetingStart()
+        {
+        }
         public override void OnMeetingEnd() { }
         public override void FixedUpdate() { }
         public override void OnKill(PlayerControl target) { }
@@ -49,7 +51,7 @@ namespace TheOtherRoles
                 getSenriganIcon(),
                 new Vector3(-1.8f, -0.06f, 0),
                 hm,
-                hm.UseButton,
+                hm.AbilityButton,
                 KeyCode.F
             );
             senriganButton.buttonText = ModTranslation.getString("");
@@ -64,9 +66,39 @@ namespace TheOtherRoles
 
         
 
-        public static void clearAndReload()
+        public static void Clear()
         {
-            players = new List<Template>();
+            toggle = false;
+        }
+
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CoStartMeeting))]
+        class StartMeetingPatch
+        {
+            public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget)
+            {
+                if(PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    if(toggle)
+                    {
+                        senrigan();
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Minigame), nameof(Minigame.Begin))]
+        class MinigameBeginPatch
+        {
+            static void Prefix(Minigame __instance)
+            {
+                if(PlayerControl.LocalPlayer.isDead())
+                {
+                    if(toggle)
+                    {
+                        senrigan();
+                    }
+                }
+            }
         }
     }
 }

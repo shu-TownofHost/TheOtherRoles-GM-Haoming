@@ -293,6 +293,13 @@ namespace TheOtherRoles {
         public static CustomOption serialKillerKillCooldown;
         public static CustomOption serialKillerSuicideTimer;
         public static CustomRoleOption foxSpawnRate;
+        public static CustomOption foxCanFixReactor;
+        public static CustomOption foxCanFixO2;
+        public static CustomOption foxCanFixComms;
+        public static CustomOption foxCanFixLights;
+        public static CustomOption foxCanCreateImmoralist;
+
+
         // public static CustomOption foxCantFixSabotage;
         // public static CustomOption foxCanDetectKillers;
         public static CustomOption foxArrowUpdateInterval;
@@ -498,12 +505,16 @@ namespace TheOtherRoles {
 
             foxSpawnRate = new CustomRoleOption(910, "妖狐", Fox.color, 1);
             // foxCantFixSabotage= CustomOption.Create(911, "サボタージュを直せない", true, foxSpawnRate); // 消す
+            foxCanFixReactor = CustomOption.Create(927, "リアクターを直せる", true, foxSpawnRate);
+            foxCanFixO2 = CustomOption.Create(928, "O2を直せる", true, foxSpawnRate);
+            foxCanFixComms = CustomOption.Create(929, "コミュニケーションを直せる", true, foxSpawnRate);
+            foxCanFixLights = CustomOption.Create(940, "停電を直せる", true, foxSpawnRate);
             // foxCanDetectKillers= CustomOption.Create(916, "狐をキルできるプレイヤーの位置が分かる", true, foxSpawnRate); // 消す
             foxArrowUpdateInterval = CustomOption.Create(917, "アロー更新間隔", 1f, 0.5f, 10f, 0.5f, foxSpawnRate);
             // foxCantKillFox= CustomOption.Create(912, "キルされない", false, foxSpawnRate);　// 消す
             // foxCantKillFoxExceptions= CustomOption.Create(914, "キルされない例外", new string[] { "なし", "シェリフ", "インポスターのみキルできない" }, foxCantKillFox); // 消す
             foxCrewWinsByTasks= CustomOption.Create(913, "クルーはタスクで勝利する", true, foxSpawnRate);
-            foxMustCompleteTasks = CustomOption.Create(915, "タスクを完了しないと勝利できない", true, foxSpawnRate);
+            foxMustCompleteTasks = CustomOption.Create(915, "タスク完了が勝利条件に必要", true, foxSpawnRate);
             foxNumCommonTasks = CustomOption.Create(924, "コモンタスク数", 2f, 0f, 4f, 1f, foxMustCompleteTasks);
             foxNumLongTasks = CustomOption.Create(925, "ロングタスク数", 2f, 0f, 4f, 1f, foxMustCompleteTasks);
             foxNumShortTasks = CustomOption.Create(926, "ショートタスク数", 2f, 0f, 4f, 1f, foxMustCompleteTasks);
@@ -511,6 +522,7 @@ namespace TheOtherRoles {
             // foxCanStealth = CustomOption.Create(919, "透明になれる", true, foxSpawnRate); // 消す
             foxStealthCooldown = CustomOption.Create(920, "透明クールダウン", 15f, 1f, 30f, 1f, foxSpawnRate);
             foxStealthDuration = CustomOption.Create(921, "透明時間", 15f, 1f, 30f, 1f, foxSpawnRate);
+            foxCanCreateImmoralist = CustomOption.Create(940, "背徳者を作れる", true, foxSpawnRate);
 
             fortuneTellerSpawnRate = new CustomRoleOption(930, "占い師", FortuneTeller.color, 1);
             fortuneTellerNumTasks = CustomOption.Create(931, "占いに必要なタスク数", 4f, 1f, 10f, 1f, fortuneTellerSpawnRate);

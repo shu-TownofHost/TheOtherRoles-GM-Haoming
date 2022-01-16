@@ -121,14 +121,7 @@ namespace TheOtherRoles.Patches
                 }
             }
 
-            Boolean isFoxCompletedTasks = true; // すべての狐がタスクを終えていること
-            foreach(var fox in Fox.allPlayers){
-                if(!Fox.isCompletedTasks(fox))
-                {
-                    isFoxCompletedTasks = false;
-                    break;
-                }
-            }
+            Boolean isFoxCompletedTasks = Fox.isFoxCompletedTasks(); // 生存中の狐が1匹でもタスクを全て終えていること
             if(isFoxAlive && (isFoxCompletedTasks || !Fox.mustCompleteTasks)){
                 // タスク勝利の場合はオプションの設定次第
                 if(gameOverReason == GameOverReason.HumansByTask && !Fox.crewWinsByTasks)
@@ -812,6 +805,30 @@ namespace TheOtherRoles.Patches
                         ShipStatus.RpcEndGame(GameOverReason.HumansByTask, false);
                         return true;
                     }
+
+                    // 狐生存かつタスク完了時に生存中のクルーがタスクを全て終わらせたら勝ち
+                    // 死んだプレイヤーが意図的にタスクを終了させないのを防止させるため
+                    bool isFoxAlive = Fox.isFoxAlive();
+                    bool isFoxCompletedtasks= Fox.isFoxCompletedTasks();
+                    int numDeadPlayerUncompletedTasks = 0;
+                    foreach(var player in PlayerControl.AllPlayerControls){
+                        foreach(var task in player.Data.Tasks){
+                            if(player.Data.IsDead)
+                            {
+                                if(!task.Complete)
+                                {
+                                    numDeadPlayerUncompletedTasks++;
+                                }
+                            }
+                        }
+                    }
+                    if (Fox.mustCompleteTasks && isFoxCompletedtasks && isFoxAlive && GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks + numDeadPlayerUncompletedTasks)
+                    {
+                        __instance.enabled = false;
+                        ShipStatus.RpcEndGame(GameOverReason.HumansByTask, false);
+                        return true;
+                    }
+
                     return false;
                 }
 
@@ -839,7 +856,16 @@ namespace TheOtherRoles.Patches
 
                 private static bool CheckAndEndGameForImpostorWin(ShipStatus __instance, PlayerStatistics statistics)
                 {
-                    if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0 && statistics.TeamImpostorLovers >= statistics.CouplesAlive * 2)
+                    int numFoxAlive = 0;
+                    foreach(var fox in Fox.allPlayers)
+                    {
+                        if(fox.isAlive())
+                        {
+                            numFoxAlive += 1;
+                        }
+
+                    }
+                    if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive - numFoxAlive && statistics.TeamJackalAlive == 0 && statistics.TeamImpostorLovers >= statistics.CouplesAlive * 2)
                     {
                         __instance.enabled = false;
                         GameOverReason endReason;

@@ -38,7 +38,22 @@ namespace TheOtherRoles.Patches
             
             if (pc.isRole(RoleId.Fox) && (isLights || isComms || isReactor || isO2))
             {
-                return true;
+                if(isLights && !Fox.canFixLights)
+                {
+                    return true;
+                }
+                else if(isComms && !Fox.canFixComms)
+                {
+                    return true;
+                }
+                else if(isReactor && !Fox.canFixReactor)
+                {
+                    return true;
+                }
+                else if(isO2 && !Fox.canFixO2)
+                {
+                    return true;
+                }
             }
 
             return false;

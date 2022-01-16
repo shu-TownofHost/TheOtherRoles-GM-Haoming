@@ -19,8 +19,10 @@ namespace TheOtherRoles
         public static float updateTimer = 0f;
         // public static bool cantKillFox {get { return CustomOptionHolder.foxCantKillFox.getBool();}}
         // public static int cantKillFoxExceptions {get { return CustomOptionHolder.foxCantKillFoxExceptions.getSelection();}}
-        // public static bool cantFixSabotage {get { return CustomOptionHolder.foxCantFixSabotage.getBool();}}
-        // public static bool canDetectKillers {get { return CustomOptionHolder.foxCanDetectKillers.getBool();}}
+        public static bool canFixReactor {get { return CustomOptionHolder.foxCanFixReactor.getBool();}}
+        public static bool canFixO2 {get { return CustomOptionHolder.foxCanFixO2.getBool();}}
+        public static bool canFixComms {get { return CustomOptionHolder.foxCanFixComms.getBool();}}
+        public static bool canFixLights {get { return CustomOptionHolder.foxCanFixLights.getBool();}}
         public static float arrowUpdateInterval{get { return CustomOptionHolder.foxArrowUpdateInterval.getFloat();}}
         public static bool crewWinsByTasks {get { return CustomOptionHolder.foxCrewWinsByTasks.getBool();}}
         public static bool mustCompleteTasks {get { return CustomOptionHolder.foxMustCompleteTasks.getBool();}}
@@ -195,8 +197,36 @@ namespace TheOtherRoles
                 updateTimer = arrowUpdateInterval;
             }
         }
+        public static bool isFoxAlive()
+        {
+            bool isAlive = false;
+            foreach(var fox in Fox.allPlayers)
+            {
+                if(fox.isAlive())
+                {
+                    isAlive = true;
+                }
+            }
+            return isAlive;
+        }
 
-        public static bool isCompletedTasks(PlayerControl p)
+        public static bool isFoxCompletedTasks()
+        {
+            // 生存中の狐が1匹でもタスクを終了しているかを確認
+            bool isCompleted = false;
+            foreach(var fox in allPlayers)
+            {
+                if(fox.isAlive()){
+                    if(isCompletedTasks(fox)){
+                        isCompleted = true;
+                        break;
+                    }
+                }
+            }
+            return isCompleted;
+        }
+
+        private static bool isCompletedTasks(PlayerControl p)
         {
             int counter = 0;
             int totalTasks = numCommonTasks + numLongTasks + numShortTasks;
