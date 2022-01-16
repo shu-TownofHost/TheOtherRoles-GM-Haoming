@@ -57,14 +57,25 @@ namespace TheOtherRoles
 
         public override void OnMeetingStart() { }
 
-        public override void OnMeetingEnd() { }
+        public override void OnMeetingEnd()
+        {
+            foxButton.isEffectActive = false;
+            foxButton.Timer = foxButton.MaxTimer = Ninja.stealthCooldown;
+        }
         public override void OnKill(PlayerControl target) { }
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
         public override void OnDeath(PlayerControl killer = null)
         {
             foreach(var immoralist in Immoralist.allPlayers)
             {
-                immoralist.MurderPlayer(immoralist);
+                if(killer == null)
+                {
+                    immoralist.Exiled();
+                }
+                else
+                {
+                    immoralist.MurderPlayer(immoralist);
+                }
             }
         }
 
