@@ -1125,7 +1125,7 @@ namespace TheOtherRoles.Patches
             if (resetToDead) __instance.Data.IsDead = true;
 
             // Remove fake tasks when player dies
-            if (target.hasFakeTasks() || target.isRole(RoleId.Fox))
+            if (target.hasFakeTasks() || target.isRole(RoleId.Fox) || target.isRole(RoleId.Immoralist))
                 target.clearAllTasks();
 
             // Sidekick promotion trigger on murder

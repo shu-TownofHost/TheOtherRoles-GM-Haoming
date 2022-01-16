@@ -67,6 +67,7 @@ namespace TheOtherRoles
         Pursuer,
         PlagueDoctor,
         Fox,
+        Immoralist,
         FortuneTeller,
 
 
@@ -146,6 +147,7 @@ namespace TheOtherRoles
         SerialKillerSuicide,
         FortuneTellerShoot,
         FoxStealth,
+        FoxCreatesImmoralist,
     }
 
     public static class RPCProcedure {
@@ -574,6 +576,9 @@ namespace TheOtherRoles
                     case RoleId.Fox:
                         Fox.swapRole(player, oldShifter);
                         break;
+                    case RoleId.Immoralist:
+                        Immoralist.swapRole(player, oldShifter);
+                        break;
                     case RoleId.FortuneTeller:
                         FortuneTeller.swapRole(player, oldShifter);
                         break;
@@ -936,6 +941,15 @@ namespace TheOtherRoles
         {
             PlayerControl player = Helpers.playerById(playerId);
             Fox.setStealthed(player, stealthed);
+        }
+
+        public static void foxCreatesImmoralist(byte targetId)
+        {
+            PlayerControl player = Helpers.playerById(targetId);
+            DestroyableSingleton<RoleManager>.Instance.SetRole(player, RoleTypes.Crewmate);
+            erasePlayerRoles(player.PlayerId, true);
+            player.setRole(RoleId.Immoralist);
+            player.clearAllTasks();
         }
 
         public static void GMKill(byte targetId)
@@ -1301,6 +1315,9 @@ namespace TheOtherRoles
                     break;    
                 case (byte)CustomRPC.FoxStealth:
                     RPCProcedure.foxStealth(reader.ReadByte(), reader.ReadBoolean());
+                    break;
+                case (byte)CustomRPC.FoxCreatesImmoralist:
+                    RPCProcedure.foxCreatesImmoralist(reader.ReadByte());
                     break;
             }
         }

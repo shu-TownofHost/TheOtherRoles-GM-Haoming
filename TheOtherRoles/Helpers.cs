@@ -232,6 +232,7 @@ namespace TheOtherRoles {
                     player.isRole(RoleId.Opportunist) ||
                     player.isRole(RoleId.PlagueDoctor) ||
                     player.isRole(RoleId.Fox) ||
+                    player.isRole(RoleId.Immoralist) ||
                     player.isRole(RoleId.Vulture) ||
                     player.isRole(RoleId.Lawyer) ||
                     player.isRole(RoleId.Pursuer) ||
@@ -339,6 +340,7 @@ namespace TheOtherRoles {
             else if (source.Data.Role.IsImpostor && (target.Data.Role.IsImpostor || target.isRole(RoleId.Spy))) return false; // Members of team Impostors see the names of Impostors/Spies
             else if (source.getPartner() == target) return false; // Members of team Lovers see the names of each other
             else if ((source.isRole(RoleId.Jackal) || source.isRole(RoleId.Sidekick)) && (target.isRole(RoleId.Jackal) || target.isRole(RoleId.Sidekick) || target == Jackal.fakeSidekick)) return false; // Members of team Jackal see the names of each other
+            else if ((source.isRole(RoleId.Fox) || source.isRole(RoleId.Immoralist)) && (target.isRole(RoleId.Fox) || target.isRole(RoleId.Immoralist))) return false; // Members of team Fox see the names of each other
             return true;
         }
 

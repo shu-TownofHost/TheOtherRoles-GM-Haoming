@@ -187,6 +187,7 @@ namespace TheOtherRoles.Patches
             notWinners.AddRange(Opportunist.allPlayers);
             notWinners.AddRange(PlagueDoctor.allPlayers);
             notWinners.AddRange(Fox.allPlayers);
+            notWinners.AddRange(Immoralist.allPlayers);
 
             // Neutral shifter can't win
             if (Shifter.shifter != null && Shifter.isNeutral) notWinners.Add(Shifter.shifter);
@@ -330,13 +331,18 @@ namespace TheOtherRoles.Patches
             }
             else if (foxWin)
             {
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                 foreach (var fox in Fox.players)
                 {
-                    TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
                     WinningPlayerData wpd = new WinningPlayerData(fox.player.Data);
                     TempData.winners.Add(wpd);
-                    AdditionalTempData.winCondition = WinCondition.FoxWin;
                 }
+                foreach (var immoralist in Immoralist.players)
+                {
+                    WinningPlayerData wpd = new WinningPlayerData(immoralist.player.Data);
+                    TempData.winners.Add(wpd);
+                }
+                AdditionalTempData.winCondition = WinCondition.FoxWin;
             }
 
             // Madmate win with impostors

@@ -16,6 +16,7 @@ namespace TheOtherRoles
         public static Color color = new Color32(167, 87, 168, byte.MaxValue);
         private static CustomButton foxButton;
         private static CustomButton foxRepairButton;
+        private static CustomButton foxImmoralistButton;
         public static List<Arrow> arrows = new List<Arrow>();
         public static float updateTimer = 0f;
         // public static bool cantKillFox {get { return CustomOptionHolder.foxCantKillFox.getBool();}}
@@ -39,6 +40,9 @@ namespace TheOtherRoles
         public static float fadeTime = 1f;
         public static int optNumRepair {get {return (int)CustomOptionHolder.foxNumRepair.getFloat();}}
         public static int numRepair = 0;
+        public static bool canCreateImmoralist {get {return CustomOptionHolder.foxCanCreateImmoralist.getBool();}}
+        public static PlayerControl currentTarget;
+        public static PlayerControl immoralist;
 
 
         public Fox()
@@ -47,6 +51,8 @@ namespace TheOtherRoles
             stealthedAt = DateTime.UtcNow;
             RoleType = roleId = RoleId.Fox;
             numRepair = optNumRepair;
+            immoralist = null;
+            currentTarget = null;
         }
 
         public override void OnMeetingStart() { }
@@ -54,7 +60,13 @@ namespace TheOtherRoles
         public override void OnMeetingEnd() { }
         public override void OnKill(PlayerControl target) { }
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
-        public override void OnDeath(PlayerControl killer = null) { }
+        public override void OnDeath(PlayerControl killer = null)
+        {
+            foreach(var immoralist in Immoralist.allPlayers)
+            {
+                immoralist.MurderPlayer(immoralist);
+            }
+        }
 
         public override void FixedUpdate() 
         {
@@ -62,15 +74,30 @@ namespace TheOtherRoles
             {
                 arrowUpdate();
             }
+                if (player.isAlive())
+                {
+                    List<PlayerControl> untargetablePlayers =  new List<PlayerControl>();
+                    foreach(var p in PlayerControl.AllPlayerControls)
+                    {
+                        if(p.isImpostor() || p.isRole(RoleId.Jackal) || p.isRole(RoleId.Sheriff))
+                        {
+                            untargetablePlayers.Add(p);
+                        }
+                    }
+                    currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+                    setPlayerOutline(currentTarget, Fox.color);
+                }
         }
         public static void Clear()
         {
             players = new List<Fox>();
             arrows = new List<Arrow>();
+            Immoralist.Clear();
         }
 
         private static Sprite buttonSprite;
         private static Sprite repairButtonSprite;
+        private static Sprite immoralistButtonSprite;
          public static Sprite getButtonSprite()
         {
             if (buttonSprite) return buttonSprite;
@@ -82,6 +109,12 @@ namespace TheOtherRoles
             if (repairButtonSprite) return repairButtonSprite;
             repairButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.RepairButton.png", 115f);
             return repairButtonSprite;
+        }
+         public static Sprite getImmoralistButtonSprite()
+        {
+            if (immoralistButtonSprite) return immoralistButtonSprite;
+            immoralistButtonSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.ImmoralistButton.png", 115f);
+            return immoralistButtonSprite;
         }
         public static float stealthFade(PlayerControl player)
         {
@@ -225,6 +258,25 @@ namespace TheOtherRoles
                 KeyCode.G
             );
             foxRepairButton.buttonText = " ";
+
+            foxImmoralistButton = new CustomButton(
+                () =>
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FoxCreatesImmoralist, Hazel.SendOption.Reliable, -1);
+                    writer.Write(currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.foxCreatesImmoralist(currentTarget.PlayerId);
+                },
+                () => { return !Immoralist.exists && canCreateImmoralist && PlayerControl.LocalPlayer.isRole(RoleId.Fox) && PlayerControl.LocalPlayer.isAlive(); },
+                () => { return canCreateImmoralist && Fox.currentTarget != null && PlayerControl.LocalPlayer.CanMove; },
+                () => { foxImmoralistButton.Timer = 20; },
+                getImmoralistButtonSprite(),
+                new Vector3(-3.6f, -0.06f, 0),
+                hm,
+                hm.KillButton,
+                KeyCode.F
+            );
+            foxImmoralistButton.buttonText = ModTranslation.getString("背徳者");
         }
 
         static void arrowUpdate(){

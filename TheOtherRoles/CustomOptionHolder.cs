@@ -522,7 +522,7 @@ namespace TheOtherRoles {
             // foxCanStealth = CustomOption.Create(919, "透明になれる", true, foxSpawnRate); // 消す
             foxStealthCooldown = CustomOption.Create(920, "透明クールダウン", 15f, 1f, 30f, 1f, foxSpawnRate);
             foxStealthDuration = CustomOption.Create(921, "透明時間", 15f, 1f, 30f, 1f, foxSpawnRate);
-            // foxCanCreateImmoralist = CustomOption.Create(941, "背徳者を作れる", true, foxSpawnRate);
+            foxCanCreateImmoralist = CustomOption.Create(941, "背徳者を作れる", true, foxSpawnRate);
             foxNumRepair = CustomOption.Create(942, "リペア回数", 1f, 0f, 5f, 1f, foxSpawnRate);
 
             fortuneTellerSpawnRate = new CustomRoleOption(930, "占い師", FortuneTeller.color, 1);
