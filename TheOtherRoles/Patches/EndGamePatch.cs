@@ -112,14 +112,7 @@ namespace TheOtherRoles.Patches
         {
             var gameOverReason = AdditionalTempData.gameOverReason;
             // 狐の勝利条件を満たしたか確認する
-            Boolean isFoxAlive = false;
-            foreach(var fox in Fox.allPlayers){ // 狐が1匹でも生きていること
-                if(!fox.Data.IsDead)
-                {
-                    isFoxAlive = true;
-                    break;
-                }
-            }
+            Boolean isFoxAlive = Fox.isFoxAlive();
 
             Boolean isFoxCompletedTasks = Fox.isFoxCompletedTasks(); // 生存中の狐が1匹でもタスクを全て終えていること
             if(isFoxAlive && (isFoxCompletedTasks || !Fox.mustCompleteTasks)){
@@ -819,7 +812,7 @@ namespace TheOtherRoles.Patches
                     int numDeadPlayerUncompletedTasks = 0;
                     foreach(var player in PlayerControl.AllPlayerControls){
                         foreach(var task in player.Data.Tasks){
-                            if(player.Data.IsDead)
+                            if(player.Data.IsDead && Helpers.isCrew(player))
                             {
                                 if(!task.Complete)
                                 {
@@ -828,6 +821,7 @@ namespace TheOtherRoles.Patches
                             }
                         }
                     }
+
                     if (isFoxCompletedtasks && isFoxAlive && GameData.Instance.TotalTasks > 0 && GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks + numDeadPlayerUncompletedTasks)
                     {
                         __instance.enabled = false;
@@ -851,7 +845,16 @@ namespace TheOtherRoles.Patches
 
                 private static bool CheckAndEndGameForJackalWin(ShipStatus __instance, PlayerStatistics statistics)
                 {
-                    if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalLovers >= statistics.CouplesAlive * 2)
+                    int numFoxAlive = 0;
+                    foreach(var fox in Fox.allPlayers)
+                    {
+                        if(fox.isAlive())
+                        {
+                            numFoxAlive += 1;
+                        }
+
+                    }
+                    if (statistics.TeamJackalAlive >= statistics.TotalAlive - statistics.TeamJackalAlive - numFoxAlive && statistics.TeamImpostorsAlive == 0 && statistics.TeamJackalLovers >= statistics.CouplesAlive * 2)
                     {
                         __instance.enabled = false;
                         ShipStatus.RpcEndGame((GameOverReason)CustomGameOverReason.TeamJackalWin, false);

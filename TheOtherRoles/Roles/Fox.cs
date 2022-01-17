@@ -43,6 +43,7 @@ namespace TheOtherRoles
         public static bool canCreateImmoralist {get {return CustomOptionHolder.foxCanCreateImmoralist.getBool();}}
         public static PlayerControl currentTarget;
         public static PlayerControl immoralist;
+        public static List<byte> exiledFox = new List<byte>();
 
 
         public Fox()
@@ -53,19 +54,23 @@ namespace TheOtherRoles
             numRepair = optNumRepair;
             immoralist = null;
             currentTarget = null;
+            exiledFox = new List<byte>();
         }
 
-        public override void OnMeetingStart() { }
-
-        public override void OnMeetingEnd()
+        public override void OnMeetingStart()
         {
+            stealthed = false;
             foxButton.isEffectActive = false;
             foxButton.Timer = foxButton.MaxTimer = Ninja.stealthCooldown;
         }
+
+        public override void OnMeetingEnd() {}
         public override void OnKill(PlayerControl target) { }
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
         public override void OnDeath(PlayerControl killer = null)
         {
+            exiledFox.Add(player.PlayerId);
+            player.clearAllTasks();
             foreach(var immoralist in Immoralist.allPlayers)
             {
                 if(killer == null)
@@ -338,7 +343,7 @@ namespace TheOtherRoles
             bool isAlive = false;
             foreach(var fox in Fox.allPlayers)
             {
-                if(fox.isAlive())
+                if(fox.isAlive() && !exiledFox.Contains(fox.PlayerId))
                 {
                     isAlive = true;
                 }
@@ -533,5 +538,4 @@ namespace TheOtherRoles
             }
         }
     }
-    
 }
