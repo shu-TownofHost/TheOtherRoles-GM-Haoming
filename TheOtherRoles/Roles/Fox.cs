@@ -90,19 +90,19 @@ namespace TheOtherRoles
             {
                 arrowUpdate();
             }
-                if (player.isAlive())
+            if (player.isAlive())
+            {
+                List<PlayerControl> untargetablePlayers =  new List<PlayerControl>();
+                foreach(var p in PlayerControl.AllPlayerControls)
                 {
-                    List<PlayerControl> untargetablePlayers =  new List<PlayerControl>();
-                    foreach(var p in PlayerControl.AllPlayerControls)
+                    if(p.isImpostor() || p.isRole(RoleId.Jackal) || p.isRole(RoleId.Sheriff))
                     {
-                        if(p.isImpostor() || p.isRole(RoleId.Jackal) || p.isRole(RoleId.Sheriff))
-                        {
-                            untargetablePlayers.Add(p);
-                        }
+                        untargetablePlayers.Add(p);
                     }
-                    currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
-                    setPlayerOutline(currentTarget, Fox.color);
                 }
+                currentTarget = setTarget(untargetablePlayers: untargetablePlayers);
+                setPlayerOutline(currentTarget, Fox.color);
+            }
         }
         public static void Clear()
         {
