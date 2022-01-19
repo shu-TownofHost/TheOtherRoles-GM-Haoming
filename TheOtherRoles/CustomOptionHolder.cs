@@ -115,6 +115,7 @@ namespace TheOtherRoles {
         public static CustomOption fortuneTellerNumTasks;
         public static CustomOption fortuneTellerDivineOnDiscussTime;
         public static CustomOption fortuneTellerResultIsCrewOrNot;
+        public static CustomRoleOption uranaiSpawnRate;
 
         public static CustomRoleOption mayorSpawnRate;
         public static CustomOption mayorNumVotes;
@@ -514,6 +515,8 @@ namespace TheOtherRoles {
             fortuneTellerNumTasks = CustomOption.Create(931, "占いに必要なタスク数", 4f, 1f, 10f, 1f, fortuneTellerSpawnRate);
             fortuneTellerDivineOnDiscussTime = CustomOption.Create(932, "議論時間のみ占うことができる", true, fortuneTellerSpawnRate);
             fortuneTellerResultIsCrewOrNot = CustomOption.Create(933, "占い結果が白黒のみ ", true, fortuneTellerSpawnRate);
+
+            uranaiSpawnRate = new CustomRoleOption(940, "占い師2nd", Uranai.color, 1);
 
             mayorSpawnRate = new CustomRoleOption(80, "mayor", Mayor.color, 1);
             mayorNumVotes = CustomOption.Create(81, "mayorNumVotes", 2f, 2f, 10f, 1f, mayorSpawnRate, format: "unitVotes");

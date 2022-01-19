@@ -69,6 +69,7 @@ namespace TheOtherRoles
         Fox,
         Immoralist,
         FortuneTeller,
+        Uranai,
 
 
         GM = 200,
@@ -581,6 +582,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.FortuneTeller:
                         FortuneTeller.swapRole(player, oldShifter);
+                        break;
+                    case RoleId.Uranai:
+                        Uranai.swapRole(player, oldShifter);
                         break;
                 }
             }
