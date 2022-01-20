@@ -208,7 +208,8 @@ namespace TheOtherRoles
             if (p.isRole(RoleId.Fox)) infos.Add(fox);
             if (p.isRole(RoleId.Immoralist)) infos.Add(immoralist);
             if (p.isRole(RoleId.FortuneTeller)) infos.Add(fortuneTeller);
-            if (p.isRole(RoleId.Uranai)) infos.Add(uranai);
+            if (p.isRole(RoleId.Uranai) && Uranai.isCompletedNumTasks(p)) infos.Add(uranai);
+            if (p.isRole(RoleId.Uranai) && !Uranai.isCompletedNumTasks(p)) infos.Add(crewmate);
 
 
             // Default roles

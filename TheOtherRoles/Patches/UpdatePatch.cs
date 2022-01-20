@@ -166,7 +166,7 @@ namespace TheOtherRoles.Patches {
             {
                 setPlayerNameColor(PlayerControl.LocalPlayer, FortuneTeller.color);
             }
-            else if (PlayerControl.LocalPlayer.isRole(RoleId.Uranai) && Uranai.isCompletedTasks())
+            else if (PlayerControl.LocalPlayer.isRole(RoleId.Uranai) && Uranai.isCompletedNumTasks(PlayerControl.LocalPlayer))
             {
                 setPlayerNameColor(PlayerControl.LocalPlayer, Uranai.color);
             }
