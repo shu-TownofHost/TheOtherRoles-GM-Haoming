@@ -18,12 +18,13 @@ namespace TheOtherRoles
         public static int numUsed = 0;
         public static int numTasks {get { return (int)CustomOptionHolder.uranaiNumTasks.getFloat();}}
         public static bool resultIsCrewOrNot {get { return CustomOptionHolder.uranaiResultIsCrewOrNot.getBool();}}
+        public static float duration {get { return CustomOptionHolder.uranaiDuration.getFloat();}}
+        public static float distance {get { return CustomOptionHolder.uranaiDistance.getFloat();}}
 
         public static Dictionary<byte, float> progress = new Dictionary<byte, float>();
-        public static float progressMax = 20f;
         public static bool impostorArrowFlag = false;
-        public static bool meetingFlag = false;
-        private static Sprite targetSprite;
+        public static bool meetingFlag = true;
+        public static Dictionary<byte, bool> playerStatus = new Dictionary<byte, bool>();
 
 
         public Uranai()
@@ -31,9 +32,26 @@ namespace TheOtherRoles
             RoleType = roleId = RoleId.Uranai;
         }
 
-        public override void OnMeetingStart() { }
+        public override void OnMeetingStart()
+        {
+            meetingFlag = true;
+        }
 
-        public override void OnMeetingEnd() { }
+        public override void OnMeetingEnd()
+        {
+            HudManager.Instance.StartCoroutine(Effects.Lerp(5.0f, new Action<float>((p) =>
+            {
+                if (p == 1f)
+                {
+                    meetingFlag = false;
+                }
+            })));
+            foreach(var p in PlayerControl.AllPlayerControls)
+            {
+                playerStatus[p.PlayerId] = p.isAlive();
+            }
+        }
+
         public override void OnKill(PlayerControl target) { }
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
         public override void OnDeath(PlayerControl killer = null) { }
@@ -75,7 +93,9 @@ namespace TheOtherRoles
                 return () =>
                 {
                     if (!isCompletedNumTasks(PlayerControl.LocalPlayer)) return false;
+                    else if(PlayerControl.LocalPlayer.PlayerId == index) return false;
                     else if (!MapOptions.playerIcons.ContainsKey(index)) return false;
+                    else if (numUsed >= 1)  return false;
                     else if (PlayerControl.LocalPlayer.isRole(RoleId.Uranai) && PlayerControl.LocalPlayer.CanMove) return true;
                     return false;
                 };
@@ -86,6 +106,22 @@ namespace TheOtherRoles
             {
                 return () =>
                 {
+                    var p = Helpers.playerById(index);
+
+                    // 自身のボタンは表示しない/既に占いを実行している場合はボタンを表示しない/タスクが終わっていない場合は表示しない
+                    if(index == PlayerControl.LocalPlayer.PlayerId || numUsed >= 1 || !Uranai.isCompletedNumTasks(p))
+                    {
+                        MapOptions.playerIcons[index].gameObject.SetActive(false);
+                        return false;
+                    }
+                    // 占い可能か判定
+                    bool status = true;
+                    if(playerStatus.ContainsKey(index))
+                    {
+                        status = playerStatus[index];
+                    }
+                    bool canDivine = Uranai.progress[index] >= Uranai.duration || !status;
+
                     if (!MapOptions.playerIcons.ContainsKey(index)) return false;
                     Vector3 pos = uranaiCalcPos(index);
                     Vector3 scale = new Vector3(0.4f, 0.8f, 1.0f);
@@ -100,10 +136,23 @@ namespace TheOtherRoles
                     }
 
                     MapOptions.playerIcons[index].transform.localScale = Vector3.one * 0.25f;
-                    MapOptions.playerIcons[index].gameObject.SetActive(isCompletedNumTasks(PlayerControl.LocalPlayer)&&PlayerControl.LocalPlayer.CanMove);
-                    MapOptions.playerIcons[index].setSemiTransparent(Uranai.progress[index] <= Uranai.progressMax);
-                    uranaiButtons[index].buttonText = $"{Uranai.progress[index]:.0}/{Uranai.progressMax}";
-                    return PlayerControl.LocalPlayer.CanMove;
+                    MapOptions.playerIcons[index].gameObject.SetActive(PlayerControl.LocalPlayer.CanMove);
+                    MapOptions.playerIcons[index].setSemiTransparent(!canDivine);
+                    if(playerStatus.Count == 0)
+                    {
+                        uranaiButtons[index].buttonText = $"{Uranai.progress[index]:.0}/{Uranai.duration}";
+                    }
+                    else
+                    {
+                        if(playerStatus[p.PlayerId]){
+                            uranaiButtons[index].buttonText = $"{Uranai.progress[index]:.0}/{Uranai.duration}";
+                        }
+                        else
+                        {
+                            uranaiButtons[index].buttonText = "死亡";
+                        }
+                    }
+                    return PlayerControl.LocalPlayer.CanMove && numUsed < 1 && canDivine;
                 };
             }
 
@@ -143,6 +192,7 @@ namespace TheOtherRoles
 
         private static void uranaiUpdate()
         {
+            if(meetingFlag) return;
             if(!PlayerControl.LocalPlayer.isRole(RoleId.Uranai)) return;
 
             foreach (PlayerControl p in PlayerControl.AllPlayerControls)
@@ -153,7 +203,7 @@ namespace TheOtherRoles
                 float distance = Vector3.Distance(p.transform.position, uranai.transform.position);
                 // 障害物判定
                 bool anythingBetween = PhysicsHelpers.AnythingBetween(p.GetTruePosition(), uranai.GetTruePosition(), Constants.ShipAndObjectsMask, false);
-                if(!anythingBetween && distance <= 1 && progress[p.PlayerId] < progressMax)
+                if(!anythingBetween && distance <= Uranai.distance && progress[p.PlayerId] < duration)
                 {
                     progress[p.PlayerId] += Time.fixedDeltaTime;
                 }
@@ -165,6 +215,7 @@ namespace TheOtherRoles
         public static void impostorArrowUpdate()
         {
             if(!PlayerControl.LocalPlayer.isImpostor()) return;
+            else if(!impostorArrowFlag) return;
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
 
@@ -205,15 +256,13 @@ namespace TheOtherRoles
             arrows = new List<Arrow>();
             impostorArrowFlag = false;
             numUsed = 0;
+            meetingFlag = true;
+            playerStatus = new Dictionary<byte, bool>();
         }
 
         public static void divine(PlayerControl p)
         {
-            if(progress[p.PlayerId] < progressMax) return;
             PlayerControl fortuneTeller = PlayerControl.LocalPlayer;
-            var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(fortuneTeller.Data);
-            int divineNum = ((int)tasksCompleted - (numTasks*numUsed))/numTasks;
-            if(divineNum <= 0) return;
             string msg = "";
             if(!resultIsCrewOrNot){
                 string roleNames = String.Join(" ", RoleInfo.getRoleInfoForPlayer(p).Select(x => Helpers.cs(x.color, x.name)).ToArray());
@@ -264,6 +313,23 @@ namespace TheOtherRoles
                 })));
             }
         }
+
+        [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
+        class IntroCutsceneOnDestroyPatch
+        {
+            public static void Prefix(IntroCutscene __instance)
+            {
+                
+                HudManager.Instance.StartCoroutine(Effects.Lerp(20.0f, new Action<float>((p) =>
+                {
+                    if (p == 1f)
+                    {
+                        meetingFlag = false;
+                    }
+                })));
+            }
+        }
+
     }
 
 }
