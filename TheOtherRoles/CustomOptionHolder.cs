@@ -315,6 +315,7 @@ namespace TheOtherRoles {
         public static CustomOption foxNumLongTasks;
         public static CustomOption foxNumShortTasks;
         public static CustomRoleOption munouSpawnRate;
+        public static CustomRoleOption munou2ndSpawnRate;
 
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
@@ -518,6 +519,7 @@ namespace TheOtherRoles {
             foxNumRepair = CustomOption.Create(919, "リペア回数", 1f, 0f, 5f, 1f, foxSpawnRate);
 
             munouSpawnRate = new CustomRoleOption(950, "無能", Munou.color, 1);
+            munou2ndSpawnRate = new CustomRoleOption(960, "無能2nd", Munou2nd.color, 1);
 
             fortuneTellerSpawnRate = new CustomRoleOption(930, "占い師", FortuneTeller.color, 1);
             fortuneTellerNumTasks = CustomOption.Create(931, "占いに必要なタスク数", 4f, 1f, 10f, 1f, fortuneTellerSpawnRate);
