@@ -48,11 +48,19 @@ namespace TheOtherRoles
                 {
                     crewFlag = true;
                 }
-                PlayerControl.LocalPlayer.Revive();
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.cleanBody(PlayerControl.LocalPlayer.PlayerId);
+                Helpers.log("リバイブ");
+                player.Revive();
+                // MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CleanBody, Hazel.SendOption.Reliable, -1);
+                // writer.Write(player.PlayerId);
+                // AmongUsClient.Instance.FinishRpcImmediately(writer);
+                // RPCProcedure.cleanBody(player.PlayerId);
+                DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
+                for (int i = 0; i < array.Length; i++) {
+                    if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == player.PlayerId) {
+                        // UnityEngine.Object.Destroy(array[i].gameObject);
+                        array[i].gameObject.active = false;
+                    }     
+            }
             }
         }
 

@@ -248,22 +248,45 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
-            if (PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat))
+            PlayerControl player = PlayerControl.LocalPlayer;
+            bool impostorFlag = player.isRole(RoleId.SchrodingersCat) || player.isDead() || player.isImpostor();
+            bool jackalFlag = player.isRole(RoleId.SchrodingersCat) || player.isDead() || player.isRole(RoleId.Jackal) || player.isRole(RoleId.Sidekick);
+            if(SchrodingersCat.crewFlag)
             {
-                if(SchrodingersCat.impostorFlag)
+                foreach (var p in SchrodingersCat.allPlayers)
                 {
-                    setPlayerNameColor(PlayerControl.LocalPlayer, Palette.ImpostorRed);
+                    setPlayerNameColor(p, Color.white);
+                }
+            }
+            else if(SchrodingersCat.impostorFlag && impostorFlag)
+            {
+                foreach (var p in SchrodingersCat.allPlayers)
+                {
+                    setPlayerNameColor(p, Palette.ImpostorRed);
+                }
+                if(player.isRole(RoleId.SchrodingersCat))
+                {
                     foreach(var p in PlayerControl.AllPlayerControls)
                     {
                         if(p.isImpostor()) setPlayerNameColor(p, Palette.ImpostorRed);
                     }
                 }
-                if(SchrodingersCat.jackalFlag)
+            }
+            else if(SchrodingersCat.jackalFlag && jackalFlag)
+            {
+                foreach (var p in SchrodingersCat.allPlayers)
                 {
-                    setPlayerNameColor(PlayerControl.LocalPlayer, Jackal.color);
+                    setPlayerNameColor(p, Jackal.color);
+                }
+                if(player.isRole(RoleId.SchrodingersCat))
+                {
                     setPlayerNameColor(Jackal.jackal, Jackal.color);
                     if(Sidekick.sidekick != null) setPlayerNameColor(Sidekick.sidekick, Sidekick.color);
                 }
+            }
+            else if(player.isRole(RoleId.SchrodingersCat))
+            {
+                setPlayerNameColor(player, SchrodingersCat.color);
             }
 
             // Crewmate roles with no changes: Mini

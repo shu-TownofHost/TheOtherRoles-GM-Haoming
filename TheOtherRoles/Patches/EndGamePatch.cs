@@ -848,6 +848,7 @@ namespace TheOtherRoles.Patches
                         foreach(var task in player.Data.Tasks){
                             if(player.Data.IsDead && Helpers.isCrew(player) && !player.isRole(RoleId.Madmate) && !player.isRole(RoleId.CreatedMadmate))
                             {
+                                Helpers.log($"{player.Data.PlayerName}");
                                 if(!task.Complete)
                                 {
                                     numDeadPlayerUncompletedTasks++;
@@ -1016,6 +1017,13 @@ namespace TheOtherRoles.Patches
                                 {
                                     numJackalAlive++;
                                     if (lover) jackalLovers++;
+                                }
+                                if (SchrodingersCat.jackalFlag)
+                                {
+                                    foreach(var p in SchrodingersCat.allPlayers)
+                                    {
+                                        numJackalAlive++;
+                                    }
                                 }
 
                                 if (playerInfo.Object.isNeutral()) numNeutralAlive++;
