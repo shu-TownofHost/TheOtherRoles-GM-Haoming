@@ -248,6 +248,24 @@ namespace TheOtherRoles.Patches {
                 }
             }
 
+            if (PlayerControl.LocalPlayer.isRole(RoleId.SchrodingersCat))
+            {
+                if(SchrodingersCat.impostorFlag)
+                {
+                    setPlayerNameColor(PlayerControl.LocalPlayer, Palette.ImpostorRed);
+                    foreach(var p in PlayerControl.AllPlayerControls)
+                    {
+                        if(p.isImpostor()) setPlayerNameColor(p, Palette.ImpostorRed);
+                    }
+                }
+                if(SchrodingersCat.jackalFlag)
+                {
+                    setPlayerNameColor(PlayerControl.LocalPlayer, Jackal.color);
+                    setPlayerNameColor(Jackal.jackal, Jackal.color);
+                    if(Sidekick.sidekick != null) setPlayerNameColor(Sidekick.sidekick, Sidekick.color);
+                }
+            }
+
             // Crewmate roles with no changes: Mini
             // Impostor roles with no changes: Morphling, Camouflager, Vampire, Godfather, Eraser, Janitor, Cleaner, Warlock, BountyHunter,  Witch and Mafioso
         }
