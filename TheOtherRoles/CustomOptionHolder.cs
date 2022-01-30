@@ -339,6 +339,7 @@ namespace TheOtherRoles {
         public static CustomOption lastImpostorFunctions;
         public static CustomOption lastImpostorResultIsCrewOrNot;
         public static CustomOption lastImpostorNumShots;
+        public static CustomRoleOption schrodingersCatSpawnRate;
 
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
@@ -559,6 +560,8 @@ namespace TheOtherRoles {
             foxCanFixSabotageWhileStealth  = CustomOption.Create(919, "透明中にサボタージュを直せる", true, foxSpawnRate);
             foxCanCreateImmoralist = CustomOption.Create(920, "背徳者を作れる", true, foxSpawnRate);
             foxImmoralistArrow = CustomOption.Create(921, "背徳者矢印(背徳者→妖狐)", true, foxSpawnRate);
+
+            schrodingersCatSpawnRate = new CustomRoleOption(970, "シュレディンガーの猫", SchrodingersCat.color, 1);
 
             munouSpawnRate = new CustomRoleOption(950, "無能", Munou.color, 1);
             munou2ndSpawnRate = new CustomRoleOption(960, "無能2nd", Munou2nd.color, 1);
