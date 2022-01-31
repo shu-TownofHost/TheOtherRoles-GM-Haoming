@@ -33,10 +33,13 @@ namespace TheOtherRoles
         public override void OnMeetingEnd() { }
         public override void FixedUpdate()
         {
-            if (player == PlayerControl.LocalPlayer && jackalFlag && !isTeamJackalAlive())
+            if (player == PlayerControl.LocalPlayer && jackalFlag)
             {
-                currentTarget = setTarget();
-                setPlayerOutline(currentTarget, Sheriff.color);
+                if(!isTeamJackalAlive() || !cantKillUntilLastOne)
+                {
+                    currentTarget = setTarget();
+                    setPlayerOutline(currentTarget, Sheriff.color);
+                }
             }
             if (player == PlayerControl.LocalPlayer && impostorFlag && !isLastImpostor() && cantKillUntilLastOne)
             {
