@@ -18,6 +18,7 @@ namespace TheOtherRoles
         public static bool impostorFlag = false;
         public static bool jackalFlag = false;
         public static bool crewFlag = false;
+        public static float killCooldown {get {return CustomOptionHolder.schrodingersCatKillCooldown.getFloat();}}
 
         public SchrodingersCat()
         {
@@ -93,7 +94,7 @@ namespace TheOtherRoles
         }
         public static void SetButtonCooldowns()
         {
-            jackalKillButton.MaxTimer = Jackal.cooldown;
+            jackalKillButton.MaxTimer = killCooldown;
         }
 
         public static void Clear()
