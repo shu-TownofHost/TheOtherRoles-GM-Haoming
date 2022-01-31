@@ -1022,7 +1022,10 @@ namespace TheOtherRoles.Patches
                                 {
                                     foreach(var p in SchrodingersCat.allPlayers)
                                     {
-                                        numJackalAlive++;
+                                        if(p.PlayerId == playerInfo.PlayerId)
+                                        {
+                                            numJackalAlive++;
+                                        }
                                     }
                                 }
 
