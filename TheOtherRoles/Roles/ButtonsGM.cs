@@ -55,6 +55,7 @@ namespace TheOtherRoles
             LastImpostor.MakeButtons(hm);
             Uranai.MakeButtons(hm);
             SoulPlayer.MakeButtons(hm);
+            SchrodingersCat.MakeButtons(hm);
 
             gmButtons = new List<CustomButton>();
             gmKillButtons = new List<CustomButton>();

@@ -33,8 +33,8 @@ namespace TheOtherRoles
                 currentTarget = setTarget();
                 setPlayerOutline(currentTarget, Sheriff.color);
             }
-
         }
+
         public override void OnKill(PlayerControl target) { }
         public override void OnDeath(PlayerControl killer = null)
         {
@@ -61,7 +61,6 @@ namespace TheOtherRoles
                 DeadBody[] array = UnityEngine.Object.FindObjectsOfType<DeadBody>();
                 for (int i = 0; i < array.Length; i++) {
                     if (GameData.Instance.GetPlayerById(array[i].ParentId).PlayerId == player.PlayerId) {
-                        // UnityEngine.Object.Destroy(array[i].gameObject);
                         array[i].gameObject.active = false;
                     }     
                 }
@@ -91,7 +90,6 @@ namespace TheOtherRoles
                 hm.KillButton,
                 KeyCode.Q
             );
-
         }
         public static void SetButtonCooldowns()
         {
