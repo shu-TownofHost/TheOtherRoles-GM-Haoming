@@ -58,6 +58,7 @@ namespace TheOtherRoles
         SerialKiller,
         CreatedMadmate,
         LastImpostor,
+        Trapper,
 
 
         Mini = 150,
@@ -159,6 +160,9 @@ namespace TheOtherRoles
         FoxCreatesImmoralist,
         ImpostorPromotesToLastImpostor,
         SchrodingersCatSuicide,
+        PlaceTrap,
+        ClearTrap,
+        ActivateTrap
     }
 
     public static class RPCProcedure {
@@ -615,6 +619,9 @@ namespace TheOtherRoles
                         break;
                     case RoleId.SchrodingersCat:
                         SchrodingersCat.swapRole(player, oldShifter);
+                        break;
+                    case RoleId.Trapper:
+                        Trapper.swapRole(player, oldShifter);
                         break;
                 }
             }
@@ -1180,6 +1187,38 @@ namespace TheOtherRoles
             SchrodingersCat.killer.MurderPlayer(SchrodingersCat.killer);
             SchrodingersCat.killer = null;
         }
+        public static void placeTrap(byte[] buff)
+        {
+            Vector3 position = Vector3.zero;
+            position.x = BitConverter.ToSingle(buff, 0*sizeof(float));
+            position.y = BitConverter.ToSingle(buff, 1*sizeof(float));
+            new TrapEffect(position);
+        }
+        public static void clearTrap()
+        {
+            TrapEffect.clearTrapEffects();
+        }
+        public static void activateTrap(byte playerId, byte trapIndex)
+        {
+            var player = Helpers.playerById(playerId);
+            GameObject trapEffect = TrapEffect.trapeffects[trapIndex].trapeffect;
+            
+            HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => 
+            {
+                if(Trapper.baseTrueSpeed == 0.0){
+                    Trapper.baseTrueSpeed = PlayerControl.LocalPlayer.MyPhysics.TrueSpeed;
+                }
+                if(p==1f || Trapper.meetingFlag){
+                    player.moveable = true;
+                    Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(Trapper.baseTrueSpeed);
+                    TrapEffect.clearTrapEffects();
+                }else{
+                            player.MyPhysics.ResetMoveState();
+                            player.moveable = false;
+                            Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(0.0f);
+                }
+            })));
+        }
     }   
 
     
@@ -1439,6 +1478,16 @@ namespace TheOtherRoles
                 case (byte)CustomRPC.SchrodingersCatSuicide:
                     RPCProcedure.schrodingersCatSuicide();
                     break;
+                case (byte)CustomRPC.PlaceTrap:
+                    RPCProcedure.placeTrap(reader.ReadBytesAndSize());
+                    break;
+                case (byte)CustomRPC.ClearTrap:
+                    RPCProcedure.clearTrap();
+                    break;
+                case (byte)CustomRPC.ActivateTrap:
+                    RPCProcedure.clearTrap();
+                    break;
+                
             }
         }
     }

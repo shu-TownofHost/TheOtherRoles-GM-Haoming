@@ -339,12 +339,15 @@ namespace TheOtherRoles {
         public static CustomOption lastImpostorFunctions;
         public static CustomOption lastImpostorResultIsCrewOrNot;
         public static CustomOption lastImpostorNumShots;
+
         public static CustomRoleOption schrodingersCatSpawnRate;
         public static CustomOption schrodingersCatKillCooldown;
         public static CustomOption schrodingersCatBecomesImpostor;
         public static CustomOption schrodingersCatKillsKiller;
         public static CustomOption schrodingersCatCantKillUntilLastOne;
         public static CustomOption schrodingersCatBecomesRandomTeamOnExiled;
+
+        public static CustomRoleOption trapperSpawnRate;
 
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
@@ -458,6 +461,8 @@ namespace TheOtherRoles {
             serialKillerKillCooldown = CustomOption.Create(1012, "serialKillerKillCooldown", 15f, 2.5f, 60f, 2.5f, serialKillerSpawnRate, format: "unitSeconds");
             serialKillerSuicideTimer = CustomOption.Create(1013, "serialKillerSuicideTimer", 40f, 2.5f, 60f, 2.5f, serialKillerSpawnRate, format: "unitSeconds");
             serialKillerResetTimer = CustomOption.Create(1014, "serialKillerResetTimer", true, serialKillerSpawnRate);
+
+            trapperSpawnRate = new CustomRoleOption(1020, "トラッパー", Trapper.color);
 
             madmateSpawnRate = new CustomRoleOption(360, "madmate", Madmate.color);
             madmateCanDieToSheriff = CustomOption.Create(361, "madmateCanDieToSheriff", false, madmateSpawnRate);
