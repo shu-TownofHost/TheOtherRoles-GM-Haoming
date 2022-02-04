@@ -162,7 +162,8 @@ namespace TheOtherRoles
         SchrodingersCatSuicide,
         PlaceTrap,
         ClearTrap,
-        ActivateTrap
+        ActivateTrap,
+        TrapperKill
     }
 
     public static class RPCProcedure {
@@ -1198,26 +1199,53 @@ namespace TheOtherRoles
         {
             TrapEffect.clearTrapEffects();
         }
-        public static void activateTrap(byte playerId, byte trapIndex)
+        public static void activateTrap(byte trapperId, byte playerId, byte trapIndex)
         {
+            var trapper = Helpers.playerById(trapperId);
             var player = Helpers.playerById(playerId);
             GameObject trapEffect = TrapEffect.trapeffects[trapIndex].trapeffect;
-            
+            trapEffect.SetActive(true);
+            AudioSource audioSource = trapEffect.GetComponent<AudioSource>();
+            audioSource.priority = 0;
+            audioSource.spatialBlend = 1;
+            audioSource.clip = Trapper.test;
+            audioSource.loop = true;
+            audioSource.playOnAwake = false;
+            audioSource.minDistance = 1f;
+            audioSource.maxDistance = 30f;
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.Play();
+
+            Vector3 basePos = player.transform.position;
+            player.NetTransform.Halt();
             HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => 
             {
-                if(Trapper.baseTrueSpeed == 0.0){
-                    Trapper.baseTrueSpeed = PlayerControl.LocalPlayer.MyPhysics.TrueSpeed;
-                }
                 if(p==1f || Trapper.meetingFlag){
                     player.moveable = true;
-                    Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(Trapper.baseTrueSpeed);
-                    TrapEffect.clearTrapEffects();
+                    audioSource.Stop();
+                    trapEffect.SetActive(false);
+                    GameObject.Destroy(trapEffect);
+                    TrapEffect.trapeffects.RemoveAll(x => x.trapeffect==trapEffect);
+                    if (Trapper.activatedTrap.Keys.Contains(trapEffect))
+                    {
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
+                        writer.Write(trapper.PlayerId);
+                        writer.Write(player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        RPCProcedure.trapperKill(trapper.PlayerId, player.PlayerId);
+                    }
                 }else{
-                            player.MyPhysics.ResetMoveState();
-                            player.moveable = false;
-                            Traverse.Create(player.MyPhysics).Field("TrueSpeed").SetValue(0.0f);
+                    player.moveable = false;
+                    player.transform.position = trapEffect.transform.position;
                 }
             })));
+        }
+        public static void trapperKill(byte trapperId, byte playerId)
+        {
+            var trapper = Helpers.playerById(trapperId);
+            var player = Helpers.playerById(playerId);
+            KillAnimationCoPerformKillPatch.hideNextAnimation = true;
+            trapper.MurderPlayer(player);
         }
     }   
 
@@ -1485,7 +1513,10 @@ namespace TheOtherRoles
                     RPCProcedure.clearTrap();
                     break;
                 case (byte)CustomRPC.ActivateTrap:
-                    RPCProcedure.clearTrap();
+                    RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.TrapperKill:
+                    RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte());
                     break;
                 
             }

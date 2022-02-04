@@ -84,50 +84,49 @@ namespace TheOtherRoles
             // audioSource.rolloffMode = AudioRolloffMode.Linear;
             // audioSource.PlayOneShot(test);
             // 角度計算
-            float x = killer.transform.position.x - PlayerControl.LocalPlayer.transform.position.x;
-            float y = killer.transform.position.y - PlayerControl.LocalPlayer.transform.position.y;
-            double rad = Math.Atan2(x,y);
-            string arrow = "";
-            if(rad <= Math.PI/8 && rad >= -(Math.PI/8)){ //上
-                arrow = "↑";
-            }else if(rad <= 3 * Math.PI/8 && rad >= Math.PI/8){ //右上
-                arrow = "↗";
-            }else if(rad <= 5 * Math.PI/8 && rad >= 3 * Math.PI/8){ //右
-                arrow = "→";
-            }else if(rad <= 7 * Math.PI/8 && rad >= 5 * Math.PI/8){ //右下
-                arrow = "↘";
-            }else if( (rad <= -7 * Math.PI/8 && rad >= -Math.PI) || (rad >= 7 * Math.PI/8 &&  rad <= Math.PI)){ //下
-                arrow = "↓";
-            }else if(rad <= -(Math.PI/8) && rad >= -3 *Math.PI/8){ //左上
-                arrow = "↖";
-            }else if(rad <= -3 * Math.PI/8 && rad >= -5 * Math.PI/8){ //左
-                arrow = "←";
-            }else if(rad <= -5 * Math.PI/8 && rad >= -7 * Math.PI/8){ //左下
-                arrow = "↙";
-            }
-            // メッセージを表示
-            TMPro.TMP_Text text;
-            RoomTracker roomTracker =  HudManager.Instance?.roomTracker;
-            GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
-            UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
-            gameObject.transform.SetParent(HudManager.Instance.transform);
-            gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
-            gameObject.transform.localScale = Vector3.one * 3f;
-            text = gameObject.GetComponent<TMPro.TMP_Text>();
-            HudManager.Instance.StartCoroutine(Effects.Lerp(2f, new Action<float>((p) => {
-                bool even = ((int)(p * 15f / 0.25f)) % 2 == 0; // Bool flips every 0.25 seconds
-                string prefix = (even ? "<color=#FCBA03FF>" : "<color=#FF0000FF>");
-                text.text = prefix + arrow + "</color>";
-                if (text != null) text.color = even ? Color.yellow : Color.red;
-                if (p == 1f && text != null && text.gameObject != null) {
-                    UnityEngine.Object.Destroy(text.gameObject);
-                }
-            })));
+            // float x = killer.transform.position.x - PlayerControl.LocalPlayer.transform.position.x;
+            // float y = killer.transform.position.y - PlayerControl.LocalPlayer.transform.position.y;
+            // double rad = Math.Atan2(x,y);
+            // string arrow = "";
+            // if(rad <= Math.PI/8 && rad >= -(Math.PI/8)){ //上
+            //     arrow = "↑";
+            // }else if(rad <= 3 * Math.PI/8 && rad >= Math.PI/8){ //右上
+            //     arrow = "↗";
+            // }else if(rad <= 5 * Math.PI/8 && rad >= 3 * Math.PI/8){ //右
+            //     arrow = "→";
+            // }else if(rad <= 7 * Math.PI/8 && rad >= 5 * Math.PI/8){ //右下
+            //     arrow = "↘";
+            // }else if( (rad <= -7 * Math.PI/8 && rad >= -Math.PI) || (rad >= 7 * Math.PI/8 &&  rad <= Math.PI)){ //下
+            //     arrow = "↓";
+            // }else if(rad <= -(Math.PI/8) && rad >= -3 *Math.PI/8){ //左上
+            //     arrow = "↖";
+            // }else if(rad <= -3 * Math.PI/8 && rad >= -5 * Math.PI/8){ //左
+            //     arrow = "←";
+            // }else if(rad <= -5 * Math.PI/8 && rad >= -7 * Math.PI/8){ //左下
+            //     arrow = "↙";
+            // }
+            // // メッセージを表示
+            // TMPro.TMP_Text text;
+            // RoomTracker roomTracker =  HudManager.Instance?.roomTracker;
+            // GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+            // UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+            // gameObject.transform.SetParent(HudManager.Instance.transform);
+            // gameObject.transform.localPosition = new Vector3(0, -1.8f, gameObject.transform.localPosition.z);
+            // gameObject.transform.localScale = Vector3.one * 3f;
+            // text = gameObject.GetComponent<TMPro.TMP_Text>();
+            // HudManager.Instance.StartCoroutine(Effects.Lerp(2f, new Action<float>((p) => {
+            //     bool even = ((int)(p * 15f / 0.25f)) % 2 == 0; // Bool flips every 0.25 seconds
+            //     string prefix = (even ? "<color=#FCBA03FF>" : "<color=#FF0000FF>");
+            //     text.text = prefix + arrow + "</color>";
+            //     if (text != null) text.color = even ? Color.yellow : Color.red;
+            //     if (p == 1f && text != null && text.gameObject != null) {
+            //         UnityEngine.Object.Destroy(text.gameObject);
+            //     }
+            // })));
 
         }
         public override void OnDeath(PlayerControl killer = null)
         {
-            trapSound(killer);
             if(impostorFlag|| jackalFlag|| crewFlag) return;
             if(killer == null)
             {
