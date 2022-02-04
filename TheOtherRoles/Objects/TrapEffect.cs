@@ -4,9 +4,8 @@ using System.Collections;
 using UnityEngine;
 
 namespace TheOtherRoles{
-    class TrapEffect {
+    public class TrapEffect {
         public static List<TrapEffect> trapeffects = new List<TrapEffect>();
-
         public GameObject trapeffect;
         private GameObject background = null;
         private AudioSource audioSource;

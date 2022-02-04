@@ -163,6 +163,7 @@ namespace TheOtherRoles
         PlaceTrap,
         ClearTrap,
         ActivateTrap,
+        DisableTrap,
         TrapperKill
     }
 
@@ -1190,22 +1191,59 @@ namespace TheOtherRoles
         }
         public static void placeTrap(byte[] buff)
         {
-            Vector3 position = Vector3.zero;
-            position.x = BitConverter.ToSingle(buff, 0*sizeof(float));
-            position.y = BitConverter.ToSingle(buff, 1*sizeof(float));
-            new TrapEffect(position);
+            Trapper.unsetTrap();
+            Vector3 pos = Vector3.zero;
+            pos.x = BitConverter.ToSingle(buff, 0*sizeof(float));
+            pos.y = BitConverter.ToSingle(buff, 1*sizeof(float));
+            GameObject trap = new GameObject("Trap");
+            Vector3 position = new Vector3(pos.x, pos.y, PlayerControl.LocalPlayer.transform.localPosition.z - 0.001f); // just behind player
+            trap.transform.position = position;
+            trap.transform.localPosition = position;
+
+            var trapRenderer = trap.AddComponent<SpriteRenderer>();
+            trapRenderer.sprite = Trapper.getTrapEffectSprite();
+
+            trap.SetActive(true);
+            // 音を鳴らす
+            AudioSource audioSource = trap.gameObject.AddComponent<AudioSource>();
+            audioSource.priority = 0;
+            audioSource.spatialBlend = 1;
+            audioSource.clip = Trapper.test;
+            audioSource.loop = false;
+            audioSource.playOnAwake = false;
+            audioSource.minDistance = 1f;
+            audioSource.maxDistance = 15f;
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.PlayOneShot(Trapper.test);
+            Trapper.trap = trap;
+
+            // 5秒後にトラップの表示を消す
+            if(!PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
+            {
+                HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) =>
+                { // Delayed action
+                    if (p == 1f)
+                    {
+                        trap.SetActive(false);
+                    }
+                })));
+            }
         }
         public static void clearTrap()
         {
-            TrapEffect.clearTrapEffects();
+            Trapper.unsetTrap();
         }
-        public static void activateTrap(byte trapperId, byte playerId, byte trapIndex)
+        public static void disableTrap()
+        {
+            Trapper.trappedPlayer = null;
+        }
+        public static void activateTrap(byte trapperId, byte playerId)
         {
             var trapper = Helpers.playerById(trapperId);
             var player = Helpers.playerById(playerId);
-            GameObject trapEffect = TrapEffect.trapeffects[trapIndex].trapeffect;
-            trapEffect.SetActive(true);
-            AudioSource audioSource = trapEffect.GetComponent<AudioSource>();
+            Trapper.trappedPlayer = player;
+            Trapper.trap.SetActive(true);
+            AudioSource audioSource = Trapper.trap.GetComponent<AudioSource>();
             audioSource.priority = 0;
             audioSource.spatialBlend = 1;
             audioSource.clip = Trapper.test;
@@ -1216,27 +1254,29 @@ namespace TheOtherRoles
             audioSource.rolloffMode = AudioRolloffMode.Linear;
             audioSource.Play();
 
-            Vector3 basePos = player.transform.position;
             player.NetTransform.Halt();
             HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => 
             {
+                if(Trapper.trappedPlayer == null)
+                {
+                    player.moveable = true;
+                    Trapper.unsetTrap();
+                    return;
+                }
                 if(p==1f || Trapper.meetingFlag){
                     player.moveable = true;
-                    audioSource.Stop();
-                    trapEffect.SetActive(false);
-                    GameObject.Destroy(trapEffect);
-                    TrapEffect.trapeffects.RemoveAll(x => x.trapeffect==trapEffect);
-                    if (Trapper.activatedTrap.Keys.Contains(trapEffect))
+                    Trapper.unsetTrap();
+                    if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                     {
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
-                        writer.Write(trapper.PlayerId);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(player.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        RPCProcedure.trapperKill(trapper.PlayerId, player.PlayerId);
+                        RPCProcedure.trapperKill(PlayerControl.LocalPlayer.PlayerId, player.PlayerId);
                     }
                 }else{
                     player.moveable = false;
-                    player.transform.position = trapEffect.transform.position;
+                    player.transform.position = Trapper.trap.transform.position;
                 }
             })));
         }
@@ -1513,7 +1553,10 @@ namespace TheOtherRoles
                     RPCProcedure.clearTrap();
                     break;
                 case (byte)CustomRPC.ActivateTrap:
-                    RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.DisableTrap:
+                    RPCProcedure.disableTrap();
                     break;
                 case (byte)CustomRPC.TrapperKill:
                     RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte());

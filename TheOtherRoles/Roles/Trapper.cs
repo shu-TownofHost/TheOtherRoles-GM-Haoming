@@ -18,12 +18,12 @@ namespace TheOtherRoles
     {
         public static Color color = Palette.CrewmateBlue;
         public static Sprite trapButtonSprite;
+        public static GameObject trap;
+        public static PlayerControl trappedPlayer;
         public static bool placeTrap;
         public static AudioClip test;
 
         public static bool meetingFlag;
-        public static float baseTrueSpeed = 0.0f;
-        public static Dictionary<GameObject, byte> activatedTrap;
         
 
         public Trapper()
@@ -43,53 +43,50 @@ namespace TheOtherRoles
 
         public override void FixedUpdate() 
         {
-            if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
-            {
-                // トラップを踏んだプレイヤーを動けなくする 
-                foreach(var p in PlayerControl.AllPlayerControls)
+            try{
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trap != null && trappedPlayer == null)
                 {
-                    if(p == PlayerControl.LocalPlayer) continue;
-                    var p1 = p.transform.localPosition;
-                    int index = 0;
-                    foreach(var trapeffect in TrapEffect.trapeffects)
+                    // トラップを踏んだプレイヤーを動けなくする 
+                    foreach(var p in PlayerControl.AllPlayerControls)
                     {
-                        if(activatedTrap.Keys.Contains(trapeffect.trapeffect)) continue;
-                        var p2 = trapeffect.trapeffect.transform.localPosition;
+                        if(p == PlayerControl.LocalPlayer) continue;
+                        var p1 = p.transform.localPosition;
+                        Dictionary<GameObject, byte> listActivate = new Dictionary<GameObject, byte>();
+                        var p2 = trap.transform.localPosition;
                         var distance = Vector3.Distance(p1, p2);
                         if(distance < 0.5)
                         {
-                            activatedTrap.Add(trapeffect.trapeffect, p.PlayerId);
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ActivateTrap, Hazel.SendOption.Reliable, -1);
                             writer.Write(PlayerControl.LocalPlayer.PlayerId);
                             writer.Write(p.PlayerId);
-                            writer.Write((byte)index);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.activateTrap(PlayerControl.LocalPlayer.PlayerId, p.PlayerId, (byte)index);
+                            RPCProcedure.activateTrap(PlayerControl.LocalPlayer.PlayerId, p.PlayerId);
+                            break;
                         }
                     }
-                    index++;
                 }
 
-                // トラップにかかっているプレイヤーを救出する
-                HashSet<GameObject> listRemove = new HashSet<GameObject>();
-                foreach(var trap in activatedTrap.Keys)
+                if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trappedPlayer != null && trap != null)
                 {
+                    // トラップにかかっているプレイヤーを救出する
                     Vector3 p1 = trap.transform.position;
                     foreach(var player in PlayerControl.AllPlayerControls)
                     {
-                        if (player.PlayerId == activatedTrap[trap]) continue;
+                        if (player.PlayerId == trappedPlayer.PlayerId) continue;
+                        if (player.isRole(RoleId.Trapper)) continue;
                         Vector3 p2 = player.transform.position;
                         float distance = Vector3.Distance(p1, p2);
-                        if(distance < 0.5) listRemove.Add(trap);
+                        if(distance < 0.5)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            RPCProcedure.disableTrap();
+                        }
                     }
                 }
-                foreach(var trap in listRemove)
-                {
-                    activatedTrap.Remove(trap);
-                    trap.SetActive(false);
-                    GameObject.Destroy(trap);
-                    TrapEffect.trapeffects.RemoveAll(x => x.trapeffect==trap);
-                }
+            }
+            catch (NullReferenceException e){
+                Helpers.log(e.Message);
             }
         }
     public override void OnKill(PlayerControl target) { }
@@ -106,7 +103,7 @@ namespace TheOtherRoles
             },
             () => { /*ボタン有効になる条件*/return PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && !PlayerControl.LocalPlayer.Data.IsDead; },
             () => { /*ボタンが使える条件*/
-                return PlayerControl.LocalPlayer.CanMove;
+                return PlayerControl.LocalPlayer.CanMove && Trapper.trap == null;
             },
             () => { /*ミーティング終了時*/
                 trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
@@ -130,7 +127,7 @@ namespace TheOtherRoles
             players = new List<Trapper>();
             test = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.test.wav", false);
             meetingFlag = false;
-            activatedTrap = new Dictionary<GameObject, byte>();
+            unsetTrap();
         }
 
         public static Sprite getTrapButtonSprite() {
@@ -149,7 +146,20 @@ namespace TheOtherRoles
             RPCProcedure.placeTrap(buff);
         }
         public static void unsetTrap(){
-            TrapEffect.clearTrapEffects();
+            if(Trapper.trap != null)
+            {
+                Trapper.trap.SetActive(false);
+                GameObject.Destroy(Trapper.trap);
+            }
+            Trapper.trap = null;
+            Trapper.trappedPlayer = null;
+        }
+
+        private static Sprite trapeffectSprite;
+        public static Sprite getTrapEffectSprite() {
+            if (trapeffectSprite) return trapeffectSprite;
+            trapeffectSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapEffect.png", 300f);
+            return trapeffectSprite;
         }
         
     }
