@@ -1196,6 +1196,7 @@ namespace TheOtherRoles
             pos.x = BitConverter.ToSingle(buff, 0*sizeof(float));
             pos.y = BitConverter.ToSingle(buff, 1*sizeof(float));
             GameObject trap = new GameObject("Trap");
+            Trapper.trap = trap;
             Vector3 position = new Vector3(pos.x, pos.y, PlayerControl.LocalPlayer.transform.localPosition.z - 0.001f); // just behind player
             trap.transform.position = position;
             trap.transform.localPosition = position;
@@ -1215,7 +1216,6 @@ namespace TheOtherRoles
             audioSource.maxDistance = 15f;
             audioSource.rolloffMode = AudioRolloffMode.Linear;
             audioSource.PlayOneShot(Trapper.test);
-            Trapper.trap = trap;
 
             // 5秒後にトラップの表示を消す
             if(!PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
