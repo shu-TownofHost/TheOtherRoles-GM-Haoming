@@ -164,7 +164,8 @@ namespace TheOtherRoles
         ClearTrap,
         ActivateTrap,
         DisableTrap,
-        TrapperKill
+        TrapperKill,
+        TrapperMeetingFlag
     }
 
     public static class RPCProcedure {
@@ -1212,8 +1213,8 @@ namespace TheOtherRoles
             audioSource.clip = Trapper.place;
             audioSource.loop = false;
             audioSource.playOnAwake = false;
-            audioSource.minDistance = 0.5f;
-            audioSource.maxDistance = 10f;
+            audioSource.minDistance = Trapper.minDsitance;
+            audioSource.maxDistance = Trapper.maxDistance;
             audioSource.rolloffMode = Trapper.rollOffMode;
             audioSource.PlayOneShot(Trapper.place);
 
@@ -1262,8 +1263,8 @@ namespace TheOtherRoles
             audioSource.clip = Trapper.countdown;
             audioSource.loop = true;
             audioSource.playOnAwake = false;
-            audioSource.minDistance = 0.5f;
-            audioSource.maxDistance = 10f;
+            audioSource.minDistance = Trapper.minDsitance;
+            audioSource.maxDistance = Trapper.maxDistance;
             audioSource.rolloffMode = Trapper.rollOffMode;
             audioSource.Play();
 
@@ -1276,7 +1277,7 @@ namespace TheOtherRoles
                     Trapper.unsetTrap();
                     return;
                 }
-                if(p==1f || Trapper.meetingFlag){
+                else if((p==1f || Trapper.meetingFlag) && Trapper.trappedPlayer.isAlive()){
                     player.moveable = true;
                     if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                     {
@@ -1302,8 +1303,8 @@ namespace TheOtherRoles
                 audioSource.clip = Trapper.kill;
                 audioSource.loop = false;
                 audioSource.playOnAwake = false;
-                audioSource.minDistance = 0.5f;
-                audioSource.maxDistance = 10f;
+                audioSource.minDistance = Trapper.minDsitance;
+                audioSource.maxDistance = Trapper.maxDistance;
                 audioSource.rolloffMode = Trapper.rollOffMode;
                 audioSource.Play();
             }
@@ -1316,6 +1317,10 @@ namespace TheOtherRoles
             var player = Helpers.playerById(playerId);
             KillAnimationCoPerformKillPatch.hideNextAnimation = true;
             trapper.MurderPlayer(player);
+        }
+        public static void trapperMeetingFlag()
+        {
+            Trapper.meetingFlag = true;
         }
     }   
 
@@ -1590,6 +1595,9 @@ namespace TheOtherRoles
                     break;
                 case (byte)CustomRPC.TrapperKill:
                     RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte());
+                    break;
+                case (byte)CustomRPC.TrapperMeetingFlag:
+                    RPCProcedure.trapperMeetingFlag();
                     break;
                 
             }

@@ -28,8 +28,12 @@ namespace TheOtherRoles
         public static AudioClip countdown;
         public static AudioClip kill;
         public static AudioRolloffMode rollOffMode = UnityEngine.AudioRolloffMode.Linear;
-        public static float extensionTime = 5f;
-        public static float killTimer = 5f;
+        public static float extensionTime {get {return CustomOptionHolder.trapperExtensionTime.getFloat();}}
+        public static float killTimer {get {return CustomOptionHolder.trapperKillTimer.getFloat();}}
+        public static float cooldown {get {return CustomOptionHolder.trapperCooldown.getFloat();}}
+        public static float minDsitance {get {return CustomOptionHolder.trapperMinDistance.getFloat();}}
+        public static float maxDistance {get {return CustomOptionHolder.trapperMaxDistance.getFloat();}}
+        public static float trapRange {get {return CustomOptionHolder.trapperTrapRange.getFloat();}}
 
         public static bool meetingFlag;
         
@@ -39,10 +43,7 @@ namespace TheOtherRoles
             RoleType = roleId = RoleId.NoRole;
         }
 
-        public override void OnMeetingStart()
-        {
-            meetingFlag = true;
-        }
+        public override void OnMeetingStart() { }
         public override void OnMeetingEnd() 
         {
             unsetTrap();
@@ -63,7 +64,7 @@ namespace TheOtherRoles
                         Dictionary<GameObject, byte> listActivate = new Dictionary<GameObject, byte>();
                         var p2 = trap.transform.localPosition;
                         var distance = Vector3.Distance(p1, p2);
-                        if(distance < 0.5)
+                        if(distance < trapRange)
                         {
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ActivateTrap, Hazel.SendOption.Reliable, -1);
                             writer.Write(PlayerControl.LocalPlayer.PlayerId);
@@ -85,7 +86,7 @@ namespace TheOtherRoles
                         if (player.isRole(RoleId.Trapper)) continue;
                         Vector3 p2 = player.transform.position;
                         float distance = Vector3.Distance(p1, p2);
-                        if(distance < 0.5)
+                        if(distance < trapRange * 1.5)
                         {
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -128,7 +129,7 @@ namespace TheOtherRoles
     }
     public static void SetButtonCooldowns()
     {
-        trapperSetTrapButton.MaxTimer = 5f;
+        trapperSetTrapButton.MaxTimer = cooldown;
     }
 
         public static void Clear()
@@ -176,6 +177,20 @@ namespace TheOtherRoles
             if (trapeffectSprite) return trapeffectSprite;
             trapeffectSprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.TrapEffect.png", 300f);
             return trapeffectSprite;
+        }
+
+        [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
+        class PlayerControlCmdReportDeadBodyPatch
+        {
+            public static void Prefix(PlayerControl __instance)
+            {
+                // トラップ中にミーティングが来たら直後に死亡する
+                if(trappedPlayer != null){
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperMeetingFlag, Hazel.SendOption.Reliable, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.trapperMeetingFlag();
+                }
+            }
         }
         
     }
