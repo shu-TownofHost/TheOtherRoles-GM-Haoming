@@ -21,7 +21,15 @@ namespace TheOtherRoles
         public static GameObject trap;
         public static PlayerControl trappedPlayer;
         public static bool placeTrap;
-        public static AudioClip test;
+        public static DateTime placedTime;
+        public static AudioClip place;
+        public static AudioClip activate;
+        public static AudioClip disable;
+        public static AudioClip countdown;
+        public static AudioClip kill;
+        public static AudioRolloffMode rollOffMode = UnityEngine.AudioRolloffMode.Linear;
+        public static float extensionTime = 5f;
+        public static float killTimer = 5f;
 
         public static bool meetingFlag;
         
@@ -43,6 +51,7 @@ namespace TheOtherRoles
 
         public override void FixedUpdate() 
         {
+            if(DateTime.UtcNow.Subtract(placedTime).TotalSeconds < extensionTime) return;
             try{
                 if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trap != null && trappedPlayer == null)
                 {
@@ -108,10 +117,10 @@ namespace TheOtherRoles
             () => { /*ミーティング終了時*/
                 trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
                 Trapper.unsetTrap();
-                TrapEffect.clearTrapEffects();
             },
             Trapper.getTrapButtonSprite(),
-            new Vector3(-2.6f, 0f, 0f),
+            // new Vector3(-2.6f, 0f, 0f),
+            new Vector3(0, 1.0f, 0f),
             hm,
             hm.AbilityButton,
             KeyCode.F
@@ -125,8 +134,13 @@ namespace TheOtherRoles
         public static void Clear()
         {
             players = new List<Trapper>();
-            test = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.test.wav", false);
+            place = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperPlace.wav", false);
+            activate = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperActivate.wav", false);
+            disable = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperDisable.wav", false);
+            kill = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperKill.wav", false);
+            countdown = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperCountdown.wav", false);
             meetingFlag = false;
+            placedTime = DateTime.UtcNow;
             unsetTrap();
         }
 
@@ -144,8 +158,10 @@ namespace TheOtherRoles
             writer.WriteBytesAndSize(buff);
             writer.EndMessage();
             RPCProcedure.placeTrap(buff);
+            placedTime = DateTime.UtcNow;
         }
-        public static void unsetTrap(){
+        public static void unsetTrap()
+        {
             if(Trapper.trap != null)
             {
                 Trapper.trap.SetActive(false);

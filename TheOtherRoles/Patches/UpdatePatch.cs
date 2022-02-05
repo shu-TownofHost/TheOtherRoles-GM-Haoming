@@ -413,6 +413,8 @@ namespace TheOtherRoles.Patches {
                 enabled &= false;
             else if (Janitor.janitor != null && Janitor.janitor == PlayerControl.LocalPlayer)
                 enabled &= false;
+            else if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
+                enabled &= false;
             
             if (enabled) __instance.KillButton.Show();
             else __instance.KillButton.Hide();

@@ -1209,18 +1209,18 @@ namespace TheOtherRoles
             AudioSource audioSource = trap.gameObject.AddComponent<AudioSource>();
             audioSource.priority = 0;
             audioSource.spatialBlend = 1;
-            audioSource.clip = Trapper.test;
+            audioSource.clip = Trapper.place;
             audioSource.loop = false;
             audioSource.playOnAwake = false;
-            audioSource.minDistance = 1f;
-            audioSource.maxDistance = 15f;
-            audioSource.rolloffMode = AudioRolloffMode.Linear;
-            audioSource.PlayOneShot(Trapper.test);
+            audioSource.minDistance = 0.5f;
+            audioSource.maxDistance = 10f;
+            audioSource.rolloffMode = Trapper.rollOffMode;
+            audioSource.PlayOneShot(Trapper.place);
 
-            // 5秒後にトラップの表示を消す
+            // 猶予時間の1秒前にトラップの表示を消す
             if(!PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
             {
-                HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) =>
+                HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.extensionTime - 1, new Action<float>((p) =>
                 { // Delayed action
                     if (p == 1f)
                     {
@@ -1235,6 +1235,19 @@ namespace TheOtherRoles
         }
         public static void disableTrap()
         {
+            // if(Trapper.trap != null){
+            //     AudioSource audioSource = Trapper.trap.GetComponent<AudioSource>();
+            //     audioSource.Stop();
+            //     audioSource.priority = 0;
+            //     audioSource.spatialBlend = 1;
+            //     audioSource.clip = Trapper.disable;
+            //     audioSource.loop = false;
+            //     audioSource.playOnAwake = false;
+            //     audioSource.minDistance = 0.5f;
+            //     audioSource.maxDistance = 10f;
+            //     audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
+            //     audioSource.Play();
+            // }
             Trapper.trappedPlayer = null;
         }
         public static void activateTrap(byte trapperId, byte playerId)
@@ -1246,16 +1259,16 @@ namespace TheOtherRoles
             AudioSource audioSource = Trapper.trap.GetComponent<AudioSource>();
             audioSource.priority = 0;
             audioSource.spatialBlend = 1;
-            audioSource.clip = Trapper.test;
+            audioSource.clip = Trapper.countdown;
             audioSource.loop = true;
             audioSource.playOnAwake = false;
-            audioSource.minDistance = 1f;
-            audioSource.maxDistance = 30f;
-            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.minDistance = 0.5f;
+            audioSource.maxDistance = 10f;
+            audioSource.rolloffMode = Trapper.rollOffMode;
             audioSource.Play();
 
             player.NetTransform.Halt();
-            HudManager.Instance.StartCoroutine(Effects.Lerp(5f, new Action<float>((p) => 
+            HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.killTimer, new Action<float>((p) => 
             {
                 if(Trapper.trappedPlayer == null)
                 {
@@ -1265,7 +1278,6 @@ namespace TheOtherRoles
                 }
                 if(p==1f || Trapper.meetingFlag){
                     player.moveable = true;
-                    Trapper.unsetTrap();
                     if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                     {
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
@@ -1282,6 +1294,24 @@ namespace TheOtherRoles
         }
         public static void trapperKill(byte trapperId, byte playerId)
         {
+            if(Trapper.trap != null){
+                AudioSource audioSource = Trapper.trap.GetComponent<AudioSource>();
+                audioSource.Stop();
+                audioSource.priority = 0;
+                audioSource.spatialBlend = 1;
+                audioSource.clip = Trapper.kill;
+                audioSource.loop = false;
+                audioSource.playOnAwake = false;
+                audioSource.minDistance = 0.5f;
+                audioSource.maxDistance = 10f;
+                audioSource.rolloffMode = Trapper.rollOffMode;
+                audioSource.Play();
+            }
+            HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.kill.length, new Action<float>((p) => 
+            {
+                if(p ==1)
+                    Trapper.unsetTrap();
+            })));
             var trapper = Helpers.playerById(trapperId);
             var player = Helpers.playerById(playerId);
             KillAnimationCoPerformKillPatch.hideNextAnimation = true;
