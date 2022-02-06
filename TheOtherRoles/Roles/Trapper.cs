@@ -34,6 +34,8 @@ namespace TheOtherRoles
         public static float minDsitance {get {return CustomOptionHolder.trapperMinDistance.getFloat();}}
         public static float maxDistance {get {return CustomOptionHolder.trapperMaxDistance.getFloat();}}
         public static float trapRange {get {return CustomOptionHolder.trapperTrapRange.getFloat();}}
+        public static float penaltyTime {get {return CustomOptionHolder.trapperPenaltyTime.getFloat();}}
+        public static float bonusTime {get {return CustomOptionHolder.trapperBonusTime.getFloat();}}
 
         public static bool meetingFlag;
         
@@ -114,7 +116,20 @@ namespace TheOtherRoles
                 Helpers.log(e.Message);
             }
         }
-    public override void OnKill(PlayerControl target) { }
+    public override void OnKill(PlayerControl target) 
+    {
+        if (target == Trapper.trappedPlayer)
+        {
+            player.killTimer = PlayerControl.GameOptions.KillCooldown - bonusTime;
+            trapperSetTrapButton.Timer = cooldown - bonusTime;
+        }
+        else
+        {
+            player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
+            trapperSetTrapButton.Timer = cooldown - penaltyTime;
+        }
+
+    }
     public override void OnDeath(PlayerControl killer = null) { }
     public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
 
@@ -136,7 +151,7 @@ namespace TheOtherRoles
             },
             Trapper.getTrapButtonSprite(),
             // new Vector3(-2.6f, 0f, 0f),
-            new Vector3(0, 1.0f, 0f),
+            new Vector3(-1.8f, -0.06f, 0f),
             hm,
             hm.AbilityButton,
             KeyCode.F

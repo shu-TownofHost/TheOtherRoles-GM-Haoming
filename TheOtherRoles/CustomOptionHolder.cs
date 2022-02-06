@@ -354,6 +354,8 @@ namespace TheOtherRoles {
         public static CustomOption trapperMaxDistance;
         public static CustomOption trapperTrapRange;
         public static CustomOption trapperExtensionTime;
+        public static CustomOption trapperPenaltyTime;
+        public static CustomOption trapperBonusTime;
 
 
         internal static Dictionary<byte, byte[]> blockedRolePairings = new Dictionary<byte, byte[]>();
@@ -475,6 +477,8 @@ namespace TheOtherRoles {
             trapperTrapRange = CustomOption.Create(1024, "トラップの有効範囲", 1f, 0f, 5f, 0.1f, trapperSpawnRate);
             trapperMinDistance = CustomOption.Create(1025, "効果音の減衰開始距離", 0f, 0f, 10f, 0.1f, trapperSpawnRate);
             trapperMaxDistance = CustomOption.Create(1026, "効果音の減衰終了距離", 10f, 1f, 50f, 1f, trapperSpawnRate);
+            trapperPenaltyTime = CustomOption.Create(1027, "通常キル時のペナルティタイム", 10f, 0f, 50f, 1f, trapperSpawnRate);
+            trapperBonusTime = CustomOption.Create(1027, "罠キル時のボーナスタイム", 10f, 0f, 50f, 1f, trapperSpawnRate);
 
             madmateSpawnRate = new CustomRoleOption(360, "madmate", Madmate.color);
             madmateCanDieToSheriff = CustomOption.Create(361, "madmateCanDieToSheriff", false, madmateSpawnRate);

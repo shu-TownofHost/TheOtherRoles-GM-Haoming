@@ -1214,7 +1214,7 @@ namespace TheOtherRoles
             audioSource.loop = false;
             audioSource.playOnAwake = false;
             audioSource.minDistance = Trapper.minDsitance;
-            audioSource.maxDistance = Trapper.maxDistance;
+            audioSource.maxDistance = 2 * Trapper.maxDistance/3;
             audioSource.rolloffMode = Trapper.rollOffMode;
             audioSource.PlayOneShot(Trapper.place);
 
