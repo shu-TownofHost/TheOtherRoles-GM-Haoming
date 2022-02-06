@@ -1237,13 +1237,19 @@ namespace TheOtherRoles
         {
             Trapper.unsetTrap();
         }
-        public static void disableTrap(byte playerId)
+        public static void disableTrap(byte playerId, bool setCooldown)
         {
             if(PlayerControl.LocalPlayer.PlayerId == playerId || (Trapper.trappedPlayer != null &&PlayerControl.LocalPlayer.PlayerId == Trapper.trappedPlayer.PlayerId))
             {
                 SoundManager.Instance.PlaySound(Trapper.disable, false, 1.0f);
             }
             Trapper.trappedPlayer = null;
+
+            if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && setCooldown)
+            {
+                PlayerControl.LocalPlayer.killTimer = PlayerControl.GameOptions.KillCooldown + Trapper.penaltyTime;
+                Trapper.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
+            }
         }
         public static void activateTrap(byte trapperId, byte playerId)
         {
@@ -1273,10 +1279,6 @@ namespace TheOtherRoles
                         {
                             player.moveable = true;
                             Trapper.unsetTrap();
-                            if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
-                            {
-                                Trapper.trapperSetTrapButton.Timer = Trapper.trapperSetTrapButton.MaxTimer;
-                            }
                             p = 1.0f;
                             return;
                         }
@@ -1331,6 +1333,7 @@ namespace TheOtherRoles
                         Trapper.unsetTrap();
                     }
                 })));
+                Trapper.isTrapKill = true;
                 var trapper = Helpers.playerById(trapperId);
                 var player = Helpers.playerById(playerId);
                 KillAnimationCoPerformKillPatch.hideNextAnimation = true;
@@ -1610,7 +1613,8 @@ namespace TheOtherRoles
                     RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.DisableTrap:
-                    RPCProcedure.disableTrap(reader.ReadByte());
+                    bool setCooldown = reader.ReadByte() == (byte)1 ? true : false;
+                    RPCProcedure.disableTrap(reader.ReadByte(), setCooldown);
                     break;
                 case (byte)CustomRPC.TrapperKill:
                     RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte());

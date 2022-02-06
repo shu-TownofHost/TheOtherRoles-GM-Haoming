@@ -16,7 +16,7 @@ namespace TheOtherRoles
     [HarmonyPatch]
     public class Trapper : RoleBase<Trapper>
     {
-        public static Color color = Palette.CrewmateBlue;
+        public static Color color = Palette.ImpostorRed;
         public static Sprite trapButtonSprite;
         public static GameObject trap;
         public static PlayerControl trappedPlayer;
@@ -36,6 +36,7 @@ namespace TheOtherRoles
         public static float trapRange {get {return CustomOptionHolder.trapperTrapRange.getFloat();}}
         public static float penaltyTime {get {return CustomOptionHolder.trapperPenaltyTime.getFloat();}}
         public static float bonusTime {get {return CustomOptionHolder.trapperBonusTime.getFloat();}}
+        public static bool isTrapKill = false;
 
         public static bool meetingFlag;
         
@@ -105,8 +106,10 @@ namespace TheOtherRoles
                         {
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
                             writer.Write(player.PlayerId);
+                            writer.Write((byte)1);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
-                            RPCProcedure.disableTrap(player.PlayerId);
+                            RPCProcedure.disableTrap(player.PlayerId, true);
+
                         }
                     }
                 }
@@ -118,7 +121,8 @@ namespace TheOtherRoles
     public override void OnKill(PlayerControl target) 
     {
         //　キルクールダウン設定
-        if (target == Trapper.trappedPlayer) // トラップにかかってる対象が死んだ場合はボーナスあり
+        float distance = Vector3.Distance(target.transform.position, player.transform.position);
+        if (target == Trapper.trappedPlayer && !isTrapKill)  // トラップにかかっている対象をキルした場合のボーナス
         {
             player.killTimer = PlayerControl.GameOptions.KillCooldown - bonusTime;
             trapperSetTrapButton.Timer = cooldown - bonusTime;
@@ -135,7 +139,7 @@ namespace TheOtherRoles
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.disableTrap(player.PlayerId);
+            RPCProcedure.disableTrap(player.PlayerId, false);
         }
         else
         {
@@ -143,6 +147,7 @@ namespace TheOtherRoles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.clearTrap();
         }
+        isTrapKill = false;
     }
     public override void OnDeath(PlayerControl killer = null) { }
     public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
@@ -193,6 +198,7 @@ namespace TheOtherRoles
             playingKillSound = false;
             trappedPlayer = null;
             trap = null;
+            isTrapKill = false;
             unsetTrap();
         }
 
