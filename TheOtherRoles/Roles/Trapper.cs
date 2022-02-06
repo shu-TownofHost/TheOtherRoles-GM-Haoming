@@ -117,16 +117,18 @@ namespace TheOtherRoles
         }
     public override void OnKill(PlayerControl target) 
     {
-        if (target == Trapper.trappedPlayer)
+        //　キルクールダウン設定
+        if (target == Trapper.trappedPlayer) // トラップにかかってる対象が死んだ場合はボーナスあり
         {
             player.killTimer = PlayerControl.GameOptions.KillCooldown - bonusTime;
             trapperSetTrapButton.Timer = cooldown - bonusTime;
         }
-        else
+        else // トラップにかかっていない対象を通常キルした場合はペナルティーを受ける
         {
             player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
             trapperSetTrapButton.Timer = cooldown + penaltyTime;
         }
+
         // キル後に罠を解除する
         if (trappedPlayer != null)
         {
