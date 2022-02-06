@@ -1225,7 +1225,10 @@ namespace TheOtherRoles
                 { // Delayed action
                     if (p == 1f)
                     {
-                        trap.SetActive(false);
+                        if(trap != null)
+                        {
+                            trap.SetActive(false);
+                        }
                     }
                 })));
             }
@@ -1236,7 +1239,7 @@ namespace TheOtherRoles
         }
         public static void disableTrap(byte playerId)
         {
-            if(PlayerControl.LocalPlayer.PlayerId == playerId || PlayerControl.LocalPlayer.PlayerId == Trapper.trappedPlayer.PlayerId)
+            if(PlayerControl.LocalPlayer.PlayerId == playerId || (Trapper.trappedPlayer != null &&PlayerControl.LocalPlayer.PlayerId == Trapper.trappedPlayer.PlayerId))
             {
                 SoundManager.Instance.PlaySound(Trapper.disable, false, 1.0f);
             }

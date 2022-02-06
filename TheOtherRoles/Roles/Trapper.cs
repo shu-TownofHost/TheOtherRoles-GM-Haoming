@@ -98,8 +98,7 @@ namespace TheOtherRoles
                     Vector3 p1 = trap.transform.position;
                     foreach(var player in PlayerControl.AllPlayerControls)
                     {
-                        if (player.PlayerId == trappedPlayer.PlayerId || player.isDead() || player.inVent) continue;
-                        // if (player.isRole(RoleId.Trapper)) continue;
+                        if (player.PlayerId == trappedPlayer.PlayerId || player.isDead() || player.inVent|| player.isRole(RoleId.Trapper)) continue;
                         Vector3 p2 = player.transform.position;
                         float distance = Vector3.Distance(p1, p2);
                         if(distance < 0.5)
@@ -126,9 +125,22 @@ namespace TheOtherRoles
         else
         {
             player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
-            trapperSetTrapButton.Timer = cooldown - penaltyTime;
+            trapperSetTrapButton.Timer = cooldown + penaltyTime;
         }
-
+        // キル後に罠を解除する
+        if (trappedPlayer != null)
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.disableTrap(player.PlayerId);
+        }
+        else
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ClearTrap, Hazel.SendOption.Reliable, -1);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RPCProcedure.clearTrap();
+        }
     }
     public override void OnDeath(PlayerControl killer = null) { }
     public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
@@ -138,10 +150,13 @@ namespace TheOtherRoles
     {
         trapperSetTrapButton = new CustomButton(
             () => { // ボタンが押された時に実行
+                if (!PlayerControl.LocalPlayer.CanMove && Trapper.trappedPlayer != null) return;
                 Trapper.setTrap();
                 trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
             },
-            () => { /*ボタン有効になる条件*/return PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && !PlayerControl.LocalPlayer.Data.IsDead; },
+            () => { /*ボタン有効になる条件*/
+                return PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && !PlayerControl.LocalPlayer.Data.IsDead && Trapper.trappedPlayer == null;
+            },
             () => { /*ボタンが使える条件*/
                 return PlayerControl.LocalPlayer.CanMove && Trapper.trappedPlayer == null;
             },
