@@ -127,6 +127,11 @@ namespace TheOtherRoles
             player.killTimer = PlayerControl.GameOptions.KillCooldown - bonusTime;
             trapperSetTrapButton.Timer = cooldown - bonusTime;
         }
+        else if (target == Trapper.trappedPlayer && isTrapKill)  // トラップキルした場合のペナルティ
+        {
+            player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
+            trapperSetTrapButton.Timer = cooldown + penaltyTime;
+        }
         else // トラップにかかっていない対象を通常キルした場合はペナルティーを受ける
         {
             player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
@@ -162,7 +167,7 @@ namespace TheOtherRoles
                 trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
             },
             () => { /*ボタン有効になる条件*/
-                return PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && !PlayerControl.LocalPlayer.Data.IsDead && Trapper.trappedPlayer == null;
+                return PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && !PlayerControl.LocalPlayer.Data.IsDead;
             },
             () => { /*ボタンが使える条件*/
                 return PlayerControl.LocalPlayer.CanMove && Trapper.trappedPlayer == null;
