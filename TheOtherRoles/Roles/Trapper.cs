@@ -27,6 +27,7 @@ namespace TheOtherRoles
         public static GameObject sound;
         public static AudioSource audioSource;
         public static PlayerControl trappedPlayer;
+        public static bool playingKillSound;
         public static DateTime placedTime;
         public static AudioClip place;
         public static AudioClip activate;
@@ -65,7 +66,7 @@ namespace TheOtherRoles
         {
             if(DateTime.UtcNow.Subtract(placedTime).TotalSeconds < extensionTime) return;
             try{
-                if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trap != null && trappedPlayer == null)
+                if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trap != null && trappedPlayer == null && !playingKillSound)
                 {
                     // トラップを踏んだプレイヤーを動けなくする 
                     foreach(var p in PlayerControl.AllPlayerControls)
@@ -147,7 +148,6 @@ namespace TheOtherRoles
         }
 
         // キル後に罠を解除する
-        Trapper.status = Trapper.Status.notPlaced;
         if (trappedPlayer != null)
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
@@ -220,6 +220,7 @@ namespace TheOtherRoles
             audioSource.rolloffMode = Trapper.rollOffMode;
             meetingFlag = false;
             placedTime = DateTime.UtcNow;
+            playingKillSound = false;
             trappedPlayer = null;
             trap = null;
             isTrapKill = false;
@@ -251,6 +252,7 @@ namespace TheOtherRoles
                 Trapper.trap.SetActive(false);
             }
             Trapper.trappedPlayer = null;
+            Trapper.audioSource.Stop();
             Trapper.status = Trapper.Status.notPlaced;
         }
 
