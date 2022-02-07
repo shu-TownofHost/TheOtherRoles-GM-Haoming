@@ -1236,6 +1236,7 @@ namespace TheOtherRoles
         }
         public static void clearTrap()
         {
+            Trapper.audioSource.Stop();
             Trapper.unsetTrap();
         }
         public static void disableTrap(byte playerId, bool setCooldown)
@@ -1257,6 +1258,7 @@ namespace TheOtherRoles
                 var player = Helpers.playerById(playerId);
                 Trapper.trappedPlayer = player;
                 Trapper.trap.SetActive(true);
+                Trapper.audioSource.clip = Trapper.countdown;
                 Trapper.audioSource.loop = true;
                 Trapper.audioSource.maxDistance = Trapper.maxDistance;
                 Trapper.audioSource.Play();
@@ -1266,12 +1268,14 @@ namespace TheOtherRoles
                 {
                     try
                     {
+                        if(Trapper.status != Trapper.Status.active) return;
                         if(Trapper.trappedPlayer == null)
                         {
                             player.moveable = true;
-                            if(Trapper.status == Trapper.Status.active)
+                            if(Trapper.status == Trapper.Status.active && !Trapper.isTrapKill)
                             {
                                 Trapper.unsetTrap();
+                                Trapper.audioSource.Stop();
                                 Trapper.audioSource.loop = false;
                                 Trapper.audioSource.maxDistance = Trapper.maxDistance;
                                 Trapper.audioSource.PlayOneShot(Trapper.disable);
@@ -1309,16 +1313,14 @@ namespace TheOtherRoles
         public static void trapperKill(byte trapperId, byte playerId)
         {
             if(Trapper.status == Trapper.Status.active){
-                Trapper.playingKillSound = true;
                 Trapper.audioSource.Stop();
                 Trapper.audioSource.loop = false;
                 Trapper.audioSource.maxDistance = Trapper.maxDistance;
                 Trapper.audioSource.PlayOneShot(Trapper.kill);
-                HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.kill.length, new Action<float>((p) => 
+                HudManager.Instance.StartCoroutine(Effects.Lerp(2f, new Action<float>((p) => 
                 {
                     if(p ==1)
                     {
-                        Trapper.playingKillSound =  false;
                         Trapper.unsetTrap();
                     }
                 })));
