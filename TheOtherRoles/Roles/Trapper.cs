@@ -16,9 +16,16 @@ namespace TheOtherRoles
     [HarmonyPatch]
     public class Trapper : RoleBase<Trapper>
     {
+        public enum Status{
+            notPlaced,
+            placed,
+            active,
+        }
         public static Color color = Palette.ImpostorRed;
         public static Sprite trapButtonSprite;
         public static GameObject trap;
+        public static GameObject sound;
+        public static AudioSource audioSource;
         public static PlayerControl trappedPlayer;
         public static bool playingKillSound;
         public static DateTime placedTime;
@@ -37,6 +44,8 @@ namespace TheOtherRoles
         public static float penaltyTime {get {return CustomOptionHolder.trapperPenaltyTime.getFloat();}}
         public static float bonusTime {get {return CustomOptionHolder.trapperBonusTime.getFloat();}}
         public static bool isTrapKill = false;
+        public static Status status = Status.notPlaced;
+        public static Vector3 pos;
 
         public static bool meetingFlag;
         
@@ -62,7 +71,7 @@ namespace TheOtherRoles
                     // トラップを踏んだプレイヤーを動けなくする 
                     foreach(var p in PlayerControl.AllPlayerControls)
                     {
-                        if(p.isDead() || p.inVent) continue;
+                        if(p.isDead() || p.inVent || status != Status.placed) continue;
                         var p1 = p.transform.localPosition;
                         Dictionary<GameObject, byte> listActivate = new Dictionary<GameObject, byte>();
                         var p2 = trap.transform.localPosition;
@@ -93,7 +102,7 @@ namespace TheOtherRoles
                     }
                 }
 
-                if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trappedPlayer != null && trap != null)
+                if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trappedPlayer != null && status== Status.active)
                 {
                     // トラップにかかっているプレイヤーを救出する
                     Vector3 p1 = trap.transform.position;
@@ -198,12 +207,25 @@ namespace TheOtherRoles
             disable = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperDisable.wav", false);
             kill = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperKill.wav", false);
             countdown = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperCountdown.wav", false);
+            Trapper.trap = new GameObject("Trap");
+            var trapRenderer = Trapper.trap.AddComponent<SpriteRenderer>();
+            Trapper.sound = new GameObject("TrapSound");
+            audioSource = Trapper.sound.gameObject.AddComponent<AudioSource>();
+            audioSource.priority = 0;
+            audioSource.spatialBlend = 1;
+            audioSource.clip = Trapper.place;
+            audioSource.loop = false;
+            audioSource.playOnAwake = false;
+            audioSource.minDistance = Trapper.minDsitance;
+            audioSource.rolloffMode = Trapper.rollOffMode;
             meetingFlag = false;
             placedTime = DateTime.UtcNow;
             playingKillSound = false;
             trappedPlayer = null;
             trap = null;
             isTrapKill = false;
+            status = Status.notPlaced;
+            pos = Vector3.zero;
             unsetTrap();
         }
 
@@ -228,10 +250,10 @@ namespace TheOtherRoles
             if(Trapper.trap != null)
             {
                 Trapper.trap.SetActive(false);
-                GameObject.Destroy(Trapper.trap);
             }
-            Trapper.trap = null;
             Trapper.trappedPlayer = null;
+            Trapper.audioSource.Stop();
+            Trapper.status = Trapper.Status.notPlaced;
         }
 
         private static Sprite trapeffectSprite;

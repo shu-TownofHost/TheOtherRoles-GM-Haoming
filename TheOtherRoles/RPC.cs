@@ -1193,41 +1193,42 @@ namespace TheOtherRoles
         public static void placeTrap(byte[] buff)
         {
             Trapper.unsetTrap();
+            if(Trapper.trap == null){
+                Trapper.trap = new GameObject("Trap");
+                var trapRenderer = Trapper.trap.AddComponent<SpriteRenderer>();
+                trapRenderer.sprite = Trapper.getTrapEffectSprite();
+            }
+            Trapper.status = Trapper.Status.placed;
             Vector3 pos = Vector3.zero;
             pos.x = BitConverter.ToSingle(buff, 0*sizeof(float));
             pos.y = BitConverter.ToSingle(buff, 1*sizeof(float));
-            GameObject trap = new GameObject("Trap");
-            Trapper.trap = trap;
-            Vector3 position = new Vector3(pos.x, pos.y, PlayerControl.LocalPlayer.transform.localPosition.z - 0.001f); // just behind player
-            trap.transform.position = position;
-            trap.transform.localPosition = position;
+            Trapper.pos = new Vector3(pos.x, pos.y, PlayerControl.LocalPlayer.transform.localPosition.z - 0.001f); // just behind player
+            Trapper.trap.transform.position = Trapper.pos;
+            Trapper.trap.transform.localPosition = Trapper.pos;
+            Trapper.trap.SetActive(true);
 
-            var trapRenderer = trap.AddComponent<SpriteRenderer>();
-            trapRenderer.sprite = Trapper.getTrapEffectSprite();
-
-            trap.SetActive(true);
             // 音を鳴らす
-            AudioSource audioSource = trap.gameObject.AddComponent<AudioSource>();
-            audioSource.priority = 0;
-            audioSource.spatialBlend = 1;
-            audioSource.clip = Trapper.place;
-            audioSource.loop = false;
-            audioSource.playOnAwake = false;
-            audioSource.minDistance = Trapper.minDsitance;
-            audioSource.maxDistance = 2 * Trapper.maxDistance/3;
-            audioSource.rolloffMode = Trapper.rollOffMode;
-            audioSource.PlayOneShot(Trapper.place);
+            if(Trapper.sound == null)
+            {
+                Trapper.sound = new GameObject("TrapSound");
+                Trapper.audioSource = Trapper.sound.gameObject.AddComponent<AudioSource>();
+            } 
+            Trapper.sound.transform.position = Trapper.pos;
+            Trapper.sound.transform.position = Trapper.pos;
+            Trapper.audioSource.loop = false;
+            Trapper.audioSource.maxDistance = 2 * Trapper.maxDistance/3;
+            Trapper.audioSource.PlayOneShot(Trapper.place);
 
-            // 猶予時間の1秒前にトラップの表示を消す
+            // 猶予時間後にトラップの表示を消す
             if(!PlayerControl.LocalPlayer.isImpostor())
             {
-                HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.extensionTime - 1, new Action<float>((p) =>
+                HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.extensionTime, new Action<float>((p) =>
                 { // Delayed action
                     if (p == 1f)
                     {
-                        if(trap != null)
+                        if(Trapper.trap != null)
                         {
-                            trap.SetActive(false);
+                            Trapper.trap.SetActive(false);
                         }
                     }
                 })));
@@ -1239,10 +1240,6 @@ namespace TheOtherRoles
         }
         public static void disableTrap(byte playerId, bool setCooldown)
         {
-            if(PlayerControl.LocalPlayer.PlayerId == playerId || (Trapper.trappedPlayer != null &&PlayerControl.LocalPlayer.PlayerId == Trapper.trappedPlayer.PlayerId))
-            {
-                SoundManager.Instance.PlaySound(Trapper.disable, false, 1.0f);
-            }
             Trapper.trappedPlayer = null;
 
             if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && setCooldown)
@@ -1253,22 +1250,16 @@ namespace TheOtherRoles
         }
         public static void activateTrap(byte trapperId, byte playerId)
         {
-            if(Trapper.trap != null)
+            if(Trapper.status == Trapper.Status.placed) // トラップが設置されている
             {
+                Trapper.status = Trapper.Status.active;
                 var trapper = Helpers.playerById(trapperId);
                 var player = Helpers.playerById(playerId);
                 Trapper.trappedPlayer = player;
                 Trapper.trap.SetActive(true);
-                AudioSource audioSource = Trapper.trap.GetComponent<AudioSource>();
-                audioSource.priority = 0;
-                audioSource.spatialBlend = 1;
-                audioSource.clip = Trapper.countdown;
-                audioSource.loop = true;
-                audioSource.playOnAwake = false;
-                audioSource.minDistance = Trapper.minDsitance;
-                audioSource.maxDistance = Trapper.maxDistance;
-                audioSource.rolloffMode = Trapper.rollOffMode;
-                audioSource.Play();
+                Trapper.audioSource.loop = true;
+                Trapper.audioSource.maxDistance = Trapper.maxDistance;
+                Trapper.audioSource.Play();
 
                 player.NetTransform.Halt();
                 HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.killTimer, new Action<float>((p) => 
@@ -1278,11 +1269,17 @@ namespace TheOtherRoles
                         if(Trapper.trappedPlayer == null)
                         {
                             player.moveable = true;
-                            Trapper.unsetTrap();
-                            p = 1.0f;
+                            if(Trapper.status == Trapper.Status.active)
+                            {
+                                Trapper.unsetTrap();
+                                Trapper.audioSource.loop = false;
+                                Trapper.audioSource.maxDistance = Trapper.maxDistance;
+                                Trapper.audioSource.PlayOneShot(Trapper.disable);
+                            }
                             return;
                         }
                         else if((p==1f || Trapper.meetingFlag) && Trapper.trappedPlayer.isAlive()){
+                            Trapper.audioSource.Stop();
                             player.moveable = true;
                             if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                             {
@@ -1291,7 +1288,6 @@ namespace TheOtherRoles
                                 writer.Write(player.PlayerId);
                                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 RPCProcedure.trapperKill(PlayerControl.LocalPlayer.PlayerId, player.PlayerId);
-                                Trapper.trapperSetTrapButton.Timer = Trapper.trapperSetTrapButton.MaxTimer;
                             }
                         }else{
                             player.moveable = false;
@@ -1312,19 +1308,12 @@ namespace TheOtherRoles
         }
         public static void trapperKill(byte trapperId, byte playerId)
         {
-            if(Trapper.trap != null){
+            if(Trapper.status == Trapper.Status.active){
                 Trapper.playingKillSound = true;
-                AudioSource audioSource = Trapper.trap.GetComponent<AudioSource>();
-                audioSource.Stop();
-                audioSource.priority = 0;
-                audioSource.spatialBlend = 1;
-                audioSource.clip = Trapper.kill;
-                audioSource.loop = false;
-                audioSource.playOnAwake = false;
-                audioSource.minDistance = Trapper.minDsitance;
-                audioSource.maxDistance = Trapper.maxDistance;
-                audioSource.rolloffMode = Trapper.rollOffMode;
-                audioSource.Play();
+                Trapper.audioSource.Stop();
+                Trapper.audioSource.loop = false;
+                Trapper.audioSource.maxDistance = Trapper.maxDistance;
+                Trapper.audioSource.PlayOneShot(Trapper.kill);
                 HudManager.Instance.StartCoroutine(Effects.Lerp(Trapper.kill.length, new Action<float>((p) => 
                 {
                     if(p ==1)
