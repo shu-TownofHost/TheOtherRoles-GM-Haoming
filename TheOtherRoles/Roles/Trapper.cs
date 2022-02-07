@@ -133,16 +133,19 @@ namespace TheOtherRoles
         float distance = Vector3.Distance(target.transform.position, player.transform.position);
         if (target == Trapper.trappedPlayer && !isTrapKill)  // トラップにかかっている対象をキルした場合のボーナス
         {
+            Helpers.log("トラップにかかっている対象をキルした場合のボーナス");
             player.killTimer = PlayerControl.GameOptions.KillCooldown - bonusTime;
             trapperSetTrapButton.Timer = cooldown - bonusTime;
         }
-        else if (target == Trapper.trappedPlayer && isTrapKill)  // トラップキルした場合のペナルティ
+        else if (target.PlayerId == Trapper.trappedPlayer.PlayerId && isTrapKill)  // トラップキルした場合のペナルティ
         {
+            Helpers.log("トラップキルした場合のペナルティ");
             player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
             trapperSetTrapButton.Timer = cooldown + penaltyTime;
         }
         else // トラップにかかっていない対象を通常キルした場合はペナルティーを受ける
         {
+            Helpers.log("通常キル時のペナルティ");
             player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
             trapperSetTrapButton.Timer = cooldown + penaltyTime;
         }
@@ -152,6 +155,7 @@ namespace TheOtherRoles
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
             writer.Write(player.PlayerId);
+            writer.Write((byte)0);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             RPCProcedure.disableTrap(player.PlayerId, false);
         }
@@ -252,7 +256,6 @@ namespace TheOtherRoles
                 Trapper.trap.SetActive(false);
             }
             Trapper.trappedPlayer = null;
-            Trapper.audioSource.Stop();
             Trapper.status = Trapper.Status.notPlaced;
         }
 

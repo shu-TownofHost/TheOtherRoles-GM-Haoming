@@ -1215,6 +1215,7 @@ namespace TheOtherRoles
             } 
             Trapper.sound.transform.position = Trapper.pos;
             Trapper.sound.transform.position = Trapper.pos;
+            Trapper.audioSource.clip = Trapper.place;
             Trapper.audioSource.loop = false;
             Trapper.audioSource.maxDistance = 2 * Trapper.maxDistance/3;
             Trapper.audioSource.PlayOneShot(Trapper.place);
@@ -1242,11 +1243,24 @@ namespace TheOtherRoles
         {
             Trapper.trappedPlayer = null;
 
+            // カウントダウン音を止める
+            if(Trapper.audioSource.clip == Trapper.countdown)
+                Trapper.audioSource.Stop();
+
+            if(setCooldown) //　解除の場合
+            {
+                Trapper.audioSource.clip = Trapper.disable;
+                Trapper.audioSource.loop = false;
+                Trapper.audioSource.maxDistance = Trapper.maxDistance;
+                Trapper.audioSource.PlayOneShot(Trapper.disable);
+            }
+
             if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && setCooldown)
             {
                 PlayerControl.LocalPlayer.killTimer = PlayerControl.GameOptions.KillCooldown + Trapper.penaltyTime;
                 Trapper.trapperSetTrapButton.Timer = Trapper.cooldown + Trapper.penaltyTime;
             }
+            Trapper.unsetTrap();
         }
         public static void activateTrap(byte trapperId, byte playerId)
         {
@@ -1259,6 +1273,7 @@ namespace TheOtherRoles
                 Trapper.trap.SetActive(true);
                 Trapper.audioSource.loop = true;
                 Trapper.audioSource.maxDistance = Trapper.maxDistance;
+                Trapper.audioSource.clip = Trapper.countdown;
                 Trapper.audioSource.Play();
 
                 player.NetTransform.Halt();
@@ -1269,17 +1284,9 @@ namespace TheOtherRoles
                         if(Trapper.trappedPlayer == null)
                         {
                             player.moveable = true;
-                            if(Trapper.status == Trapper.Status.active)
-                            {
-                                Trapper.unsetTrap();
-                                Trapper.audioSource.loop = false;
-                                Trapper.audioSource.maxDistance = Trapper.maxDistance;
-                                Trapper.audioSource.PlayOneShot(Trapper.disable);
-                            }
                             return;
                         }
                         else if((p==1f || Trapper.meetingFlag) && Trapper.trappedPlayer.isAlive()){
-                            Trapper.audioSource.Stop();
                             player.moveable = true;
                             if(PlayerControl.LocalPlayer.isRole(RoleId.Trapper))
                             {
@@ -1310,6 +1317,7 @@ namespace TheOtherRoles
         {
             if(Trapper.status == Trapper.Status.active){
                 Trapper.playingKillSound = true;
+                Trapper.audioSource.clip = Trapper.kill;
                 Trapper.audioSource.Stop();
                 Trapper.audioSource.loop = false;
                 Trapper.audioSource.maxDistance = Trapper.maxDistance;
@@ -1602,8 +1610,9 @@ namespace TheOtherRoles
                     RPCProcedure.activateTrap(reader.ReadByte(), reader.ReadByte());
                     break;
                 case (byte)CustomRPC.DisableTrap:
+                    byte trapperId = reader.ReadByte();
                     bool setCooldown = reader.ReadByte() == (byte)1 ? true : false;
-                    RPCProcedure.disableTrap(reader.ReadByte(), setCooldown);
+                    RPCProcedure.disableTrap(trapperId, setCooldown);
                     break;
                 case (byte)CustomRPC.TrapperKill:
                     RPCProcedure.trapperKill(reader.ReadByte(), reader.ReadByte());
