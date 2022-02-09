@@ -1,0 +1,10 @@
+name: Build
+on: [workflow_dispatch]
+jobs:
+  Build-DLL:
+    runs-on: self-hosted
+    container: 
+        image: build_amongus:2021.12.15s
+    steps:
+      - name: Build
+        run: dotnet build --configuration Release
