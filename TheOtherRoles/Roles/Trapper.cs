@@ -46,7 +46,6 @@ namespace TheOtherRoles
         public static bool isTrapKill = false;
         public static Status status = Status.notPlaced;
         public static Vector3 pos;
-
         public static bool meetingFlag;
         
 
@@ -64,6 +63,7 @@ namespace TheOtherRoles
 
         public override void FixedUpdate() 
         {
+
             if(DateTime.UtcNow.Subtract(placedTime).TotalSeconds < extensionTime) return;
             try{
                 if (PlayerControl.LocalPlayer.isRole(RoleId.Trapper) && trap != null && trappedPlayer == null && !playingKillSound)
@@ -71,7 +71,7 @@ namespace TheOtherRoles
                     // トラップを踏んだプレイヤーを動けなくする 
                     foreach(var p in PlayerControl.AllPlayerControls)
                     {
-                        if(p.isDead() || p.inVent || status != Status.placed) continue;
+                        if(p.isDead() || p.inVent || status != Status.placed || meetingFlag) continue;
                         var p1 = p.transform.localPosition;
                         Dictionary<GameObject, byte> listActivate = new Dictionary<GameObject, byte>();
                         var p2 = trap.transform.localPosition;
@@ -130,14 +130,13 @@ namespace TheOtherRoles
     public override void OnKill(PlayerControl target) 
     {
         //　キルクールダウン設定
-        float distance = Vector3.Distance(target.transform.position, player.transform.position);
         if (target == Trapper.trappedPlayer && !isTrapKill)  // トラップにかかっている対象をキルした場合のボーナス
         {
             Helpers.log("トラップにかかっている対象をキルした場合のボーナス");
             player.killTimer = PlayerControl.GameOptions.KillCooldown - bonusTime;
             trapperSetTrapButton.Timer = cooldown - bonusTime;
         }
-        else if (target.PlayerId == Trapper.trappedPlayer.PlayerId && isTrapKill)  // トラップキルした場合のペナルティ
+        else if (Trapper.trappedPlayer != null && target.PlayerId == Trapper.trappedPlayer.PlayerId && isTrapKill)  // トラップキルした場合のペナルティ
         {
             Helpers.log("トラップキルした場合のペナルティ");
             player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
@@ -175,7 +174,14 @@ namespace TheOtherRoles
     {
         trapperSetTrapButton = new CustomButton(
             () => { // ボタンが押された時に実行
-                if (!PlayerControl.LocalPlayer.CanMove && Trapper.trappedPlayer != null) return;
+                // Skeldでボタン付近に罠をおけなくする
+                if (PlayerControl.GameOptions.MapId == 0)
+                {
+                    var meetingButton = GameObject.Find("EmergencyConsole");
+                    float distance = Vector2.Distance(meetingButton.transform.position, PlayerControl.LocalPlayer.transform.position);
+                    if (distance < 3) return;
+                }
+                if (!PlayerControl.LocalPlayer.CanMove || Trapper.trappedPlayer != null) return;
                 Trapper.setTrap();
                 trapperSetTrapButton.Timer = trapperSetTrapButton.MaxTimer;
             },

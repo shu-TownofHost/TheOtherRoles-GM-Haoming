@@ -22,7 +22,7 @@ namespace TheOtherRoles
     {
         public const string Id = "me.eisbison.theotherroles";
 
-        public const string VersionString = "22.2.6";
+        public const string VersionString = "22.2.81";
         public static System.Version Version = System.Version.Parse(VersionString);
         internal static BepInEx.Logging.ManualLogSource Logger;
 
