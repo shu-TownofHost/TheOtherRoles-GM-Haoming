@@ -59,6 +59,8 @@ namespace TheOtherRoles
         CreatedMadmate,
         LastImpostor,
         Trapper,
+        BomberA,
+        BomberB,
 
 
         Mini = 150,
@@ -628,6 +630,12 @@ namespace TheOtherRoles
                         break;
                     case RoleId.Trapper:
                         Trapper.swapRole(player, oldShifter);
+                        break;
+                    case RoleId.BomberA:
+                        BomberA.swapRole(player, oldShifter);
+                        break;
+                    case RoleId.BomberB:
+                        BomberB.swapRole(player, oldShifter);
                         break;
                 }
             }
