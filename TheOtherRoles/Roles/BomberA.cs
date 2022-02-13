@@ -175,6 +175,10 @@ namespace TheOtherRoles
 
         public static void Clear()
         {
+            bombTarget = null;
+            currentTarget = null;
+            tmpTarget = null;
+            arrows = new List<Arrow>();
             players = new List<BomberA>();
         }
         public static bool isAlive()
@@ -209,8 +213,11 @@ namespace TheOtherRoles
 
                 // 前回のArrowをすべて破棄する
                 foreach(Arrow arrow in arrows){
-                    arrow.arrow.SetActive(false);
-                    UnityEngine.Object.Destroy(arrow.arrow);
+                    if(arrow != null)
+                    {
+                        arrow.arrow.SetActive(false);
+                        UnityEngine.Object.Destroy(arrow.arrow);
+                    }
                 }
 
                 // Arrorw一覧
