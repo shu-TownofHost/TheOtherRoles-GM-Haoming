@@ -14,7 +14,7 @@ namespace TheOtherRoles
     [HarmonyPatch]
     public class BomberA : RoleBase<BomberA>
     {
-        public static Color color = Palette.CrewmateBlue;
+        public static Color color = Palette.ImpostorRed;
 
         public static CustomButton bomberButton;
         public static CustomButton releaseButton;
@@ -47,6 +47,18 @@ namespace TheOtherRoles
                 currentTarget = setTarget();
                 setPlayerOutline(currentTarget, BomberA.color);
                 arrowUpdate();
+
+                if(player.isAlive() && BomberB.isAlive() && bombTarget != null)
+                {
+                    foreach (PoolablePlayer pp in MapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
+                    if (MapOptions.playerIcons.ContainsKey(bombTarget.PlayerId) && MapOptions.playerIcons[bombTarget.PlayerId].gameObject != null)
+                    {
+                        Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
+                        var icon = MapOptions.playerIcons[bombTarget.PlayerId];
+                        icon.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
+                        icon.transform.localScale = Vector3.one * 0.4f;
+                    }
+                }
             }
         }
         public override void OnKill(PlayerControl target) { }
@@ -68,7 +80,7 @@ namespace TheOtherRoles
                     }
                 },
                 // HasButton
-                () => { return PlayerControl.LocalPlayer.isRole(RoleId.BomberA)  && PlayerControl.LocalPlayer.isAlive(); },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.BomberA)  && PlayerControl.LocalPlayer.isAlive() && BomberB.isAlive(); },
                 // CouldUse
                 () =>
                 {
@@ -122,8 +134,7 @@ namespace TheOtherRoles
 
                     if (PlayerControl.LocalPlayer.CanMove && BomberA.bombTarget != null && BomberB.bombTarget != null && bomberB.isAlive() && distance < 1)
                     {
-                        int random = rnd.Next(0,1);
-                        var target = random == 0 ? BomberA.bombTarget : BomberB.bombTarget;
+                        var target = bombTarget;
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReleaseBomb, Hazel.SendOption.Reliable, -1);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(target.PlayerId);
@@ -132,7 +143,7 @@ namespace TheOtherRoles
                     }
                 },
                 // HasButton
-                () => { return PlayerControl.LocalPlayer.isRole(RoleId.BomberA)  && PlayerControl.LocalPlayer.isAlive(); },
+                () => { return PlayerControl.LocalPlayer.isRole(RoleId.BomberA)  && PlayerControl.LocalPlayer.isAlive() && BomberB.isAlive(); },
                 // CouldUse
                 () =>
                 {
