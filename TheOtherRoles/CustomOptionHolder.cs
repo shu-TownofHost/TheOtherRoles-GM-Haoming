@@ -358,6 +358,8 @@ namespace TheOtherRoles {
         public static CustomOption trapperPenaltyTime;
         public static CustomOption trapperBonusTime;
         public static CustomRoleOption bomberSpawnRate;
+        public static CustomOption bomberCooldown;
+        public static CustomOption bomberDuration;
 
         public static CustomOption additionalVents;
         public static CustomOption specimenVital;
@@ -487,6 +489,8 @@ namespace TheOtherRoles {
             trapperBonusTime = CustomOption.Create(1028, "罠キル時のボーナスタイム", 10f, 0f, 50f, 1f, trapperSpawnRate);
 
             bomberSpawnRate = new CustomRoleOption(1030, "爆弾魔", BomberA.color, 1);
+            bomberCooldown = CustomOption.Create(1031, "爆弾クールダウン", 20f, 2f, 60f, 1f, bomberSpawnRate);
+            bomberDuration = CustomOption.Create(1032, "爆弾設置時間", 2f, 0f, 60f, 0.5f, bomberSpawnRate);
 
             madmateSpawnRate = new CustomRoleOption(360, "madmate", Madmate.color);
             madmateCanDieToSheriff = CustomOption.Create(361, "madmateCanDieToSheriff", false, madmateSpawnRate);
