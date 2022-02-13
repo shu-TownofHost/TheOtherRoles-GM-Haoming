@@ -55,6 +55,7 @@ namespace TheOtherRoles
                     {
                         Vector3 bottomLeft = new Vector3(-HudManager.Instance.UseButton.transform.localPosition.x, HudManager.Instance.UseButton.transform.localPosition.y, HudManager.Instance.UseButton.transform.localPosition.z);
                         var icon = MapOptions.playerIcons[bombTarget.PlayerId];
+                        icon.gameObject.SetActive(true);
                         icon.transform.localPosition = bottomLeft + new Vector3(-0.25f, 0f, 0);
                         icon.transform.localScale = Vector3.one * 0.4f;
                     }
