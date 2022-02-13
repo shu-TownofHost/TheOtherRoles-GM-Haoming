@@ -49,7 +49,7 @@ namespace TheOtherRoles
                 arrowUpdate();
 
                 foreach (PoolablePlayer pp in MapOptions.playerIcons.Values) pp.gameObject.SetActive(false);
-                if(player.isAlive() && BomberA.isAlive() && bombTarget != null)
+                if(player.isAlive() && BomberA.isAlive() && bombTarget != null )
                 {
                     if (MapOptions.playerIcons.ContainsKey(bombTarget.PlayerId) && MapOptions.playerIcons[bombTarget.PlayerId].gameObject != null)
                     {
@@ -204,6 +204,7 @@ namespace TheOtherRoles
         }
         static void arrowUpdate()
         {
+            if(BomberA.bombTarget == null || BomberB.bombTarget == null) return;
 
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;

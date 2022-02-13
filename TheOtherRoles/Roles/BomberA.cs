@@ -204,6 +204,7 @@ namespace TheOtherRoles
         }
         static void arrowUpdate()
         {
+            if(BomberA.bombTarget == null || BomberB.bombTarget == null) return;
 
             // 前フレームからの経過時間をマイナスする
             updateTimer -= Time.fixedDeltaTime;
