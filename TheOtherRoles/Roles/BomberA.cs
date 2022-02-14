@@ -24,6 +24,9 @@ namespace TheOtherRoles
         public static PlayerControl tmpTarget;
         public static float duration {get {return CustomOptionHolder.bomberDuration.getFloat();}}
         public static float cooldown {get {return CustomOptionHolder.bomberCooldown.getFloat();}}
+        public static bool countAsOne {get {return CustomOptionHolder.bomberCountAsOne.getBool();}}
+        public static bool showEffects {get {return CustomOptionHolder.bomberShowEffects.getBool();}}
+        public static bool ifOneDiesBothDie {get {return CustomOptionHolder.bomberIfOneDiesBothDie.getBool();}}
         public static Sprite bomberButtonSprite;
         public static Sprite releaseButtonSprite;
         public static float updateTimer = 0f;
@@ -39,6 +42,7 @@ namespace TheOtherRoles
         public override void OnMeetingEnd()
         {
             bombTarget = null;
+            BombEffect.clearBombEffects();
         }
         public override void FixedUpdate()
         {
@@ -63,7 +67,26 @@ namespace TheOtherRoles
             }
         }
         public override void OnKill(PlayerControl target) { }
-        public override void OnDeath(PlayerControl killer = null) { }
+        public override void OnDeath(PlayerControl killer = null)
+        {
+            if(ifOneDiesBothDie)
+            {
+                var partner = BomberB.players.FirstOrDefault().player;
+                if (!partner.Data.IsDead)
+                {
+                    if (killer != null)
+                    {
+                        partner.MurderPlayer(partner);
+                    }
+                    else
+                    {
+                        partner.Exiled();
+                    }
+
+                    finalStatuses[partner.PlayerId] = FinalStatus.Suicide;
+                }
+            }
+        }
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
 
         public static void MakeButtons(HudManager hm) 
@@ -171,6 +194,7 @@ namespace TheOtherRoles
         public static void SetButtonCooldowns() {
             bomberButton.MaxTimer = cooldown;
             bomberButton.EffectDuration = duration;
+            releaseButton.MaxTimer = 0f;
          }
 
         public static void Clear()

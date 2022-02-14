@@ -24,6 +24,7 @@ namespace TheOtherRoles
         public static PlayerControl tmpTarget;
         public static float duration {get {return CustomOptionHolder.bomberDuration.getFloat();}}
         public static float cooldown {get {return CustomOptionHolder.bomberCooldown.getFloat();}}
+        public static bool ifOneDiesBothDie {get {return CustomOptionHolder.bomberIfOneDiesBothDie.getBool();}}
         public static Sprite bomberButtonSprite;
         public static Sprite releaseButtonSprite;
         public static float updateTimer = 0f;
@@ -63,7 +64,27 @@ namespace TheOtherRoles
             }
         }
         public override void OnKill(PlayerControl target) { }
-        public override void OnDeath(PlayerControl killer = null) { }
+        public override void OnDeath(PlayerControl killer = null) 
+        {
+            if(ifOneDiesBothDie)
+            {
+                var partner = BomberA.players.FirstOrDefault().player;
+                if (!partner.Data.IsDead)
+                {
+                    if (killer != null)
+                    {
+                        partner.MurderPlayer(partner);
+                    }
+                    else
+                    {
+                        partner.Exiled();
+                    }
+
+                    finalStatuses[partner.PlayerId] = FinalStatus.Suicide;
+                }
+            }
+
+         }
         public override void HandleDisconnect(PlayerControl player, DisconnectReasons reason) { }
 
         public static void MakeButtons(HudManager hm) 
@@ -171,6 +192,7 @@ namespace TheOtherRoles
         public static void SetButtonCooldowns() {
             bomberButton.MaxTimer = cooldown;
             bomberButton.EffectDuration = duration;
+            releaseButton.MaxTimer = 0f;
          }
 
         public static void Clear()

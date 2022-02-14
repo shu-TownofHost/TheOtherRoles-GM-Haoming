@@ -192,6 +192,7 @@ namespace TheOtherRoles
             CustomOverlays.resetOverlays();
             SpecimenVital.clearAndReload();
             AdditionalVents.clearAndReload();
+            BombEffect.clearBombEffects();
 
             KillAnimationCoPerformKillPatch.hideNextAnimation = false;
         }
@@ -1449,6 +1450,10 @@ namespace TheOtherRoles
             var t = Helpers.playerById(target);
             KillAnimationCoPerformKillPatch.hideNextAnimation = true;
             k.MurderPlayer(t);
+            if(BomberA.showEffects)
+            {
+                new BombEffect(t);
+            }
             BomberA.bomberButton.Timer = BomberA.bomberButton.MaxTimer;
             BomberB.bomberButton.Timer = BomberB.bomberButton.MaxTimer;
         }

@@ -360,7 +360,9 @@ namespace TheOtherRoles {
         public static CustomRoleOption bomberSpawnRate;
         public static CustomOption bomberCooldown;
         public static CustomOption bomberDuration;
-
+        public static CustomOption bomberCountAsOne;
+        public static CustomOption bomberShowEffects;
+        public static CustomOption bomberIfOneDiesBothDie;
         public static CustomOption additionalVents;
         public static CustomOption specimenVital;
         public static CustomOption polusRandomSpawn;
@@ -491,6 +493,9 @@ namespace TheOtherRoles {
             bomberSpawnRate = new CustomRoleOption(1030, "爆弾魔", BomberA.color, 1);
             bomberCooldown = CustomOption.Create(1031, "爆弾クールダウン", 20f, 2f, 60f, 1f, bomberSpawnRate);
             bomberDuration = CustomOption.Create(1032, "爆弾設置時間", 2f, 0f, 60f, 0.5f, bomberSpawnRate);
+            bomberCountAsOne = CustomOption.Create(1033, "１インポスターとしてカウントする", true, bomberSpawnRate);
+            bomberShowEffects = CustomOption.Create(1034, "キル時にエフェクトを表示する", true, bomberSpawnRate);
+            bomberIfOneDiesBothDie = CustomOption.Create(1035, "一人が死んだら両方死ぬ", true, bomberSpawnRate);
 
             madmateSpawnRate = new CustomRoleOption(360, "madmate", Madmate.color);
             madmateCanDieToSheriff = CustomOption.Create(361, "madmateCanDieToSheriff", false, madmateSpawnRate);
