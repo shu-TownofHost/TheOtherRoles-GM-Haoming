@@ -1626,7 +1626,9 @@ namespace TheOtherRoles
             playerControl.GetComponent<DummyBehaviour>().enabled = false;
             playerControl.NetTransform.enabled = true;
             playerControl.NetTransform.Halt();
+            playerControl.Visible = false;
             GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
+            playerControl.clearAllTasks();
         }
 
         public static void walkDummy(Vector3 direction)
