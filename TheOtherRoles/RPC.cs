@@ -64,6 +64,7 @@ namespace TheOtherRoles
         BomberA,
         BomberB,
         EvilTracker,
+        Puppeteer,
 
 
         Mini = 150,
@@ -178,7 +179,10 @@ namespace TheOtherRoles
         RandomSpawn,
         PlantBomb,
         ReleaseBomb,
-        BomberKill
+        BomberKill,
+        SpawnDummy,
+        WalkDummy,
+        MoveDummy,
     }
 
     public static class RPCProcedure
@@ -716,6 +720,9 @@ namespace TheOtherRoles
                         break;
                     case RoleType.EvilTracker:
                         EvilTracker.swapRole(player, oldShifter);
+                        break;
+                    case RoleType.Puppeteer:
+                        Puppeteer.swapRole(player, oldShifter);
                         break;
                 }
             }
@@ -1606,6 +1613,36 @@ namespace TheOtherRoles
             BomberA.bomberButton.Timer = BomberA.bomberButton.MaxTimer;
             BomberB.bomberButton.Timer = BomberB.bomberButton.MaxTimer;
         }
+
+        public static void spawnDummy(byte playerId, Vector3 pos)
+        {
+            var playerControl = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
+            playerControl.PlayerId = playerId;
+
+            Puppeteer.dummy = playerControl;
+            GameData.Instance.AddPlayer(playerControl);
+
+            playerControl.transform.position = pos;
+            playerControl.GetComponent<DummyBehaviour>().enabled = false;
+            playerControl.NetTransform.enabled = true;
+            playerControl.NetTransform.Halt();
+            GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
+        }
+
+        public static void walkDummy(Vector3 direction)
+        {
+            var dummy = Puppeteer.dummy;
+            dummy.NetTransform.targetSyncPosition = dummy.transform.position + direction;
+        }
+
+        public static void moveDummy(Vector3 pos)
+        {
+            var dummy = Puppeteer.dummy;
+            dummy.Visible = true;
+            dummy.transform.position = pos;
+            dummy.NetTransform.Halt();
+            dummy.moveable = true;
+        }
        
 
 
@@ -1910,6 +1947,32 @@ namespace TheOtherRoles
                         break;
                     case (byte)CustomRPC.BomberKill:
                         RPCProcedure.bomberKill(reader.ReadByte(), reader.ReadByte());
+                        break;
+                    case (byte)CustomRPC.SpawnDummy:
+                        byte newId = reader.ReadByte();
+                        byte[] spawnTmp = reader.ReadBytes(4);
+                        float spawnX = System.BitConverter.ToSingle(spawnTmp, 0);
+                        spawnTmp = reader.ReadBytes(4);
+                        float spawnY = System.BitConverter.ToSingle(spawnTmp, 0);
+                        spawnTmp = reader.ReadBytes(4);
+                        float spawnZ = System.BitConverter.ToSingle(spawnTmp, 0);
+                        RPCProcedure.spawnDummy(newId, new Vector3(spawnX, spawnY, spawnZ));
+                        break;
+                    case (byte)CustomRPC.MoveDummy:
+                        byte[] moveTmp = reader.ReadBytes(4);
+                        float moveX = System.BitConverter.ToSingle(moveTmp, 0);
+                        moveTmp = reader.ReadBytes(4);
+                        float moveY = System.BitConverter.ToSingle(moveTmp, 0);
+                        moveTmp = reader.ReadBytes(4);
+                        float moveZ = System.BitConverter.ToSingle(moveTmp, 0);
+                        RPCProcedure.moveDummy(new Vector3(moveX, moveY, moveZ));
+                        break;
+                    case (byte)CustomRPC.WalkDummy:
+                        byte[] walkTmp = reader.ReadBytes(4);
+                        float walkX = System.BitConverter.ToSingle(walkTmp, 0);
+                        walkTmp = reader.ReadBytes(4);
+                        float walkY = System.BitConverter.ToSingle(walkTmp, 0);
+                        RPCProcedure.walkDummy(new Vector3(walkX, walkY, 0f));
                         break;
                 }
             }

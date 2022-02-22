@@ -392,6 +392,7 @@ namespace TheOtherRoles {
         public static CustomOption evilTrackerCooldown;
         public static CustomOption evilTrackerResetTargetAfterMeeting;
         public static CustomOption evilTrackerCanSeeDeathFlash;
+        public static CustomRoleOption puppeteerSpawnRate;
         public static CustomOption additionalVents;
         public static CustomOption specimenVital;
         public static CustomOption polusRandomSpawn;
@@ -530,6 +531,8 @@ namespace TheOtherRoles {
             evilTrackerCooldown = CustomOption.Create(1052, "トラッカークールダウン", 10f, 0f, 60f, 1f, evilTrackerSpawnRate);
             evilTrackerResetTargetAfterMeeting = CustomOption.Create(1053, "会議後に再度ターゲットを設定できる", true, evilTrackerSpawnRate);
             evilTrackerCanSeeDeathFlash = CustomOption.Create(1054, "インポスターキルのデスフラッシュを見ることができる", true, evilTrackerSpawnRate);
+
+            puppeteerSpawnRate = new CustomRoleOption(1060, "人形使い", Puppeteer.color, 1);
 
             nekoKabochaSpawnRate = new CustomRoleOption(1020, "nekoKabocha", NekoKabocha.color, 3);
             nekoKabochaRevengeCrew = CustomOption.Create(1021, "nekoKabochaRevengeCrew", true, nekoKabochaSpawnRate);

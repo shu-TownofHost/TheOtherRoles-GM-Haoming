@@ -166,42 +166,58 @@ namespace TheOtherRoles
             }
 
             // Spawn dummys
-            if (Input.GetKeyDown(KeyCode.F1)) {
-                var playerControl = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
-                var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
+            if (Input.GetKeyDown(KeyCode.F1) && Puppeteer.dummy == null) {
+                var playerId = (byte) GameData.Instance.GetAvailableId();
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SpawnDummy, Hazel.SendOption.Reliable, -1);
+                writer.Write(playerId);
+                writer.Write(PlayerControl.LocalPlayer.transform.position.x);
+                writer.Write(PlayerControl.LocalPlayer.transform.position.y);
+                writer.Write(PlayerControl.LocalPlayer.transform.position.z);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.spawnDummy(playerId, PlayerControl.LocalPlayer.transform.position);
 
-                bots.Add(playerControl);
-                GameData.Instance.AddPlayer(playerControl);
-                // AmongUsClient.Instance.Spawn(playerControl, -2, InnerNet.SpawnFlags.None);
+                // var playerControl = UnityEngine.Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
+                // var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
 
-                int hat = random.Next(HatManager.Instance.AllHats.Count);
-                int pet = random.Next(HatManager.Instance.AllPets.Count);
-                int skin = random.Next(HatManager.Instance.AllSkins.Count);
-                int visor = random.Next(HatManager.Instance.AllVisors.Count);
-                int color = random.Next(Palette.PlayerColors.Length);
-                int nameplate = random.Next(HatManager.Instance.AllNamePlates.Count);
+                // bots.Add(playerControl);
+                // GameData.Instance.AddPlayer(playerControl);
+                // // AmongUsClient.Instance.Spawn(playerControl, -2, InnerNet.SpawnFlags.None);
 
-                playerControl.transform.position = PlayerControl.LocalPlayer.transform.position;
-                playerControl.GetComponent<DummyBehaviour>().enabled = false;
-                playerControl.NetTransform.enabled = true;
-                playerControl.NetTransform.Halt();
-                playerControl.SetName(RandomString(10));
-                playerControl.SetColor(color);
-                playerControl.SetHat(HatManager.Instance.AllHats[hat].ProductId, color);
-                playerControl.SetPet(HatManager.Instance.AllPets[pet].ProductId, color);
-                playerControl.SetVisor(HatManager.Instance.AllVisors[visor].ProductId);
-                playerControl.SetSkin(HatManager.Instance.AllSkins[skin].ProductId);
-                playerControl.SetNamePlate(HatManager.Instance.AllNamePlates[nameplate].ProductId);
-                GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
+                // int hat = random.Next(HatManager.Instance.AllHats.Count);
+                // int pet = random.Next(HatManager.Instance.AllPets.Count);
+                // int skin = random.Next(HatManager.Instance.AllSkins.Count);
+                // int visor = random.Next(HatManager.Instance.AllVisors.Count);
+                // int color = random.Next(Palette.PlayerColors.Length);
+                // int nameplate = random.Next(HatManager.Instance.AllNamePlates.Count);
+
+                // playerControl.transform.position = PlayerControl.LocalPlayer.transform.position;
+                // playerControl.GetComponent<DummyBehaviour>().enabled = false;
+                // playerControl.NetTransform.enabled = true;
+                // playerControl.NetTransform.Halt();
+                // playerControl.SetName(RandomString(10));
+                // playerControl.SetColor(color);
+                // playerControl.SetHat(HatManager.Instance.AllHats[hat].ProductId, color);
+                // playerControl.SetPet(HatManager.Instance.AllPets[pet].ProductId, color);
+                // playerControl.SetVisor(HatManager.Instance.AllVisors[visor].ProductId);
+                // playerControl.SetSkin(HatManager.Instance.AllSkins[skin].ProductId);
+                // playerControl.SetNamePlate(HatManager.Instance.AllNamePlates[nameplate].ProductId);
+                // GameData.Instance.RpcSetTasks(playerControl.PlayerId, new byte[0]);
             }
 
             if (Input.GetKeyDown(KeyCode.F2)) {
-                var bot = bots.FirstOrDefault();
-                bot.transform.position = PlayerControl.LocalPlayer.transform.position;
-                bot.NetTransform.Halt();
-                bot.moveable = true;
-                bot.myRend.flipX = PlayerControl.LocalPlayer.myRend.flipX;
-                bot.myRend.flipY = PlayerControl.LocalPlayer.myRend.flipY;
+                var playerId = (byte) GameData.Instance.GetAvailableId();
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MoveDummy, Hazel.SendOption.Reliable, -1);
+                writer.Write(PlayerControl.LocalPlayer.transform.position.x);
+                writer.Write(PlayerControl.LocalPlayer.transform.position.y);
+                writer.Write(PlayerControl.LocalPlayer.transform.position.z);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.moveDummy(PlayerControl.LocalPlayer.transform.position);
+                // var bot = bots.FirstOrDefault();
+                // bot.transform.position = PlayerControl.LocalPlayer.transform.position;
+                // bot.NetTransform.Halt();
+                // bot.moveable = true;
+                // bot.myRend.flipX = PlayerControl.LocalPlayer.myRend.flipX;
+                // bot.myRend.flipY = PlayerControl.LocalPlayer.myRend.flipY;
             }
             if (Input.GetKeyDown(KeyCode.F4)) {
                 var bot = bots.FirstOrDefault();
@@ -210,18 +226,14 @@ namespace TheOtherRoles
                 bot.myRend.flipX = PlayerControl.LocalPlayer.myRend.flipX;
                 bot.myRend.flipY = PlayerControl.LocalPlayer.myRend.flipY;
             }
-            if (Input.GetKeyDown(KeyCode.F3)) {
-                var bot = bots.FirstOrDefault();
-                bot.Visible = !bot.Visible;
-            }
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 var hudManager = DestroyableSingleton<HudManager>.Instance;
-                var bot = bots.FirstOrDefault();
-                hudManager.PlayerCam.SetTarget(bot);
-                bot.myLight = UnityEngine.Object.Instantiate<LightSource>(bot.LightPrefab);
-                bot.myLight.transform.SetParent(bot.transform);
-                bot.myLight.transform.localPosition = bot.Collider.offset;
+                var dummy = Puppeteer.dummy;
+                hudManager.PlayerCam.SetTarget(dummy);
+                dummy.myLight = UnityEngine.Object.Instantiate<LightSource>(dummy.LightPrefab);
+                dummy.myLight.transform.SetParent(dummy.transform);
+                dummy.myLight.transform.localPosition = dummy.Collider.offset;
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -234,17 +246,7 @@ namespace TheOtherRoles
                 player.myLight.transform.localPosition = player.Collider.offset;
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                var bot = bots.FirstOrDefault();
-                bot.MyPhysics.body.velocity = DestroyableSingleton<HudManager>.Instance.joystick.Delta * bot.MyPhysics.TrueSpeed;
-            }
 
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                var bot = bots.FirstOrDefault();
-                bot.MyPhysics.WalkPlayerTo(bot.transform.position + new Vector3(1.0f, 0.0f, 0.0f));
-            }
             if (Input.GetKeyDown(KeyCode.L))
                 right = true;
             if (Input.GetKeyUp(KeyCode.L))
@@ -262,17 +264,30 @@ namespace TheOtherRoles
             if (Input.GetKeyUp(KeyCode.K))
                 down = false;
 
-            if(bots.Count >= 1)
+            if(Puppeteer.dummy != null)
             {
-                var bot = bots.FirstOrDefault();
-                Vector2 pos = bot.transform.position;
+
+                Vector2 pos = Puppeteer.dummy.transform.position;
                 Vector2 offset = Vector2.zero;
                 if(up) offset += new Vector2(0f, 0.5f);
                 if(down) offset += new Vector2(0f, -0.5f);
                 if(left) offset += new Vector2(-0.5f, 0.0f);
                 if(right) offset += new Vector2(0.5f, 0.0f);
-                bot.NetTransform.targetSyncPosition  = pos + offset;
-                if(!(up||down||right||left)) bot.NetTransform.Halt();
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WalkDummy, Hazel.SendOption.Reliable, -1);
+                writer.Write(offset.x);
+                writer.Write(offset.y);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.walkDummy(offset);
+                if(!(up||down||right||left))
+                {
+                    var playerId = (byte) GameData.Instance.GetAvailableId();
+                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MoveDummy, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Puppeteer.dummy.transform.position.x);
+                    writer.Write(Puppeteer.dummy.transform.position.y);
+                    writer.Write(Puppeteer.dummy.transform.position.z);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.moveDummy(Puppeteer.dummy.transform.position);
+                } 
             }
 
             // Terminate round

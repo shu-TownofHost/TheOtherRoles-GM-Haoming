@@ -142,6 +142,7 @@ namespace TheOtherRoles.Patches
             impSettings.Add((byte)RoleType.SerialKiller, CustomOptionHolder.serialKillerSpawnRate.data);
             impSettings.Add((byte)RoleType.Trapper, CustomOptionHolder.trapperSpawnRate.data);
             impSettings.Add((byte)RoleType.EvilTracker, CustomOptionHolder.evilTrackerSpawnRate.data);
+            impSettings.Add((byte)RoleType.Puppeteer, CustomOptionHolder.puppeteerSpawnRate.data);
 
             neutralSettings.Add((byte)RoleType.Jester, CustomOptionHolder.jesterSpawnRate.data);
             neutralSettings.Add((byte)RoleType.Arsonist, CustomOptionHolder.arsonistSpawnRate.data);
