@@ -533,10 +533,10 @@ namespace TheOtherRoles {
             bomberIfOneDiesBothDie = CustomOption.Create(1035, "bomberIfOneDiesBothDie", true, bomberSpawnRate);
             bomberHasOneVote = CustomOption.Create(1036, "bomberHas", true, bomberSpawnRate);
 
-            evilTrackerSpawnRate = new CustomRoleOption(1050, "イビルトラッカー", EvilTracker.color, 1);
-            evilTrackerCooldown = CustomOption.Create(1052, "トラッカークールダウン", 10f, 0f, 60f, 1f, evilTrackerSpawnRate);
-            evilTrackerResetTargetAfterMeeting = CustomOption.Create(1053, "会議後に再度ターゲットを設定できる", true, evilTrackerSpawnRate);
-            evilTrackerCanSeeDeathFlash = CustomOption.Create(1054, "インポスターキルのデスフラッシュを見ることができる", true, evilTrackerSpawnRate);
+            evilTrackerSpawnRate = new CustomRoleOption(1050, "evilTracker", EvilTracker.color, 1);
+            evilTrackerCooldown = CustomOption.Create(1052, "evilTrackerCooldown", 10f, 0f, 60f, 1f, evilTrackerSpawnRate);
+            evilTrackerResetTargetAfterMeeting = CustomOption.Create(1053, "evilTrackerResetTargetAfterMeeting", true, evilTrackerSpawnRate);
+            evilTrackerCanSeeDeathFlash = CustomOption.Create(1054, "evilTrackerCanSeeDeathFlash", true, evilTrackerSpawnRate);
 
 
             nekoKabochaSpawnRate = new CustomRoleOption(1020, "nekoKabocha", NekoKabocha.color, 3);
