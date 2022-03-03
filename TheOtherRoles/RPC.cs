@@ -1356,13 +1356,13 @@ namespace TheOtherRoles
             }
             // インポスターの場合は占い師の位置に矢印を表示 ラストインポスターの占いの場合は表示しない
             if(uranai.isRole(RoleType.Uranai) && PlayerControl.LocalPlayer.isImpostor()){
-                Uranai.uranaiMessage(ModTranslation.getString("fortuneteller2ndUsedDivine"), 5f, Color.white);
+                Uranai.uranaiMessage(ModTranslation.getString("fortuneTeller2ndUsedDivine"), 5f, Color.white);
                 Uranai.impostorArrowFlag = true;
             }
             // 占われたのが背徳者の場合は通知を表示
             if(target.isRole(RoleType.Immoralist) && PlayerControl.LocalPlayer.isRole(RoleType.Immoralist))
             {
-                Uranai.uranaiMessage(ModTranslation.getString("fortuneteller2ndGetDivined"), 5f, Color.white);
+                Uranai.uranaiMessage(ModTranslation.getString("fortuneTeller2ndGetDivined"), 5f, Color.white);
             }
         }
 

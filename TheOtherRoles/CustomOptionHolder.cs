@@ -531,7 +531,7 @@ namespace TheOtherRoles {
             bomberCountAsOne = CustomOption.Create(1033, "bomberCountAsOne", true, bomberSpawnRate);
             bomberShowEffects = CustomOption.Create(1034, "bomberShowEffects", true, bomberSpawnRate);
             bomberIfOneDiesBothDie = CustomOption.Create(1035, "bomberIfOneDiesBothDie", true, bomberSpawnRate);
-            bomberHasOneVote = CustomOption.Create(1036, "bomberHas", true, bomberSpawnRate);
+            bomberHasOneVote = CustomOption.Create(1036, "bomberHasOneVote", true, bomberSpawnRate);
 
             evilTrackerSpawnRate = new CustomRoleOption(1050, "evilTracker", EvilTracker.color, 1);
             evilTrackerCooldown = CustomOption.Create(1052, "evilTrackerCooldown", 10f, 0f, 60f, 1f, evilTrackerSpawnRate);
@@ -682,11 +682,11 @@ namespace TheOtherRoles {
             fortuneTellerDivineOnDiscussTime = CustomOption.Create(932, "議論時間のみ占うことができる", true, fortuneTellerSpawnRate);
             fortuneTellerResultIsCrewOrNot = CustomOption.Create(933, "占い結果が白黒のみ ", true, fortuneTellerSpawnRate);
 
-            uranaiSpawnRate = new CustomRoleOption(940, "fortuneteller2nd", Uranai.color, 1);
-            uranaiNumTasks = CustomOption.Create(941, "fortuneteller2ndNumTasks", 4f, 1f, 10f, 1f, uranaiSpawnRate);
-            uranaiResultIsCrewOrNot = CustomOption.Create(942, "fortuneteller2ndResultisCrewOrNot", true, uranaiSpawnRate);
-            uranaiDuration = CustomOption.Create(943, "fortuneteller2ndDuration", 20f, 1f, 50f, 0.5f, uranaiSpawnRate);
-            uranaiDistance = CustomOption.Create(944, "fortuneteller2ndDistance", 2.5f, 1f, 10f, 0.5f, uranaiSpawnRate, format: "unitMeters");
+            uranaiSpawnRate = new CustomRoleOption(940, "fortuneTeller2nd", Uranai.color, 1);
+            uranaiNumTasks = CustomOption.Create(941, "fortuneTeller2ndNumTasks", 4f, 1f, 10f, 1f, uranaiSpawnRate);
+            uranaiResultIsCrewOrNot = CustomOption.Create(942, "fortuneTeller2ndResultIsCrewOrNot", true, uranaiSpawnRate);
+            uranaiDuration = CustomOption.Create(943, "fortuneTeller2ndDuration", 20f, 1f, 50f, 0.5f, uranaiSpawnRate);
+            uranaiDistance = CustomOption.Create(944, "fortuneTeller2ndDistance", 2.5f, 1f, 10f, 0.5f, uranaiSpawnRate, format: "unitMeters");
 
             mayorSpawnRate = new CustomRoleOption(80, "mayor", Mayor.color, 1);
             mayorNumVotes = CustomOption.Create(81, "mayorNumVotes", 2f, 2f, 10f, 1f, mayorSpawnRate, format: "unitVotes");
