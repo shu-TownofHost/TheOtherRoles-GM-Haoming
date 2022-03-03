@@ -780,18 +780,19 @@ namespace TheOtherRoles {
 
             // Other options
             specialOptions = new CustomOptionBlank(null);
-            lastImpostorEnable = CustomOption.Create(9900, "ラストインポスター有効化", true, specialOptions, true);
-            lastImpostorFunctions = CustomOption.Create(9901, "ラストインポスター時に有効になる能力", new string[]{"占い", "ゲッサー"}, lastImpostorEnable);
-            lastImpostorNumKills = CustomOption.Create(9902, "能力発動に必要なキル数", 3f, 1f, 10f, 1.0f, lastImpostorEnable);
-            lastImpostorResultIsCrewOrNot = CustomOption.Create(9903, "占い結果がクルーとクルー以外になる", true, lastImpostorEnable);
-            lastImpostorNumShots = CustomOption.Create(9904, "ゲッサー弾丸数", 1f, 1f, 15f, 1f, lastImpostorEnable );
+            lastImpostorEnable = CustomOption.Create(9900, "lastImpostorEnable", true, specialOptions, true);
+            lastImpostorFunctions = CustomOption.Create(9901, "lastImpostorFunctions", new string[]{ModTranslation.getString("lastImpostorDivine"), ModTranslation.getString("lastImpostorGuesser")}, lastImpostorEnable);
+            lastImpostorNumKills = CustomOption.Create(9902, "lastImpostorNumKills", 3f, 1f, 10f, 1.0f, lastImpostorEnable);
+            lastImpostorResultIsCrewOrNot = CustomOption.Create(9903, "lastImpostorResultIsCrewOrNot", true, lastImpostorEnable);
+            lastImpostorNumShots = CustomOption.Create(9904, "lastImpostorNumShots", 1f, 1f, 15f, 1f, lastImpostorEnable );
 
-            additionalVents = CustomOption.Create(9905, "ポーラス追加ベント", false, specialOptions, true);
-            specimenVital = CustomOption.Create(9906, "ポーラスバイタル移動(スペシメン)", false, specialOptions);
-            polusRandomSpawn = CustomOption.Create(9907, "ポーラスランダムリスポン", false, specialOptions);
+            additionalVents = CustomOption.Create(9905, "additionalVents", false, specialOptions, true);
+            specimenVital = CustomOption.Create(9906, "specimenVital", false, specialOptions);
+            polusRandomSpawn = CustomOption.Create(9907, "polusRandomSpawn", false, specialOptions);
 
-            airshipEnableWallCheck = CustomOption.Create(9908, "エアシップ壁判定有効化", true, specialOptions, true);
-            airshipReactorDuration = CustomOption.Create(9999, "エアシップリアクター時間", 60f, 0f, 600f, 1f, specialOptions, format: "unitSeconds");
+            airshipEnableWallCheck = CustomOption.Create(9908, "airshipEnableWallCheck", true, specialOptions, true);
+            airshipReactorDuration = CustomOption.Create(9999, "airshipReactorDuration", 60f, 0f, 600f, 1f, specialOptions, format: "unitSeconds");
+
             maxNumberOfMeetings = CustomOption.Create(3, "maxNumberOfMeetings", 10, 0, 15, 1, specialOptions, true);
             blockSkippingInEmergencyMeetings = CustomOption.Create(4, "blockSkippingInEmergencyMeetings", false, specialOptions);
             noVoteIsSelfVote = CustomOption.Create(5, "noVoteIsSelfVote", false, specialOptions);
