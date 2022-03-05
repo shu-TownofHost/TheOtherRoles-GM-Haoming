@@ -242,7 +242,7 @@
         "11": "\u30d7\u30ec\u30a4\u30e4\u30fc\u306b\u63a5\u89e6\u3057\u3066\u5360\u304a\u3046"
     },
     "fortuneteller2ndFullDesc": {
-        "0": "Fortune teller2 is crewmate role who has ability to divine\nFortune teller2 is shown as crewmate, until he completes number of tasks is set in settings.\nAfter completed tasks, Fortuneteller can divine single player but cant start emergency meeting\nDivine is only available for once\n\nFortune teller2 can divine players if player is dead or he has contacted player for certain duration\nFox, Puppeteer and Schrodinger\u2019s Cat are killed if they get divined",
+        "0": "Fortune teller2 is crewmate role who has ability to divine\nFortune teller2 is shown as crewmate, until he completes number of tasks is set in settings.\nAfter completed tasks, Fortuneteller can divine single player but cant start emergency meeting\nDivination is only available for once\n\nFortune teller2 can divine players if player is dead or he has contacted player for certain duration\nFox, Puppeteer and Schrodinger\u2019s Cat are killed if they get divined",
         "11": "\u5360\u3044\u5e2b2\u306f\u5360\u3044\u306e\u80fd\u529b\u3092\u6301\u3064\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\n\u5360\u3044\u5e2b2\u306f\u30af\u30eb\u30fc\u30e1\u30a4\u30c8\u3068\u3057\u3066\u8868\u793a\u3055\u308c\u8a2d\u5b9a\u3055\u308c\u305f\u30bf\u30b9\u30af\u6570\u3092\u5b8c\u4e86\u3059\u308b\u3068\u5360\u3044\u5e2b\u306b\u306a\u308b\n\u5360\u3044\u5e2b2\u306b\u306a\u308b\u3068\u5360\u3044\u3092\u884c\u3048\u308b\u304c\u7dca\u6025\u4f1a\u8b70\u30dc\u30bf\u30f3\u3092\u62bc\u3059\u3053\u3068\u304c\u3067\u304d\u306a\u304f\u306a\u308b\n\u5360\u3044\u306f\u4e00\u5ea6\u3057\u304b\u884c\u3046\u3053\u3068\u304c\u3067\u304d\u306a\u3044\n\n\u5360\u3044\u5e2b2\u306f\u6b7b\u3093\u3060\u30d7\u30ec\u30a4\u30e4\u30fc\u304b\u4e00\u5b9a\u6642\u9593\u4ee5\u4e0a\u63a5\u89e6\u3057\u305f\u30d7\u30ec\u30a4\u30e4\u30fc\u306e\u307f\u3092\u5360\u3046\u3053\u3068\u304c\u3067\u304d\u308b\n\u5996\u72d0\u3001\u30b7\u30e5\u30ec\u30c7\u30a3\u30f3\u30ac\u30fc\u306e\u732b\u306f\u5360\u308f\u308c\u308b\u3068\u6b7b\u4ea1\u3059\u308b"
     },
     "trapper": {
@@ -398,7 +398,7 @@
         "11": "\u30ad\u30eb\u3057\u3066\u80fd\u529b\u3092\u53d6\u5f97\u3057\u308d"
     },
     "lastImpostorFullDesc": {
-        "0": "Last impostor is an impostor role that the last living impostor acquires.\nlast impostor gets additional ability if he kills number of players is set in settings\nDepends in options, last impostor takes guesser or divine ability.",
+        "0": "Last impostor is an impostor role that the last living impostor acquires.\nlast impostor gets additional ability if he kills number of players is set in settings\nDepends in options, last impostor can  use guesser or divination ability.",
         "11": "\u30e9\u30b9\u30c8\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u306f\u6700\u5f8c\u307e\u3067\u751f\u304d\u6b8b\u3063\u305f\u30a4\u30f3\u30dd\u30b9\u30bf\u30fc\u306b\u4ed8\u4e0e\u3055\u308c\u308b\u5f79\u5272\u3067\u3059\u3002\n\u8a2d\u5b9a\u3055\u308c\u305f\u4eba\u6570\u3092\u30ad\u30eb\u3059\u308b\u3053\u3068\u3067\u8ffd\u52a0\u80fd\u529b\u3092\u5f97\u308b\u3053\u3068\u3067\u304d\u308b\n\u8ffd\u52a0\u80fd\u529b\u306f\u30aa\u30d7\u30b7\u30e7\u30f3\u306b\u3088\u308a\u30b2\u30c3\u30b5\u30fc\u3001\u5360\u3044\u306e\u3069\u3061\u3089\u304b\u3092\u5f97\u308b\u3053\u3068\u304c\u3067\u304d\u308b"
     },
     "additionalVents": {

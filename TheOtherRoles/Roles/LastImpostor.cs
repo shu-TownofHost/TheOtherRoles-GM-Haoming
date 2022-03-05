@@ -217,9 +217,10 @@ namespace TheOtherRoles
         }
         public static void divine(PlayerControl p)
         {
-            Uranai.divine(p, resultIsCrewOrNot);
+            // FortuneTeller.divine(p, resultIsCrewOrNot);
             numUsed += 1;
         }
+
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
         class IntroCutsceneOnDestroyPatch
         {
