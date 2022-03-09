@@ -530,7 +530,7 @@ namespace TheOtherRoles {
             trapperExtensionTime = CustomOption.Create(1071, "trapperExtensionTime", 5f, 2f, 10f, 0.5f, trapperSpawnRate);
             trapperCooldown = CustomOption.Create(1072, "trapperCooldown", 10f, 2.5f, 60f, 2.5f, trapperSpawnRate);
             trapperKillTimer = CustomOption.Create(1073, "trapperKillTimer", 5f, 1f, 30f, 1f, trapperSpawnRate);
-            trapperTrapRange = CustomOption.Create(1074, "trapperTrapRange", 1f, 0f, 5f, 0.1f, trapperSpawnRate);
+            trapperTrapRange = CustomOption.Create(1074, "trapperTrapRange", 1f, 0.5f, 5f, 0.1f, trapperSpawnRate);
             trapperMinDistance = CustomOption.Create(1075, "trapperMinDistance", 0f, 0f, 10f, 0.1f, trapperSpawnRate);
             trapperMaxDistance = CustomOption.Create(1076, "trapperMaxDistance", 10f, 1f, 50f, 1f, trapperSpawnRate);
             trapperPenaltyTime = CustomOption.Create(1077, "trapperPenaltyTime", 10f, 0f, 50f, 1f, trapperSpawnRate);

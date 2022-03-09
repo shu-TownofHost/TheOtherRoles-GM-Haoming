@@ -134,6 +134,7 @@ namespace TheOtherRoles
             SpecimenVital.clearAndReload();
             AdditionalVents.clearAndReload();
             BombEffect.clearBombEffects();
+            Trap.clearAllTraps();
 
             KillAnimationCoPerformKillPatch.hideNextAnimation = false;
         }
@@ -1108,7 +1109,6 @@ namespace TheOtherRoles
                 Trapper.sound = new GameObject("TrapSound");
                 Trapper.audioSource = Trapper.sound.gameObject.AddComponent<AudioSource>();
             } 
-            Trapper.sound.transform.position = Trapper.pos;
             Trapper.sound.transform.position = Trapper.pos;
             Trapper.audioSource.clip = Trapper.place;
             Trapper.audioSource.loop = false;
