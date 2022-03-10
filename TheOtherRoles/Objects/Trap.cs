@@ -19,7 +19,7 @@ namespace TheOtherRoles.Objects {
          public static AudioRolloffMode rollOffMode = UnityEngine.AudioRolloffMode.Linear;
         private static byte maxId = 0;
         public AudioSource audioSource;
-        public static Dictionary<byte, Trap> traps = new Dictionary<byte, Trap>();
+        public static SortedDictionary<byte, Trap> traps = new SortedDictionary<byte, Trap>();
         public bool isActive = false;
         public PlayerControl target;
         public DateTime placedTime;
@@ -35,7 +35,7 @@ namespace TheOtherRoles.Objects {
                 disable = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperDisable.wav", false);
             if(kill == null )
                 kill = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperKill.wav", false);
-            if(kill == null)
+            if(countdown == null)
                 countdown = FileImporter.ImportWAVAudio("TheOtherRoles.Resources.TrapperCountdown.wav", false);
         }
 
@@ -56,28 +56,42 @@ namespace TheOtherRoles.Objects {
         }
 
         public Trap(Vector3 pos) {
+            // 最初の罠を消す
+            if(traps.Count == Trapper.numTrap)
+            {
+
+                foreach(var key in traps.Keys)
+                {
+                    var firstTrap = traps[key];
+                    if(firstTrap.trap != null)
+                        UnityEngine.GameObject.DestroyObject(firstTrap.trap);
+                    traps.Remove(key);
+                    break;
+                }
+            }
+
             // 罠を設置
-            trap = new GameObject("Trap");
+            this.trap = new GameObject("Trap");
             var trapRenderer = trap.AddComponent<SpriteRenderer>();
             trapRenderer.sprite = trapSprite;
-            trap.transform.position = pos;
-            trap.transform.localPosition = pos;
-            trap.SetActive(true);
+            this.trap.transform.position = pos;
+            this.trap.transform.localPosition = pos;
+            this.trap.SetActive(true);
 
             // 音を鳴らす
-            audioSource = trap.gameObject.AddComponent<AudioSource>();
-            audioSource.priority = 0;
-            audioSource.spatialBlend = 1;
-            audioSource.clip = place;
-            audioSource.loop = false;
-            audioSource.playOnAwake = false;
-            audioSource.maxDistance = 2 * Trapper.maxDistance/3;
-            audioSource.minDistance = Trapper.minDsitance;
-            audioSource.rolloffMode = rollOffMode;
-            audioSource.PlayOneShot(place);
+            this.audioSource = trap.gameObject.AddComponent<AudioSource>();
+            this.audioSource.priority = 0;
+            this.audioSource.spatialBlend = 1;
+            this.audioSource.clip = place;
+            this.audioSource.loop = false;
+            this.audioSource.playOnAwake = false;
+            this.audioSource.maxDistance = 2 * Trapper.maxDistance/3;
+            this.audioSource.minDistance = Trapper.minDsitance;
+            this.audioSource.rolloffMode = rollOffMode;
+            this.audioSource.PlayOneShot(place);
 
             // 設置時刻を設定
-            placedTime = DateTime.UtcNow;
+            this.placedTime = DateTime.UtcNow;
 
             traps.Add(getAvailableId(), this);
             
@@ -92,18 +106,19 @@ namespace TheOtherRoles.Objects {
                 if(trap.trap != null)
                     UnityEngine.GameObject.DestroyObject(trap.trap);
             }
-            traps = new Dictionary<byte, Trap>();
+            traps = new SortedDictionary<byte, Trap>();
+            maxId = 0;
         }
 
         public static void activateTrap(byte trapId, PlayerControl trapper, PlayerControl target)
         {
             var trap = traps[trapId];
             // 他のトラップを全て無効化する
-            var newTraps = new Dictionary<byte, Trap>();
+            var newTraps = new SortedDictionary<byte, Trap>();
             newTraps.Add(trapId, trap);
             foreach(var t in traps.Values)
             {
-                if(t.trap == null) continue;
+                if(t.trap == null || t == trap) continue;
                 t.trap.SetActive(false);
                 UnityEngine.GameObject.Destroy(t.trap);
             }
@@ -111,9 +126,15 @@ namespace TheOtherRoles.Objects {
 
             // 有効にする
             trap.isActive = true;
+            trap.target = target;
+            var spriteRenderer = trap.trap.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = trapActiveSprite;
 
             // 音を鳴らす
+            trap.audioSource.Stop();
             trap.audioSource.loop = true;
+            trap.audioSource.priority = 0;
+            trap.audioSource.spatialBlend = 1;
             trap.audioSource.maxDistance = Trapper.maxDistance;
             trap.audioSource.clip = countdown;
             trap.audioSource.Play();
@@ -161,6 +182,7 @@ namespace TheOtherRoles.Objects {
         public static void disableTrap(byte trapId)
         {
             var trap = traps[trapId];
+            trap.isActive = false;
             trap.audioSource.Stop();
             trap.audioSource.PlayOneShot(disable);
             HudManager.Instance.StartCoroutine(Effects.Lerp(disable.length, new Action<float>((p) => 
@@ -189,12 +211,9 @@ namespace TheOtherRoles.Objects {
             audioSource.PlayOneShot(kill);
             HudManager.Instance.StartCoroutine(Effects.Lerp(kill.length, new Action<float>((p) => 
             {
-                if(p ==1)
+                if(p == 1f)
                 {
-                    if(trap.trap != null)
-                        trap.trap.SetActive(false);
-                        UnityEngine.GameObject.Destroy(trap.trap);
-                    traps.Remove(trapId);
+                    clearAllTraps();
                 }
             })));
             Trapper.isTrapKill = true;
@@ -214,6 +233,7 @@ namespace TheOtherRoles.Objects {
                     if(PlayerControl.LocalPlayer.isRole(RoleType.Trapper))
                     {
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.TrapperKill, Hazel.SendOption.Reliable, -1);
+                        writer.Write(trap.Key);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(trap.Value.target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -253,7 +273,7 @@ namespace TheOtherRoles.Objects {
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-        public static class PlayerPhysicsNinjaPatch
+        public static class PlayerPhysicsTrapPatch
         {
             public static void Postfix(PlayerPhysics __instance)
             {
@@ -265,8 +285,9 @@ namespace TheOtherRoles.Objects {
                         PlayerControl.LocalPlayer.isDead() ||
                         (PlayerControl.LocalPlayer.isRole(RoleType.Lighter) && Lighter.isLightActive(PlayerControl.LocalPlayer)) ||
                         PlayerControl.LocalPlayer.isRole(RoleType.Fox);
-                    var opacity = canSee ? 0.1f : 0.0f;
-                    trap.trap.GetComponent<SpriteRenderer>().material.color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
+                    var opacity = canSee ? 0.8f : 0.0f;
+                    if(trap.trap != null)
+                        trap.trap.GetComponent<SpriteRenderer>().material.color = Color.Lerp(Palette.ClearWhite, Palette.White, opacity);
                 }
             }
         }

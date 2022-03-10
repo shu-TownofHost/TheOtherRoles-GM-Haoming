@@ -24,6 +24,7 @@ namespace TheOtherRoles
         public static Color color = Palette.ImpostorRed;
         public static Sprite trapButtonSprite;
         public static DateTime placedTime;
+        public static int numTrap {get {return (int)CustomOptionHolder.trapperNumTrap.getFloat();}}
         public static float extensionTime {get {return CustomOptionHolder.trapperExtensionTime.getFloat();}}
         public static float killTimer {get {return CustomOptionHolder.trapperKillTimer.getFloat();}}
         public static float cooldown {get {return CustomOptionHolder.trapperCooldown.getFloat();}}
@@ -111,7 +112,6 @@ namespace TheOtherRoles
                                 writer.Write(trap.Key);
                                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                                 RPCProcedure.disableTrap(trap.Key);
-
                             }
                         }
 
@@ -146,21 +146,13 @@ namespace TheOtherRoles
                 player.killTimer = PlayerControl.GameOptions.KillCooldown + penaltyTime;
                 trapperSetTrapButton.Timer = cooldown + penaltyTime;
             }
-
-            // キル後に罠を解除する
-            MessageWriter writer;
-            // foreach(var trap in Trap.traps)
-            // {
-            //     if(trap.Value.target != null){
-            //         writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DisableTrap, Hazel.SendOption.Reliable, -1);
-            //         writer.Write(player.PlayerId);
-            //         AmongUsClient.Instance.FinishRpcImmediately(writer);
-            //         RPCProcedure.disableTrap(trap.Key);
-            //     }
-            // }
-            writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ClearTrap, Hazel.SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            RPCProcedure.clearTrap();
+            if(!isTrapKill)
+            {
+                MessageWriter writer;
+                writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ClearTrap, Hazel.SendOption.Reliable, -1);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                RPCProcedure.clearTrap();
+            }
             isTrapKill = false;
         }
     }
