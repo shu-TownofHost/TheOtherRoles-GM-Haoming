@@ -420,6 +420,7 @@ namespace TheOtherRoles {
         public static CustomOption mimicIfOneDiesBothDie;
         public static CustomOption mimicHasOneVote;
 
+        public static CustomOption delayBeforeMeeting;
         public static CustomOption randomWireTask;
         public static CustomOption numWireTask;
         public static CustomOption additionalWireTask;
@@ -836,7 +837,8 @@ namespace TheOtherRoles {
             alwaysReduceCooldown = CustomOption.Create(9911, "alwaysReduceCooldown", false, specialOptions);
             exceptInVent = CustomOption.Create(9912, "exceptInVent", false, alwaysReduceCooldown);
 
-            additionalVents = CustomOption.Create(9905, "additionalVents", false, specialOptions, true);
+            delayBeforeMeeting = CustomOption.Create(9921, "delayBeforeMeeting", 0f, 0f, 10f, 0.25f, specialOptions, true);
+            additionalVents = CustomOption.Create(9905, "additionalVents", false, specialOptions);
             specimenVital = CustomOption.Create(9906, "specimenVital", false, specialOptions);
             polusRandomSpawn = CustomOption.Create(9907, "polusRandomSpawn", false, specialOptions);
 

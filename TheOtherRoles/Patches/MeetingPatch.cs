@@ -401,8 +401,9 @@ namespace TheOtherRoles.Patches {
             Transform exitButton = UnityEngine.Object.Instantiate(buttonTemplate.transform, exitButtonParent);
             Transform exitButtonMask = UnityEngine.Object.Instantiate(maskTemplate, exitButtonParent);
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
-            exitButtonParent.transform.localPosition = new Vector3(2.725f, 2.1f, -200f);
+            exitButtonParent.transform.localPosition = new Vector3(-2.725f, 2.1f, -200f);
             exitButtonParent.transform.localScale = new Vector3(0.25f, 0.9f, 1f);
+            exitButtonParent.transform.SetAsFirstSibling();
             exitButton.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
             exitButton.GetComponent<PassiveButton>().OnClick.AddListener((UnityEngine.Events.UnityAction)(() => {
                 __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
@@ -691,7 +692,9 @@ namespace TheOtherRoles.Patches {
         class MeetingServerStartPatch {
             static void Postfix(MeetingHud __instance)
             {
-                populateButtonsPostfix(__instance);
+                // Helpers.log("ServerStart Postfix");
+                // Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
+                // populateButtonsPostfix(__instance);
             }
         }
 
@@ -699,10 +702,12 @@ namespace TheOtherRoles.Patches {
         class MeetingDeserializePatch {
             static void Postfix(MeetingHud __instance, [HarmonyArgument(0)]MessageReader reader, [HarmonyArgument(1)]bool initialState)
             {
+                // Helpers.log("Deserialize Postfix");
+                // Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
                 // Add swapper buttons
-                if (initialState) {
-                    populateButtonsPostfix(__instance);
-                }
+                // if (initialState) {
+                //     populateButtonsPostfix(__instance);
+                // }
             }
         }
 
@@ -726,6 +731,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CoStartMeeting))]
         class StartMeetingPatch {
+            private static float delay {get { return CustomOptionHolder.delayBeforeMeeting.getFloat();}}
             public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)]GameData.PlayerInfo meetingTarget, ref Il2CppSystem.Collections.IEnumerator __result)
             {
                 startMeeting();
@@ -745,17 +751,48 @@ namespace TheOtherRoles.Patches {
             {
                 // ボタンと同時に通報が入った場合のバグ対応、他のクライアントからキルイベントが飛んでくるのを待つ
                 // 見えては行けないものが見えるので暗転させる
-
                 HudManager hudManager = DestroyableSingleton<HudManager>.Instance;
                 var blackscreen = UnityEngine.Object.Instantiate(hudManager.FullScreen, hudManager.transform);
+                var greyscreen = UnityEngine.Object.Instantiate(hudManager.FullScreen, hudManager.transform);
                 blackscreen.color = Palette.Black;
                 blackscreen.transform.position = Vector3.zero;
                 blackscreen.transform.localPosition = new Vector3(0f, 0f, -910f);
                 blackscreen.transform.localScale = new Vector3(10f, 10f, 1f);
                 blackscreen.gameObject.SetActive(true);
                 blackscreen.enabled = true;
-                yield return new WaitForSeconds(2f);
+                greyscreen.color = Palette.Black;
+                greyscreen.transform.position = Vector3.zero;
+                greyscreen.transform.localPosition = new Vector3(0f, 0f, -920f);
+                greyscreen.transform.localScale = new Vector3(10f, 10f, 1f);
+                greyscreen.gameObject.SetActive(true);
+                greyscreen.enabled = true;
+                TMPro.TMP_Text text;
+                RoomTracker roomTracker =  HudManager.Instance?.roomTracker;
+                GameObject gameObject = UnityEngine.Object.Instantiate(roomTracker.gameObject);
+                UnityEngine.Object.DestroyImmediate(gameObject.GetComponent<RoomTracker>());
+                gameObject.transform.SetParent(HudManager.Instance.transform);
+                gameObject.transform.localPosition = new Vector3(0, 0, -930f);
+                gameObject.transform.localScale = Vector3.one * 5f;
+                text = gameObject.GetComponent<TMPro.TMP_Text>();
+                yield return Effects.Lerp(delay, new Action<float>((p) =>
+                { // Delayed action
+                    greyscreen.color = new Color(1.0f, 1.0f, 1.0f, 0.5f-p/2);
+                    string message = (delay - (p * delay)).ToString("0.00");
+                    if(message == "0") return;
+                    string prefix = "<color=#FFFFFFFF>";
+                    text.text = prefix + message + "</color>";
+                    if (text != null) text.color = Color.white;
+                }));
+                // yield return new WaitForSeconds(2f);
+                UnityEngine.Object.Destroy(text.gameObject);
                 UnityEngine.Object.Destroy(blackscreen);
+                UnityEngine.Object.Destroy(greyscreen);
+
+                // ミーティング画面の並び替えを直す
+                Type type = MeetingHud.Instance.GetType();
+                MethodInfo method= type.GetMethod("PopulateButtons", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                method.Invoke(MeetingHud.Instance, new object[1]{null});
+                populateButtonsPostfix(MeetingHud.Instance);
 
                 DeadBody[] array = UnityEngine.GameObject.FindObjectsOfType<DeadBody>();
                 GameData.PlayerInfo[] deadBodies = (from b in array
