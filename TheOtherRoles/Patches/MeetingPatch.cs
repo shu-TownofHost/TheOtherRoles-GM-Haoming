@@ -10,6 +10,7 @@ using static TheOtherRoles.GameHistory;
 using System.Collections;
 using System;
 using System.Text;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Analytics;
@@ -29,6 +30,7 @@ namespace TheOtherRoles.Patches {
         public static bool animateSwap = false;
 
         static TMPro.TextMeshPro meetingInfoText;
+        private static byte reporter = 0x00;
 
         public static void updateNameplate(PlayerVoteArea pva, byte playerId = Byte.MaxValue)
         {
@@ -690,7 +692,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ServerStart))]
         class MeetingServerStartPatch {
-            static void Postfix(MeetingHud __instance)
+            static void Postfix(MeetingHud __instance, byte reporter)
             {
                 // Helpers.log("ServerStart Postfix");
                 // Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
@@ -702,6 +704,7 @@ namespace TheOtherRoles.Patches {
         class MeetingDeserializePatch {
             static void Postfix(MeetingHud __instance, [HarmonyArgument(0)]MessageReader reader, [HarmonyArgument(1)]bool initialState)
             {
+
                 // Helpers.log("Deserialize Postfix");
                 // Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
                 // Add swapper buttons
@@ -718,6 +721,11 @@ namespace TheOtherRoles.Patches {
             CustomOverlays.hideInfoOverlay();
             CustomOverlays.hideRoleOverlay();
             TheOtherRolesGM.OnMeetingStart();
+        }
+
+        public static void PopulateButtons(byte reporter)
+        {
+
         }
 
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.OpenMeetingRoom))]
@@ -790,8 +798,24 @@ namespace TheOtherRoles.Patches {
 
                 // ミーティング画面の並び替えを直す
                 Type type = MeetingHud.Instance.GetType();
+                // FieldInfo[] fields = type.GetFields( BindingFlags.GetField| BindingFlags.SetField| BindingFlags.IgnoreCase| BindingFlags.Static| BindingFlags.Public| BindingFlags.NonPublic | BindingFlags.Instance);
+                // foreach(var field in fields)
+                // {
+                //     Helpers.log(field.Name);
+                // }
+
+                FieldInfo field = type.GetField("NativeFieldInfoPtr_reporterId", BindingFlags.GetField| BindingFlags.SetField| BindingFlags.IgnoreCase| BindingFlags.Static| BindingFlags.Public| BindingFlags.NonPublic | BindingFlags.Instance);
+                IntPtr nfiReportedId = (IntPtr)field.GetValue(MeetingHud.Instance);
+                IntPtr baseAddr = IL2CPP.Il2CppObjectBaseToPtr(HudManager.Instance);
+                uint offset = IL2CPP.il2cpp_field_get_offset(nfiReportedId);
+                IntPtr ptrReportedId = IntPtr.Add(baseAddr, (int)offset);
+                byte reporterId = (byte)Marshal.ReadIntPtr(ptrReportedId);
+
+                Helpers.log($"{baseAddr} + {offset} = {ptrReportedId}");
+                Helpers.log($"{Marshal.ReadByte(nfiReportedId)}");
+                Helpers.log($"{reporterId}");
                 MethodInfo method= type.GetMethod("PopulateButtons", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                method.Invoke(MeetingHud.Instance, new object[1]{null});
+                method.Invoke(MeetingHud.Instance, new object[1]{reporterId});
                 populateButtonsPostfix(MeetingHud.Instance);
 
                 DeadBody[] array = UnityEngine.GameObject.FindObjectsOfType<DeadBody>();
