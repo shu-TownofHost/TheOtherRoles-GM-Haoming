@@ -135,7 +135,7 @@ namespace TheOtherRoles {
 
                         initializeRoleOverlay(roleOverlayList[i]);
 
-                        roleOverlayList[i].transform.localPosition = new Vector3(-3.5f, 1.15f, -910f);
+                        roleOverlayList[i].transform.localPosition = new Vector3(-3.5f, 1.2f, -910f);
                     }
                     else
                     {
@@ -181,6 +181,8 @@ namespace TheOtherRoles {
 
                 entries.Add(entry.ToString().Trim('\r', '\n'));
 
+                int maxLines = 28;
+
                 foreach (CustomOption option in CustomOption.options)
                 {
                     if ((option == CustomOptionHolder.presetSelection) ||
@@ -206,11 +208,32 @@ namespace TheOtherRoles {
                             entry.AppendLine(GameOptionsDataPatch.optionToString(option));
 
                         addChildren(option, ref entry, !option.isHidden);
+
+                        // 1つのオプションが最大行を越えていた場合、最大行までで分割する
+                        int lines = entry.ToString().Trim('\r', '\n').Count(c => c == '\n') + 1;
+                        while ( lines > maxLines )
+                        {
+                            var line = 0;
+                            var newEntry = new StringBuilder();
+                            var entryLines = entry.ToString().Trim('\r', '\n').Split(new[]{"\r\n","\n","\r"},StringSplitOptions.None);
+                            foreach( var entryLine in entryLines )
+                            {
+                                newEntry.AppendLine( entryLine );
+                                entry.Remove( 0, entryLine.Length + Environment.NewLine.Length );
+                                line++;
+                                if ( maxLines <= line )
+                                {
+                                    break;
+                                }
+                            }
+                            entries.Add(newEntry.ToString().Trim('\r', '\n'));
+                            lines -= maxLines;
+                        }
+
                         entries.Add(entry.ToString().Trim('\r', '\n'));
                     }
                 }
 
-                int maxLines = 28;
                 int lineCount = 0;
                 string page = "";
                 foreach (var e in entries)
@@ -423,7 +446,7 @@ namespace TheOtherRoles {
 
             roleUnderlay.sprite = colorBG;
             roleUnderlay.color = new Color(0.1f, 0.1f, 0.1f, 0.88f);
-            roleUnderlay.transform.localScale = new Vector3(9.3f, 5f, 1f);
+            roleUnderlay.transform.localScale = new Vector3(9.3f, 5.1f, 1f);
             roleUnderlay.enabled = true;
 
             setRoleOverlayText();
