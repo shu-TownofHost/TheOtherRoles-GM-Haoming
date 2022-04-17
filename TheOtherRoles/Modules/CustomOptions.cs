@@ -671,6 +671,20 @@ namespace TheOtherRoles
         }
     }
 
+    [HarmonyPatch(typeof(Constants), nameof(Constants.ShouldHorseAround))]
+    class ConstantsShouldHorseAroundPatch
+    {
+        public static bool Prefix(ref bool __result)
+        {
+            if (Helpers.GameStarted && CustomOptionHolder.enabledHorseMode.getBool())
+            {
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(FreeWeekendShower), nameof(FreeWeekendShower.Start))]
     class FreeWeekendShowerPatch
     {

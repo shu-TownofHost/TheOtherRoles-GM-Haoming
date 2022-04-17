@@ -420,6 +420,7 @@ namespace TheOtherRoles {
         public static CustomOption mimicIfOneDiesBothDie;
         public static CustomOption mimicHasOneVote;
 
+        public static CustomOption enabledHorseMode;
         public static CustomOption delayBeforeMeeting;
         public static CustomOption randomWireTask;
         public static CustomOption numWireTask;
@@ -823,12 +824,15 @@ namespace TheOtherRoles {
 
             // Other options
             specialOptions = new CustomOptionBlank(null);
+
+            enabledHorseMode = CustomOption.Create(552, "enableHorseMode", false, specialOptions, true);
+
             lastImpostorEnable = CustomOption.Create(9900, "lastImpostorEnable", true, specialOptions, true);
             lastImpostorFunctions = CustomOption.Create(9901, "lastImpostorFunctions", new string[]{ModTranslation.getString("lastImpostorDivine"), ModTranslation.getString("lastImpostorGuesser")}, lastImpostorEnable);
             lastImpostorNumKills = CustomOption.Create(9902, "lastImpostorNumKills", 3f, 0f, 10f, 1f, lastImpostorEnable);
             lastImpostorResults = CustomOption.Create(9903, "fortuneTellerResults ", new string[] { "fortuneTellerResultCrew", "fortuneTellerResultTeam", "fortuneTellerResultRole" }, lastImpostorEnable);
             lastImpostorNumShots = CustomOption.Create(9904, "lastImpostorNumShots", 1f, 1f, 15f, 1f, lastImpostorEnable );
-
+            
             randomWireTask = CustomOption.Create(9909, "randomWireTask", false, specialOptions, true);
             additionalWireTask = CustomOption.Create(9914, "additionalWireTask", false, randomWireTask);
             numWireTask = CustomOption.Create(9913, "numWireTask", 3f, 1f, 10f, 1f, randomWireTask);
