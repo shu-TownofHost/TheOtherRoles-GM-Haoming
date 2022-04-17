@@ -401,7 +401,7 @@ namespace TheOtherRoles.Patches {
             Transform exitButton = UnityEngine.Object.Instantiate(buttonTemplate.transform, exitButtonParent);
             Transform exitButtonMask = UnityEngine.Object.Instantiate(maskTemplate, exitButtonParent);
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
-            exitButtonParent.transform.localPosition = new Vector3(-2.725f, 2.1f, -200f);
+            exitButtonParent.transform.localPosition = new Vector3(2.725f, 2.1f, -200f);
             exitButtonParent.transform.localScale = new Vector3(0.25f, 0.9f, 1f);
             exitButtonParent.transform.SetAsFirstSibling();
             exitButton.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
@@ -690,7 +690,7 @@ namespace TheOtherRoles.Patches {
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ServerStart))]
         class MeetingServerStartPatch {
-            static void Postfix(MeetingHud __instance)
+            static void Postfix(MeetingHud __instance, byte reporter)
             {
                 // Helpers.log("ServerStart Postfix");
                 // Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
@@ -702,6 +702,7 @@ namespace TheOtherRoles.Patches {
         class MeetingDeserializePatch {
             static void Postfix(MeetingHud __instance, [HarmonyArgument(0)]MessageReader reader, [HarmonyArgument(1)]bool initialState)
             {
+
                 // Helpers.log("Deserialize Postfix");
                 // Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
                 // Add swapper buttons
@@ -720,12 +721,39 @@ namespace TheOtherRoles.Patches {
             TheOtherRolesGM.OnMeetingStart();
         }
 
+        public static void populateButtons(MeetingHud __instance, byte reporter)
+        {
+            __instance.playerStates = new PlayerVoteArea[GameData.Instance.PlayerCount];
+            for (int i = 0; i < __instance.playerStates.Length; i++)
+            {
+                GameData.PlayerInfo playerInfo = GameData.Instance.AllPlayers[i];
+                PlayerVoteArea playerVoteArea = __instance.playerStates[i] = __instance.CreateButton(playerInfo);
+                playerVoteArea.Parent = __instance;
+                playerVoteArea.SetTargetPlayerId(playerInfo.PlayerId);
+                playerVoteArea.SetDead(reporter == playerInfo.PlayerId, playerInfo.Disconnected || playerInfo.IsDead, playerInfo.Role.Role == RoleTypes.GuardianAngel);
+                playerVoteArea.UpdateOverlay();
+            }
+            foreach (PlayerVoteArea playerVoteArea2 in __instance.playerStates)
+            {
+                ControllerManager.Instance.AddSelectableUiElement(playerVoteArea2.PlayerButton, false);
+            }
+            __instance.SortButtons();
+        }
+
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.OpenMeetingRoom))]
         class OpenMeetingPatch
         {
             public static void Prefix(HudManager __instance)
             {
                 startMeeting();
+            }
+        }
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateButtons))]
+        class MeetingHudPopulae
+        {
+            public static bool Prefix(MeetingHud __instance, byte reporter)
+            {
+                return false;
             }
         }
 
@@ -789,9 +817,7 @@ namespace TheOtherRoles.Patches {
                 UnityEngine.Object.Destroy(greyscreen);
 
                 // ミーティング画面の並び替えを直す
-                Type type = MeetingHud.Instance.GetType();
-                MethodInfo method= type.GetMethod("PopulateButtons", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                method.Invoke(MeetingHud.Instance, new object[1]{null});
+                populateButtons(MeetingHud.Instance, __instance.Data.PlayerId);
                 populateButtonsPostfix(MeetingHud.Instance);
 
                 DeadBody[] array = UnityEngine.GameObject.FindObjectsOfType<DeadBody>();
