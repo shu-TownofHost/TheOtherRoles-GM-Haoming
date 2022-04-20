@@ -620,7 +620,8 @@ namespace TheOtherRoles
             if (player.isLovers())
                 Lovers.killLovers(player, killer);
 
-            RPCProcedure.updateMeeting(player.PlayerId, true);
+            if(MeetingHud.Instance.state != MeetingHud.VoteStates.Animating)
+                RPCProcedure.updateMeeting(player.PlayerId, true);
         }
     }
 }

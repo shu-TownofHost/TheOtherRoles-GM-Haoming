@@ -1113,7 +1113,11 @@ namespace TheOtherRoles
         {
             var trapper = Helpers.playerById(trapperId);
             var target = Helpers.playerById(playerId);
-            Trap.trapKill(trapId, trapper, target);
+            HudManager.Instance.StartCoroutine(Effects.Lerp(1f, new Action<float>((p) =>
+            { // Delayed action
+                if (p == 1f)
+                    Trap.trapKill(trapId, trapper, target);
+            })));
         }
         public static void trapperMeetingFlag()
         {

@@ -775,8 +775,27 @@ namespace TheOtherRoles.Patches {
                 __result = CoStartMeeting(__instance, meetingTarget).WrapToIl2Cpp();
                 return false;
             }
+            private static IEnumerator waitButtonParent(MeetingHud __instance)
+            {
+                Helpers.log("waitButtonParent0");
+                while(true)
+                {
+                    if(__instance.ButtonParent == null)
+                    {
+                        Helpers.log("waitButtonParent1");
+                        yield return null;
+                    }
+                    else
+                    {
+                        Helpers.log("waitButtonParent2");
+                        yield return null;
+                    }
+                }
+            }
             private static IEnumerator CoStartMeeting2(PlayerControl __instance, GameData.PlayerInfo meetingTarget)
             {
+                //yield return DestroyableSingleton<HudManager>._instance.StartCoroutine(waitButtonParent(MeetingHud.Instance).WrapToIl2Cpp());
+                MeetingHud.Instance.state = MeetingHud.VoteStates.Animating;
                 // ボタンと同時に通報が入った場合のバグ対応、他のクライアントからキルイベントが飛んでくるのを待つ
                 // 見えては行けないものが見えるので暗転させる
                 HudManager hudManager = DestroyableSingleton<HudManager>.Instance;
@@ -786,13 +805,13 @@ namespace TheOtherRoles.Patches {
                 blackscreen.transform.position = Vector3.zero;
                 blackscreen.transform.localPosition = new Vector3(0f, 0f, -910f);
                 blackscreen.transform.localScale = new Vector3(10f, 10f, 1f);
-                blackscreen.gameObject.SetActive(true);
+                blackscreen.gameObject.SetActive(false);
                 blackscreen.enabled = true;
                 greyscreen.color = Palette.Black;
                 greyscreen.transform.position = Vector3.zero;
                 greyscreen.transform.localPosition = new Vector3(0f, 0f, -920f);
                 greyscreen.transform.localScale = new Vector3(10f, 10f, 1f);
-                greyscreen.gameObject.SetActive(true);
+                greyscreen.gameObject.SetActive(false);
                 greyscreen.enabled = true;
                 TMPro.TMP_Text text;
                 RoomTracker roomTracker =  HudManager.Instance?.roomTracker;
@@ -816,13 +835,20 @@ namespace TheOtherRoles.Patches {
                 UnityEngine.Object.Destroy(blackscreen);
                 UnityEngine.Object.Destroy(greyscreen);
 
+
                 // ミーティング画面の並び替えを直す
+                // yield return DestroyableSingleton<HudManager>._instance.StartCoroutine(waitButtonParent(MeetingHud.Instance).WrapToIl2Cpp());
                 populateButtons(MeetingHud.Instance, __instance.Data.PlayerId);
                 populateButtonsPostfix(MeetingHud.Instance);
 
                 DeadBody[] array = UnityEngine.GameObject.FindObjectsOfType<DeadBody>();
                 GameData.PlayerInfo[] deadBodies = (from b in array
                 select GameData.Instance.GetPlayerById(b.ParentId)).ToArray<GameData.PlayerInfo>();
+                Helpers.log($"array.Count() = {array.Count()}");
+                foreach(var deadBody in array)
+                {
+                    Helpers.log($"deadBody.name = {deadBody.name}");
+                }
                 for (int j = 0; j < array.Length; j++)
                 {
                     if (array[j] != null && array[j].gameObject != null)
@@ -916,6 +942,165 @@ namespace TheOtherRoles.Patches {
 
             }
         }
+        [HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]
+        class KillAnimationCoPerformKill{
+            public static void Prefix(KillAnimation __instance, [HarmonyArgument(0)]ref PlayerControl source, [HarmonyArgument(1)]ref PlayerControl target) 
+            {
+                Helpers.log("CoPerformKill Prefix");
+            }
+            public static void Postfix(KillAnimation __instance, [HarmonyArgument(0)]ref PlayerControl source, [HarmonyArgument(1)]ref PlayerControl target) 
+            {
+                Helpers.log("CoPerformKill Postfix");
+            }
+        }
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
+        class HudManagerCheckForEndVoting
+        {
+            public static void Prefix(MeetingHud __instance)
+            {
+                Helpers.log("MeetingHudChceckForEndVoting Prefix");
+                Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
+
+            }
+            public static void Postfix(MeetingHud __instance)
+            {
+                Helpers.log("MeetingHudChceckForEndVoting Postfix");
+
+            }
+        }
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
+        class HudManagerClose
+        {
+            public static void Prefix(MeetingHud __instance)
+            {
+                Helpers.log("MeetingHudClose Prefix");
+                Helpers.log($"StackTrace: '{System.Environment.StackTrace}'");
+            }
+            public static void Postfix(MeetingHud __instance)
+            {
+                Helpers.log("MeetingHudClose Postfix");
+            }
+        }
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
+        class MeetingHudUpdate
+        {
+            public static bool Prefix(MeetingHud __instance)
+            {
+                return true;
+                if (__instance.state == MeetingHud.VoteStates.Animating)
+                {
+                    Helpers.log("MeetingHudUpdate0");
+                    return false;
+                }
+                __instance.discussionTimer += Time.deltaTime;
+                __instance.UpdateButtons();
+                switch (__instance.state)
+                {
+                    case MeetingHud.VoteStates.Discussion:
+                    {
+                        Helpers.log("MeetingHudUpdate1");
+                        if (__instance.discussionTimer < (float)PlayerControl.GameOptions.DiscussionTime)
+                        {
+                            float f = (float)PlayerControl.GameOptions.DiscussionTime - __instance.discussionTimer;
+                            // __instance.TimerText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingBegins, new object[]
+                            // {
+                            //     Mathf.CeilToInt(f)
+                            // });
+                            for (int i = 0; i < __instance.playerStates.Length; i++)
+                            {
+                                __instance.playerStates[i].SetDisabled();
+                            }
+                            __instance.SkipVoteButton.SetDisabled();
+                            return false;
+                        }
+                        __instance.state = MeetingHud.VoteStates.NotVoted;
+                        bool active = PlayerControl.GameOptions.VotingTime > 0;
+                        __instance.TimerText.gameObject.SetActive(active);
+                        for (int j = 0; j < __instance.playerStates.Length; j++)
+                        {
+                            __instance.playerStates[j].SetEnabled();
+                        }
+                        __instance.SkipVoteButton.SetEnabled();
+                        return false;
+                    }
+                    case MeetingHud.VoteStates.NotVoted:
+                    case MeetingHud.VoteStates.Voted:
+                        Helpers.log("MeetingHudUpdate2");
+                        if (PlayerControl.GameOptions.VotingTime > 0)
+                        {
+                            float num = __instance.discussionTimer - (float)PlayerControl.GameOptions.DiscussionTime;
+                            float f2 = Mathf.Max(0f, (float)PlayerControl.GameOptions.VotingTime - num);
+                            // __instance.TimerText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingVotingEnds, new object[]
+                            // {
+                            //     Mathf.CeilToInt(f2)
+                            // });
+                            if (__instance.state == MeetingHud.VoteStates.NotVoted && Mathf.CeilToInt(f2) <= __instance.lastSecond)
+                            {
+                                __instance.lastSecond--;
+                                __instance.StartCoroutine(Effects.PulseColor(__instance.TimerText, Color.red, Color.white, 0.25f));
+                                SoundManager.Instance.PlaySound(__instance.VoteEndingSound, false, 1f).pitch = Mathf.Lerp(1.5f, 0.8f, (float)__instance.lastSecond / 10f);
+                            }
+                            if (AmongUsClient.Instance.AmHost && num >= (float)PlayerControl.GameOptions.VotingTime)
+                            {
+                                __instance.ForceSkipAll();
+                                return false;
+                            }
+                        }
+                        break;
+                    case MeetingHud.VoteStates.Results:
+                        Helpers.log("MeetingHudUpdate3");
+                        if (AmongUsClient.Instance.GameMode == GameModes.OnlineGame)
+                        {
+                            float num2 = __instance.discussionTimer - __instance.resultsStartedAt;
+                            float num3 = Mathf.Max(0f, 5f - num2);
+                            // __instance.TimerText.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.MeetingProceeds, new object[]
+                            // {
+                            //     Mathf.CeilToInt(num3)
+                            // });
+                            //if (AmongUsClient.Instance.AmHost && num3 <= 0f)
+                            //{
+                            //    __instance.HandleProceed();
+                            //}
+                        }
+                        break;
+                    default:
+                        return false;
+
+                }
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CreateButton))]
+        class HudManagerCreateButtonPatch
+        {
+            public static bool Prefix(ref PlayerVoteArea __result, MeetingHud __instance, GameData.PlayerInfo playerInfo )
+            {
+                
+                Helpers.log("createButton0");
+                if(__instance.PlayerButtonPrefab == null)
+                {
+                    Helpers.log("PlayerButtonPrefab == null");
+                }
+                if(__instance.ButtonParent == null)
+                {
+                    Helpers.log("ButtonParent == null");
+                }
+                PlayerVoteArea playerVoteArea = UnityEngine.Object.Instantiate<PlayerVoteArea>(__instance.PlayerButtonPrefab, __instance.ButtonParent.transform);
+                Helpers.log("createButton1");
+                playerVoteArea.SetCosmetics(playerInfo);
+                Helpers.log("createButton2");
+                PlayerNameColor.Set(playerInfo, playerVoteArea.NameText);
+                Helpers.log("createButton3");
+                playerVoteArea.transform.localScale = Vector3.one;
+                Helpers.log("createButton4");
+                __result = playerVoteArea;
+                return false;
+            }
+
+
+        }
+
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
         class MeetingHudClosePatch{
             static void Postfix(MeetingHud __instance){
