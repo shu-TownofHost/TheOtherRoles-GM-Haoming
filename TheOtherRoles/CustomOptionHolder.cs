@@ -265,6 +265,7 @@ namespace TheOtherRoles {
         public static CustomOption pursuerBlanksNumber;
 
         public static CustomOption specialOptions;
+        public static CustomOption airshipOptimizeMap;
         public static CustomOption airshipEnableWallCheck;
         public static CustomOption airshipReactorDuration;
         public static CustomOption airshipRandomSpawn;
@@ -846,7 +847,8 @@ namespace TheOtherRoles {
             specimenVital = CustomOption.Create(9906, "specimenVital", false, specialOptions);
             polusRandomSpawn = CustomOption.Create(9907, "polusRandomSpawn", false, specialOptions);
 
-            airshipEnableWallCheck = CustomOption.Create(9908, "airshipEnableWallCheck", true, specialOptions, true);
+            airshipOptimizeMap = CustomOption.Create(9922, "airshipOptimizeMap", true, specialOptions, true);
+            airshipEnableWallCheck = CustomOption.Create(9908, "airshipEnableWallCheck", true, specialOptions);
             airshipReactorDuration = CustomOption.Create(9999, "airshipReactorDuration", 60f, 0f, 600f, 1f, specialOptions, format: "unitSeconds");
             airshipRandomSpawn = CustomOption.Create(9916, "airshipRandomSpawn", false, specialOptions);
             airshipAdditionalSpawn = CustomOption.Create(9917, "airshipAdditionalSpawn", false, specialOptions);
