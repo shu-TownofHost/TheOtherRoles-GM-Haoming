@@ -497,6 +497,10 @@
         "11": "\u30e9\u30f3\u30c0\u30e0\u30b9\u30dd\u30fc\u30f3(\u30dd\u30fc\u30e9\u30b9)",
         "13": "\u5728\u6ce2\u9c81\u65af\u968f\u673a\u51fa\u751f\u70b9"
     },
+    "airshipOptimizeMap": {
+        "0": "Optimize map(Airship)",
+        "11": "\u30de\u30c3\u30d7\u6700\u9069\u5316(\u30a8\u30a2\u30b7\u30c3\u30d7)"
+    },
     "airshipEnableWallCheck": {
         "0": "Enable wall check on tasks(Airship)",
         "11": "\u30bf\u30b9\u30af\u306e\u58c1\u5224\u5b9a\u3092\u6709\u52b9\u5316\u3059\u308b(\u30a8\u30a2\u30b7\u30c3\u30d7)",

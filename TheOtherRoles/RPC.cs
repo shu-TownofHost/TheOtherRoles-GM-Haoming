@@ -1092,7 +1092,7 @@ namespace TheOtherRoles
         {
             Vector3 pos = Vector3.zero;
             pos.x = BitConverter.ToSingle(buff, 0*sizeof(float));
-            pos.y = BitConverter.ToSingle(buff, 1*sizeof(float));
+            pos.y = BitConverter.ToSingle(buff, 1*sizeof(float)) - 0.2f;
             Trap trap = new Trap(pos);
         }
         public static void clearTrap()
