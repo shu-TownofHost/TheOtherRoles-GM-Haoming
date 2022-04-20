@@ -779,6 +779,7 @@ namespace TheOtherRoles.Patches {
             {
                 // ボタンと同時に通報が入った場合のバグ対応、他のクライアントからキルイベントが飛んでくるのを待つ
                 // 見えては行けないものが見えるので暗転させる
+                MeetingHud.Instance.state = MeetingHud.VoteStates.Animating; //ゲッサーのキル用meetingupdateが呼ばれないようにするおまじない（呼ばれるとバグる）
                 HudManager hudManager = DestroyableSingleton<HudManager>.Instance;
                 var blackscreen = UnityEngine.Object.Instantiate(hudManager.FullScreen, hudManager.transform);
                 var greyscreen = UnityEngine.Object.Instantiate(hudManager.FullScreen, hudManager.transform);
@@ -916,6 +917,7 @@ namespace TheOtherRoles.Patches {
 
             }
         }
+
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
         class MeetingHudClosePatch{
             static void Postfix(MeetingHud __instance){
